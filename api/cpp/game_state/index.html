@@ -389,7 +389,7 @@ The declarations of all the enums can be found in the <code class="docutils lite
 <p><strong>objectCategory / object_category</strong> - category of the object (e.g. “Monster”, “Weapon”, “Player”). Category “Self” is assigned to current player.
 The category assignment may not be accurate, especcialy for custom objects and WADs other than Freedoom/Doom. Note: added in 1.3.0.</p>
 <p><strong>value</strong> - value that represents this particular object in <strong>labelsBuffer</strong>.</p>
-<p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labelsBuffer</strong>. Note: added in 1.1.5.</p>
+<p><strong>x</strong>, <strong>y</strong>, <strong>width</strong>, <strong>height</strong> - describes bounding box of this particular object in <strong>labelsBuffer</strong>. Note: added in 1.1.5. Width and height count pixels, including the rightmost column and bottom row. In Python, the box is <code class="docutils literal notranslate"><span class="pre">labels_buffer[y:y</span> <span class="pre">+</span> <span class="pre">height,</span> <span class="pre">x:x</span> <span class="pre">+</span> <span class="pre">width]</span></code>.</p>
 <p>See also:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../doom_game/#setlabelsbufferenabled"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">DoomGame::setLabelsBufferEnabled</span></code></span></a>,</p></li>
