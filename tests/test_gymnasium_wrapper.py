@@ -328,6 +328,34 @@ def test_gymnasium_wrapper_action_space(
         _compare_action_spaces(env, action_space)
 
 
+@pytest.mark.parametrize("env_config", ["basic_rgb_id_2_0", "basic_g8_idl_3_1"])
+@pytest.mark.parametrize("max_buttons_pressed", [1, 2])
+@pytest.mark.parametrize("action_type", [int, np.int64, np.asarray])
+def test_gymnasium_wrapper_discrete_action_types(
+    env_config, max_buttons_pressed, action_type
+):
+    env = VizdoomEnv(
+        config_file=os.path.join(TEST_ENV_CONFIGS, env_config + ".cfg"),
+        max_buttons_pressed=max_buttons_pressed,
+    )
+    try:
+        env.reset(seed=123)
+        action = action_type(1)
+        expected_action = [0.0] * env.num_binary_buttons
+        expected_action[-1] = 1.0
+        if env.num_delta_buttons:
+            action = {
+                "binary": action,
+                "continuous": np.full(env.num_delta_buttons, 2.0, dtype=np.float32),
+            }
+            expected_action = [2.0] * env.num_delta_buttons + expected_action
+        assert env.action_space.contains(action)
+        env.step(action)
+        assert env.game.get_last_action() == expected_action
+    finally:
+        env.close()
+
+
 def _compare_envs(
     env1, env2, env1_name="First", env2_name="Second", max_steps=10, seed=1993
 ):
