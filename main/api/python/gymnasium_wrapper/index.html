@@ -365,6 +365,9 @@ enabled in the config file (CHANNELS == 1 if GRAY8, else 3):</p>
 <li><p>“labels”: The label image buffer as <cite>np.ndarray</cite> in shape <code class="docutils literal notranslate"><span class="pre">(HEIGHT,</span> <span class="pre">WIDTH,</span> <span class="pre">1)</span></code>, if enabled by the config file.
 For info on labels, access <cite>env.state.labels</cite> variable.</p></li>
 <li><p>“automap”: The automap image buffer as <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> in shape <code class="docutils literal notranslate"><span class="pre">(HEIGHT,</span> <span class="pre">WIDTH,</span> <span class="pre">CHANNELS)</span></code>, if enabled by the config file.</p></li>
+<li><p>“audio”: The stereo audio buffer as <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> in shape <code class="docutils literal notranslate"><span class="pre">(SAMPLES,</span> <span class="pre">2)</span></code>, if enabled.
+<code class="docutils literal notranslate"><span class="pre">SAMPLES</span></code> is the sampling rate divided by 35, multiplied by <code class="docutils literal notranslate"><span class="pre">audio_buffer_size</span></code>.
+The buffer size defaults to <code class="docutils literal notranslate"><span class="pre">frame_skip</span></code> and can be overridden in <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>.</p></li>
 <li><p>“gamevariables”: All game variables, in the order specified by the config file.</p></li>
 </ul>
 <p>Action space can be a single one of binary/continuous action space, or a <code class="docutils literal notranslate"><span class="pre">Dict</span></code> containing both:</p>
