@@ -113,6 +113,9 @@ class VizdoomEnv(gym.Env, EzPickle):
         - "labels": The label image buffer as `np.ndarray` in shape ``(HEIGHT, WIDTH, 1)``, if enabled by the config file.
           For info on labels, access `env.state.labels` variable.
         - "automap": The automap image buffer as ``np.ndarray`` in shape ``(HEIGHT, WIDTH, CHANNELS)``, if enabled by the config file.
+        - "audio": The stereo audio buffer as ``np.ndarray`` in shape ``(SAMPLES, 2)``, if enabled.
+          ``SAMPLES`` is the sampling rate divided by 35, multiplied by ``audio_buffer_size``.
+          The buffer size defaults to ``frame_skip`` and can be overridden in ``**kwargs``.
         - "gamevariables": All game variables, in the order specified by the config file.
 
         Action space can be a single one of binary/continuous action space, or a ``Dict`` containing both:
@@ -538,8 +541,11 @@ class VizdoomEnv(gym.Env, EzPickle):
                 32767,
                 (
                     int(
-                        self.game.get_audio_sampling_rate() * 1 / 35 * self.frame_skip
-                    ),  # rate / 35tics * frameskip
+                        self.game.get_audio_sampling_rate()
+                        * 1
+                        / 35
+                        * self.game.get_audio_buffer_size()
+                    ),  # rate / 35tics * buffer size
                     # 2 channels audio
                     2,
                 ),
