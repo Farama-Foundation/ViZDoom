@@ -14,12 +14,9 @@ Two modes are available and are worth running together (`--mode both`):
             for said dying agent to reach the kit.
   defector     - every agent grabs its own nearest kit on sight, at any health.
 
-By default, measured over 3 episodes x 500 steps, 2 agents. With the individual rewards
-setting, the collaborator ought to score about twice as much as the defector:
-
-    mode           pickup HP   kits   deaths   defections   team return
-    collaborator          45   20.7      0.0          0.3          20.7
-    defector              67   25.7      1.7          3.3          10.7
+By default, measured over 10 episodes x 2625 steps (a full 5 minute episode, 10500 tics
+at a frame skip of 4), 2 agents. With the individual rewards setting, the collaborator
+ought to score about twice as much as the defector.
 
 The collaborator takes fewer kits and still scores twice as much, because a death costs
 -10. Note the scenario pays +1 per step in which health rose rather than per health point,
@@ -28,6 +25,7 @@ so restraint is not otherwise rewarded. A pickup at 90 health pays the same as o
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import statistics
 import sys
@@ -48,9 +46,7 @@ from pettingzoo_wrapper.oracle_health_gathering import (  # noqa: E402
 
 DEFAULT_SCENARIO = "health_gathering_multi_agent"
 
-# Health below which an agent counts as needing a kit. Only a reporting
-# threshold -- it feeds the urgent% and defections columns, and the oracle
-# itself never consults it.
+# Health below which an agent counts as needing to obtain a kit
 DEFAULT_URGENT_HEALTH = 50.0
 
 
@@ -389,14 +385,42 @@ def report(mode: str, episodes: List[EpisodeStats], config: HealthGatheringOracl
         f"deaths {totals['deaths']:.1f}   defections {totals['defections']:.1f}   "
         f"kit share min/max {fairness:.2f}   steps {_mean(steps):.0f}"
     )
-    return {
-        "team_return": _mean(team_returns),
-        "pickups": totals["pickups"],
+    # Use a per-episode series to report the results
+    per_episode = {
+        "team_return": team_returns,
+        "per_agent_return": [total / max(1, len(agents)) for total in team_returns],
+        "deaths_total": [
+            sum(row.deaths for row in episode.agents.values()) for episode in episodes
+        ],
+        "reward_gap": [
+            max(row.ret for row in episode.agents.values())
+            - min(row.ret for row in episode.agents.values())
+            for episode in episodes
+            if len(episode.agents) > 1
+        ],
+    }
+    summary = {
+        "episodes": len(episodes),
+        "steps_per_episode": _mean(steps),
+        "kits": totals["pickups"],
         "wasted": totals["wasted"],
-        "deaths": totals["deaths"],
         "defections": totals["defections"],
         "fairness": fairness,
+        "metrics": {
+            name: {"mean": _mean(values), "std": _stdev(values), "n": len(values)}
+            for name, values in per_episode.items()
+            if values
+        },
     }
+    # Add some averaged results as well
+    summary.update(
+        {
+            "team_return": _mean(team_returns),
+            "pickups": totals["pickups"],
+            "deaths": totals["deaths"],
+        }
+    )
+    return summary
 
 
 # --------------------------------------------------------------------- main
@@ -412,8 +436,8 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument("--resolution", default="320X240")
     parser.add_argument("--skip-frames", type=int, default=4)
     parser.add_argument("--ticrate", type=int, default=35)
-    parser.add_argument("--max-steps", type=int, default=1050,
-                        help="1050 = the scenario's 4200 tic timeout at skip 4")
+    parser.add_argument("--max-steps", type=int, default=2625,
+                        help="2625 = the scenario's 10500 tic (5 minute) timeout at skip 4")
     parser.add_argument("--reward-mode", choices=("individual", "shared"), default="individual")
     parser.add_argument("--shared-reward-agg", choices=("sum", "mean"), default="sum")
     parser.add_argument("--seed", type=int, default=0)
@@ -435,6 +459,8 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
                              "but takes kits at any health")
     parser.add_argument("--log-every", type=int, default=0,
                         help="print the oracle's per-agent decisions every N steps")
+    parser.add_argument("--json-out", default=None,
+                        help="write the results as a JSON file for later plotting convenience")
     parser.add_argument("--debug-pickups", action="store_true",
                         help="print one line per medkit pickup with the oracle's state")
     parser.add_argument("--verbose", action="store_true")
@@ -449,8 +475,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         consume_health=args.consume_health,
     )
     if args.no_restraint:
-        # Holding back is "wait while health > consume_health", so pinning the
-        # threshold at full health is what "no restraint" means.
+        # Holding back from grabbing health kits would be "wait while health > consume_health",
+        # so "no restraint" would mean to set the threshold at the full health value
         config.consume_health = config.max_health
     modes = ("collaborator", "defector") if args.mode == "both" else (args.mode,)
 
@@ -458,6 +484,23 @@ def main(argv: Optional[List[str]] = None) -> int:
     for mode in modes:
         episodes = run_mode(mode=mode, args=args, config=config)
         summaries[mode] = report(mode, episodes, config)
+
+    if args.json_out:
+        payload = {
+            "scenario": args.scenario,
+            "num_agents": args.num_agents,
+            "reward_mode": args.reward_mode,
+            "max_steps": args.max_steps,
+            "skip_frames": args.skip_frames,
+            "modes": {
+                mode: summary["metrics"] for mode, summary in summaries.items()
+            },
+        }
+        path = os.path.abspath(args.json_out)
+        os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+        with open(path, "w") as handle:
+            json.dump(payload, handle, indent=2)
+        print(f"\nwrote baselines to {path}")
 
     if len(summaries) > 1:
         collaborator = summaries["collaborator"]
