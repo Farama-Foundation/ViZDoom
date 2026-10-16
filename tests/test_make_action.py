@@ -3,7 +3,10 @@
 # Tests for make_action method.
 # This test can be run as Python script or via PyTest
 
+import os
+
 import numpy as np
+import pytest
 
 import vizdoom as vzd
 
@@ -178,6 +181,41 @@ def test_advance_action():
     state = game.get_state()
     assert state is not None
     assert state.tic == prev_tic + tics_to_advance + 1
+
+
+@pytest.mark.parametrize(
+    "button,variable",
+    [
+        (vzd.Button.MOVE_FORWARD_BACKWARD_DELTA, vzd.GameVariable.POSITION_X),
+        (vzd.Button.MOVE_LEFT_RIGHT_DELTA, vzd.GameVariable.POSITION_Y),
+        (vzd.Button.TURN_LEFT_RIGHT_DELTA, vzd.GameVariable.ANGLE),
+        (vzd.Button.LOOK_UP_DOWN_DELTA, vzd.GameVariable.PITCH),
+    ],
+)
+@pytest.mark.parametrize("max_value", [0, 1, 7.5])
+@pytest.mark.parametrize("direction", [-1, 1])
+def test_delta_button_max_value(button, variable, max_value, direction):
+    game = vzd.DoomGame()
+    game.load_config(os.path.join(vzd.scenarios_path, "basic.cfg"))
+    game.set_window_visible(False)
+    game.set_available_buttons([button])
+    game.set_button_max_value(button, max_value)
+    try:
+        game.init()
+        action = direction * 20
+        bounded_action = direction * max_value if max_value else action
+        results = []
+        for value in (bounded_action, action):
+            game.set_seed(123)
+            game.new_episode()
+            initial_value = game.get_game_variable(variable)
+            game.make_action([value], 4)
+            results.append(game.get_game_variable(variable) - initial_value)
+
+        assert results[0] != 0
+        assert results[1] == results[0]
+    finally:
+        game.close()
 
 
 if __name__ == "__main__":
