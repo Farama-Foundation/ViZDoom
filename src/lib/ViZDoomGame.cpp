@@ -46,6 +46,7 @@ namespace vizdoom {
         this->lastReward = 0;
         this->lastMapReward = 0;
         this->deathPenalty = 0;
+        this->lastDeathCount = 0;
         this->mapExitReward = 0;
 
         this->livingReward = 0;
@@ -212,8 +213,15 @@ namespace vizdoom {
         /* Common rewards */
         int liveTime = this->doomController->getMapLastTic() - this->lastMapTic;
         reward += (liveTime > 0 ? liveTime : 0) * this->livingReward;
-        if (this->doomController->isPlayerDead()) reward -= this->deathPenalty;
-        else if (this->doomController->isMapEnded()) reward += this->mapExitReward;
+        if (!this->doomController->isPlayerDead() && this->doomController->isMapEnded())
+            reward += this->mapExitReward;
+
+        /* Death penalty */
+        int deathCount = this->doomController->getDeathCount();
+        if (this->deathPenalty != 0 && deathCount > this->lastDeathCount) {
+            reward -= (deathCount - this->lastDeathCount) * this->deathPenalty;
+        }
+        this->lastDeathCount = deathCount;
 
         /* Kill reward */
         int killCount = this->doomController->getKillCount();
