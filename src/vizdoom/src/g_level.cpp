@@ -973,6 +973,12 @@ void G_DoLoadLevel (int position, bool autosave)
 		level.flags2 |= LEVEL2_PRERAISEWEAPON;
 	}
 
+	//VIZDOOM_CODE
+	if (!savegamerestore)
+	{
+		VIZ_GameStateResetCounters();
+	}
+
 	level.maptime = 0;
 	TexMan.ResetAnimations();
 	P_SetupLevel (level.MapName, position);
