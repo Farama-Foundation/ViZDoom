@@ -22,11 +22,12 @@ import tempfile
 import time
 import traceback
 from collections import Counter
+from collections.abc import Mapping, Sequence
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import asdict, dataclass, field
 from multiprocessing import get_context
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any
 
 import numpy as np
 
@@ -542,7 +543,11 @@ def _run_bot_job(job: Job, bundle: PolicyBundle) -> list[EpisodeStats]:
 
 def run_job(job: Job) -> tuple[Job, list[EpisodeStats], str | None]:
     """Executed in a worker process."""
-    if not isinstance(job, Job):
+    # `python -m` imports this module twice (as __main__ and by name),
+    # so an isinstance check against Job fails in workers
+    from .hide_and_seek_validity import HSJob
+
+    if isinstance(job, HSJob):
         from .hide_and_seek_validity import run_job as run_hide_and_seek_job
 
         return run_hide_and_seek_job(job)
@@ -709,9 +714,9 @@ def aggregate(
         ).append(e)
     table: dict[int, dict[str, dict[str, dict[str, Any]]]] = {}
     for (step, mode, condition), items in grouped.items():
-        table.setdefault(step, {}).setdefault(mode, {})[
-            condition
-        ] = summarize_condition(items, seed=seed + step % 10_000)
+        table.setdefault(step, {}).setdefault(mode, {})[condition] = (
+            summarize_condition(items, seed=seed + step % 10_000)
+        )
     return table
 
 
