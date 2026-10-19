@@ -29,12 +29,13 @@ def write_frames_to_mp4(frames, path, fps: float) -> None:
 
 def log_wandb_video(path, key: str) -> None:
     """Log an mp4 file to the active wandb run."""
-    if getattr(wandb, "run", None) is None:
+    run = getattr(wandb, "run", None)
+    if run is None:
         print(f"[VideoLogger] no active wandb run, not uploading {key} ({path})")
         return
     payload = {key: wandb.Video(str(path), format="mp4")}
     try:
-        env_steps = dict(wandb.run.summary).get("_env_steps")
+        env_steps = dict(run.summary).get("_env_steps")
         if env_steps is not None:
             payload["_env_steps"] = float(env_steps)
     except Exception:

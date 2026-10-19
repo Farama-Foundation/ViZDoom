@@ -3,7 +3,9 @@
 
 import inspect
 import itertools
+from types import SimpleNamespace
 from typing import Optional
+from unittest.mock import Mock
 
 import numpy as np
 import pytest
@@ -19,17 +21,370 @@ from pettingzoo.test.seed_test import (  # noqa: E402
 from vizdoom import Button  # noqa: E402
 from vizdoom import pettingzoo_wrapper  # noqa: E402
 from vizdoom.pettingzoo_wrapper import base_env_common  # noqa: E402
+from vizdoom.pettingzoo_wrapper import base_pettingzoo_env as backend  # noqa: E402
 from vizdoom.pettingzoo_wrapper.base_pettingzoo_env import (  # noqa: E402
     _settle_game_after_reset,
 )
 from vizdoom.pettingzoo_wrapper.bot_eval_types import (  # noqa: E402
+    BotEvalConfig,
     EpisodeResult,
     build_seed_schedule,
     summarize_tier,
 )
+from vizdoom.pettingzoo_wrapper.human_policy_duel import (  # noqa: E402
+    HUMAN_BUTTONS,
+    HUMAN_CONTROL_ARGS,
+    HUMAN_CONTROL_COMMANDS,
+    _configure_human_controls,
+    player_frags,
+    summary_payload,
+)
+from vizdoom.pettingzoo_wrapper.reward_wrappers import (  # noqa: E402
+    DeathmatchRewardWrapper,
+    HideAndSeekRewardWrapper,
+)
 
 
 _PORTS = itertools.count(50290, 1000)
+
+
+class _ScriptedDuelEnv:
+    """Two-agent env that replays scripted info dicts (engine counters)."""
+
+    def __init__(self, reset_infos, step_infos):
+        self.possible_agents = ["agent_0", "agent_1"]
+        self.agents = list(self.possible_agents)
+        self.metadata = {}
+        self._reset_infos = reset_infos
+        self._steps = iter(step_infos)
+
+    def reset(self, seed=None, options=None):
+        return {a: None for a in self.agents}, self._reset_infos
+
+    def step(self, actions):
+        infos = next(self._steps)
+        done = {a: False for a in self.agents}
+        return (
+            {a: None for a in self.agents},
+            {a: 0.0 for a in self.agents},
+            done,
+            done,
+            infos,
+        )
+
+
+def _duel_info(frags=0, deaths=0, damage=0, taken=0, ammo=50):
+    return {
+        "FRAGCOUNT": float(frags),
+        "DEATHCOUNT": float(deaths),
+        "DAMAGECOUNT": float(damage),
+        "DAMAGE_TAKEN": float(taken),
+        "SELECTED_WEAPON_AMMO": float(ammo),
+    }
+
+
+def test_deathmatch_reward_is_zero_sum_for_a_frag_and_charges_ammo():
+    idle = _duel_info()
+    env = _ScriptedDuelEnv(
+        {"agent_0": idle, "agent_1": idle},
+        [
+            # agent_0 fires one rocket (ammo 50 -> 49) and hits for 40 hp
+            {
+                "agent_0": _duel_info(damage=40, ammo=49),
+                "agent_1": _duel_info(taken=40),
+            },
+            # second rocket kills: +1 frag / +1 death
+            {
+                "agent_0": _duel_info(frags=1, damage=140, ammo=48),
+                "agent_1": _duel_info(deaths=1, taken=140),
+            },
+            # agent_1 respawns with refilled ammo: refills are free, and
+            # nothing else changed -> no reward for either agent
+            {
+                "agent_0": _duel_info(frags=1, damage=140, ammo=48),
+                "agent_1": _duel_info(deaths=1, taken=140, ammo=50),
+            },
+        ],
+    )
+    wrapped = DeathmatchRewardWrapper(env)
+    wrapped.reset()
+
+    _, r1, *_ = wrapped.step({})
+    assert r1["agent_0"] == pytest.approx(40 * 0.0025 - 0.005)
+    assert r1["agent_1"] == pytest.approx(-40 * 0.0025)
+
+    _, r2, *_ = wrapped.step({})
+    assert r2["agent_0"] == pytest.approx(1.0 + 100 * 0.0025 - 0.005)
+    assert r2["agent_1"] == pytest.approx(-1.0 - 100 * 0.0025)
+    # a full kill is worth at most 1.25 frag-equivalents, not 2 (old 0.01/hp)
+    assert r2["agent_0"] < 1.3
+
+    _, r3, *_ = wrapped.step({})
+    assert r3 == {"agent_0": 0.0, "agent_1": 0.0}
+
+
+def test_deathmatch_reward_penalizes_suicides_and_ignores_counter_resets():
+    idle = _duel_info()
+    env = _ScriptedDuelEnv(
+        {"agent_0": idle, "agent_1": idle},
+        [
+            # agent_0 blows itself up: ZDoom decrements FRAGCOUNT, DEATHCOUNT +1
+            {"agent_0": _duel_info(frags=-1, deaths=1, taken=100), "agent_1": idle},
+            # per-episode engine counters drop back to zero on a hidden reset:
+            # monotonic counters must not produce a (negative) reward
+            {"agent_0": _duel_info(frags=-1), "agent_1": idle},
+        ],
+    )
+    wrapped = DeathmatchRewardWrapper(env)
+    wrapped.reset()
+
+    _, r1, *_ = wrapped.step({})
+    assert r1["agent_0"] == pytest.approx(-1.0 - 1.0 - 100 * 0.0025)
+    assert r1["agent_1"] == 0.0
+
+    _, r2, *_ = wrapped.step({})
+    assert r2 == {"agent_0": 0.0, "agent_1": 0.0}
+
+
+def test_deathmatch_reward_does_not_bill_the_respawn_frame_as_ammo_spent():
+    idle = _duel_info(ammo=47)
+    env = _ScriptedDuelEnv(
+        {"agent_0": idle, "agent_1": idle},
+        [
+            # agent_0 dies (already rewarded by DEATHCOUNT), ammo still 47
+            {"agent_0": _duel_info(deaths=1, taken=100, ammo=47), "agent_1": idle},
+            # respawn frame: no weapon selected yet -> SELECTED_WEAPON_AMMO = -1
+            {"agent_0": _duel_info(deaths=1, taken=100, ammo=-1), "agent_1": idle},
+            # weapon back, ammo carried over
+            {"agent_0": _duel_info(deaths=1, taken=100, ammo=47), "agent_1": idle},
+            # a real shot afterwards is still charged
+            {"agent_0": _duel_info(deaths=1, taken=100, ammo=46), "agent_1": idle},
+        ],
+    )
+    wrapped = DeathmatchRewardWrapper(env)
+    wrapped.reset()
+    _, r1, *_ = wrapped.step({})
+    assert r1["agent_0"] == pytest.approx(-1.0 - 100 * 0.0025)
+    _, r2, *_ = wrapped.step({})
+    assert r2["agent_0"] == 0.0
+    _, r3, *_ = wrapped.step({})
+    assert r3["agent_0"] == 0.0
+    _, r4, *_ = wrapped.step({})
+    assert r4["agent_0"] == pytest.approx(-0.005)
+
+
+def test_deathmatch_reward_works_without_ammo_variable():
+    idle = {k: v for k, v in _duel_info().items() if k != "SELECTED_WEAPON_AMMO"}
+    hit = dict(idle, DAMAGECOUNT=10.0)
+    env = _ScriptedDuelEnv(
+        {"agent_0": idle, "agent_1": idle}, [{"agent_0": hit, "agent_1": idle}]
+    )
+    wrapped = DeathmatchRewardWrapper(env)
+    wrapped.reset()
+    _, rewards, *_ = wrapped.step({})
+    assert rewards["agent_0"] == pytest.approx(10 * 0.0025)
+
+
+class _ScriptedRoundEnv:
+    """Two-agent env replaying reset infos (one per reset) and step infos."""
+
+    def __init__(self, reset_infos, step_infos, truncate_at=None):
+        self.possible_agents = ["agent_0", "agent_1"]
+        self.agents = list(self.possible_agents)
+        self.metadata = {}
+        self._resets = iter(reset_infos)
+        self._steps = iter(step_infos)
+        self._truncate_at = truncate_at
+        self.reset_calls = 0
+        self.step_calls = 0
+
+    def reset(self, seed=None, options=None):
+        self.reset_calls += 1
+        return {a: None for a in self.agents}, next(self._resets)
+
+    def step(self, actions):
+        self.step_calls += 1
+        infos = next(self._steps)
+        truncated = (
+            self._truncate_at is not None and self.step_calls >= self._truncate_at
+        )
+        return (
+            {a: None for a in self.agents},
+            {a: 0.0 for a in self.agents},
+            {a: False for a in self.agents},
+            {a: truncated for a in self.agents},
+            infos,
+        )
+
+
+def _hs_info(
+    deaths=0, damage=0, taken=0, ammo=1, dead=0, yaw_mdeg=10000, fired=0, over=0
+):
+    return {
+        "DEATHCOUNT": float(deaths),
+        "DAMAGECOUNT": float(damage),
+        "DAMAGE_TAKEN": float(taken),
+        "SELECTED_WEAPON_AMMO": float(ammo),
+        "DEAD": float(dead),
+        "USER53": float(over),
+        "USER54": 0.0 if dead else 1.0,
+        "USER55": 1.0,
+        "USER56": float(fired),
+        "USER59": float(yaw_mdeg),
+    }
+
+
+def _hs_pair(shooter, hider):
+    return {"agent_0": shooter, "agent_1": hider}
+
+
+def test_hide_and_seek_round_outcome_is_zero_sum_with_damage_and_yaw_shaping():
+    gamma, yaw_scale, dmg = 0.99, 0.05, 0.0025
+    env = _ScriptedRoundEnv(
+        [_hs_pair(_hs_info(yaw_mdeg=18000), _hs_info(ammo=0))],
+        [
+            # shooter turns towards the hider (18 -> 9 deg) and fires (USER56)
+            _hs_pair(_hs_info(yaw_mdeg=9000, ammo=0, fired=1), _hs_info(ammo=0)),
+            # splash for 40 hp
+            _hs_pair(
+                _hs_info(yaw_mdeg=9000, damage=40, ammo=0, fired=1),
+                _hs_info(ammo=0, taken=40),
+            ),
+            # kill: hider death ends the round
+            _hs_pair(
+                _hs_info(yaw_mdeg=9000, damage=140, ammo=0, fired=2),
+                _hs_info(ammo=0, taken=140, deaths=1),
+            ),
+        ],
+    )
+    wrapped = HideAndSeekRewardWrapper(env, gamma=gamma, yaw_shaping=yaw_scale)
+    _, infos = wrapped.reset()
+    assert infos["agent_0"]["hide_and_seek_role_code"] == 0.0
+    assert infos["agent_1"]["hide_and_seek_role_code"] == 1.0
+    assert infos["agent_0"]["hide_and_seek_spawn_retries"] == 0.0
+
+    _, r1, term, trunc, infos = wrapped.step({})
+    phi_prev, phi_now = -18000 / 1000 / 180, -9000 / 1000 / 180
+    assert r1["agent_0"] == pytest.approx(yaw_scale * (gamma * phi_now - phi_prev))
+    assert r1["agent_1"] == 0.0
+    assert infos["agent_0"]["hide_and_seek_rocket_shots"] == 1.0
+    assert not any(term.values())
+
+    _, r2, *_ = wrapped.step({})
+    assert r2["agent_0"] == pytest.approx(
+        40 * dmg + yaw_scale * (gamma * phi_now - phi_now)
+    )
+    assert r2["agent_1"] == pytest.approx(-40 * dmg)
+
+    _, r3, term, trunc, infos = wrapped.step({})
+    # terminal: phi(s') = 0, so the potential term is -phi(s)
+    assert r3["agent_0"] == pytest.approx(1.0 + 100 * dmg + yaw_scale * (0.0 - phi_now))
+    assert r3["agent_1"] == pytest.approx(-1.0 - 100 * dmg)
+    assert all(term.values()) and not any(trunc.values())
+    assert infos["agent_0"]["hide_and_seek_outcome_code"] == 1.0  # shooter_win
+    assert infos["agent_0"]["hide_and_seek_rocket_shots"] == 2.0
+    assert wrapped.agents == []
+
+
+def test_hide_and_seek_budget_flag_ends_round_as_hider_escape():
+    idle = _hs_info(yaw_mdeg=0)
+    env = _ScriptedRoundEnv(
+        [_hs_pair(idle, _hs_info(ammo=0))],
+        [
+            _hs_pair(_hs_info(yaw_mdeg=0, fired=20, ammo=0), _hs_info(ammo=0)),
+            _hs_pair(_hs_info(yaw_mdeg=0, fired=20, ammo=0, over=1), _hs_info(ammo=0)),
+        ],
+    )
+    wrapped = HideAndSeekRewardWrapper(env, yaw_shaping=0.0)
+    wrapped.reset()
+    _, r1, term, *_ = wrapped.step({})
+    assert r1 == {"agent_0": 0.0, "agent_1": 0.0}
+    assert not any(term.values())
+    _, r2, term, trunc, infos = wrapped.step({})
+    assert r2 == {"agent_0": -1.0, "agent_1": 1.0}
+    assert all(term.values()) and not any(trunc.values())
+    assert infos["agent_1"]["hide_and_seek_outcome_code"] == 3.0  # hider_escape
+
+
+def test_hide_and_seek_timeout_is_hider_escape_and_shooter_death_is_hider_win():
+    idle = _hs_info(yaw_mdeg=0)
+    env = _ScriptedRoundEnv(
+        [_hs_pair(idle, idle), _hs_pair(idle, idle)],
+        [
+            _hs_pair(idle, idle),
+            _hs_pair(_hs_info(yaw_mdeg=0, deaths=1, dead=1), idle),
+        ],
+        truncate_at=1,
+    )
+    wrapped = HideAndSeekRewardWrapper(env, yaw_shaping=0.0)
+    wrapped.reset()
+    _, rewards, term, trunc, infos = wrapped.step({})
+    assert rewards == {"agent_0": -1.0, "agent_1": 1.0}
+    assert all(trunc.values()) and not any(term.values())
+    assert infos["agent_0"]["hide_and_seek_outcome_code"] == 3.0
+
+    wrapped.reset()
+    _, rewards, term, trunc, infos = wrapped.step({})
+    assert rewards == {"agent_0": -1.0, "agent_1": 1.0}
+    assert all(term.values())
+    assert infos["agent_0"]["hide_and_seek_outcome_code"] == 2.0  # hider_win
+
+
+def test_hide_and_seek_rerolls_a_reset_with_a_telefragged_player():
+    stomped = _hs_pair(_hs_info(deaths=1, dead=1, taken=100), _hs_info(damage=100))
+    clean = _hs_pair(_hs_info(), _hs_info(ammo=0))
+    env = _ScriptedRoundEnv([stomped, clean], [_hs_pair(_hs_info(), _hs_info(ammo=0))])
+    wrapped = HideAndSeekRewardWrapper(env, yaw_shaping=0.0)
+    _, infos = wrapped.reset()
+    assert env.reset_calls == 2
+    assert infos["agent_0"]["DEATHCOUNT"] == 0.0
+    assert infos["agent_0"]["hide_and_seek_spawn_retries"] == 1.0
+    # the stomp is not counted as a death of the new round
+    _, rewards, term, *_ = wrapped.step({})
+    assert rewards == {"agent_0": 0.0, "agent_1": 0.0}
+    assert not any(term.values())
+
+
+def test_hide_and_seek_pit_death_is_hider_suicide_and_pit_damage_is_not_shaped():
+    idle = _hs_info(yaw_mdeg=0)
+    env = _ScriptedRoundEnv(
+        [_hs_pair(idle, _hs_info(ammo=0))],
+        # the hider takes 100 damage from the pit and dies; the shooter dealt nothing
+        [_hs_pair(idle, _hs_info(ammo=0, taken=100, deaths=1, dead=1))],
+    )
+    wrapped = HideAndSeekRewardWrapper(env, yaw_shaping=0.0)
+    wrapped.reset()
+    _, rewards, term, _, infos = wrapped.step({})
+    assert rewards == {"agent_0": 1.0, "agent_1": -1.0}
+    assert all(term.values())
+    assert infos["agent_0"]["hide_and_seek_outcome_code"] == 5.0  # hider_suicide
+
+
+def test_hide_and_seek_falls_back_to_ammo_drop_without_acs_counter():
+    def bare(ammo, deaths=0):
+        return {"DEATHCOUNT": float(deaths), "SELECTED_WEAPON_AMMO": float(ammo)}
+
+    env = _ScriptedRoundEnv(
+        [_hs_pair(bare(1), bare(0))],
+        [
+            _hs_pair(bare(0), bare(0)),
+            _hs_pair(bare(1), bare(0)),
+            _hs_pair(bare(0), bare(0)),
+        ],
+    )
+    wrapped = HideAndSeekRewardWrapper(env)
+    wrapped.reset()
+    shots = [
+        wrapped.step({})[4]["agent_0"]["hide_and_seek_rocket_shots"] for _ in range(3)
+    ]
+    assert shots == [1.0, 1.0, 2.0]
+
+
+def test_bot_eval_defaults_follow_training_respawn_and_scenario():
+    config = BotEvalConfig()
+    assert config.scenario is None
+    assert config.respawn_delay == base_env_common.TRAINING_RESPAWN_DELAY
+    assert base_env_common.TRAINING_RESPAWN_DELAY >= 1
 
 
 def test_bot_eval_schedule_and_summary_are_reproducible():
@@ -60,6 +415,56 @@ def test_bot_eval_schedule_and_summary_are_reproducible():
 
     assert summary.frag_diff_mean == 1.0
     assert summary.win_rate == summary.tie_rate == 0.5
+
+
+def test_human_policy_duel_metrics_use_human_perspective():
+    server_state = SimpleNamespace(
+        players_names=("Policy", "Human", "Disconnected"),
+        players_frags=(3, 5, 99),
+        players_in_game=(True, True, False),
+    )
+    assert player_frags(server_state) == {"Policy": 3, "Human": 5}
+
+    result = EpisodeResult(
+        seed=42,
+        tier="policy",
+        valid=True,
+        learner_frags=5,
+        bot_frags=3,
+        learner_deaths=2,
+        learner_damage_made=100.0,
+        learner_damage_taken=50.0,
+        outcome="win",
+    )
+    summary = summary_payload([result], bootstrap_seed=42)
+    assert summary["win_rate"] == 1.0
+    assert summary["human_frags_mean"] == 5.0
+    assert summary["policy_frags_mean"] == 3.0
+
+
+def test_human_policy_duel_configures_wasd_and_mouse_look():
+    game = Mock()
+
+    _configure_human_controls(game)
+
+    game.set_available_buttons.assert_called_once_with(list(HUMAN_BUTTONS))
+    game.add_game_args.assert_called_once_with(HUMAN_CONTROL_ARGS)
+    for command in (
+        "use_mouse 1",
+        "mouse_capturemode 2",
+        "m_yaw 1",
+        "m_pitch 1",
+        "freelook 1",
+    ):
+        assert command in HUMAN_CONTROL_COMMANDS
+        assert f"+{command}" in HUMAN_CONTROL_ARGS
+    for key, command in (
+        ("w", "+forward"),
+        ("a", "+moveleft"),
+        ("s", "+back"),
+        ("d", "+moveright"),
+    ):
+        assert f'+bind {key} "{command}"' in HUMAN_CONTROL_ARGS
 
 
 def _make_test_env(seed: Optional[int] = None):
@@ -146,6 +551,30 @@ def test_base_env_exposes_joint_categorical_binary_actions(monkeypatch):
     assert env._encode_env_action(7) == [1.0, 1.0, 1.0]
 
 
+def test_base_env_uses_checkpoint_buttons_over_current_scenario(monkeypatch):
+    monkeypatch.setattr(
+        base_env_common,
+        "discover_buttons",
+        lambda _path: [Button.MOVE_LEFT, Button.MOVE_RIGHT, Button.ATTACK],
+    )
+    checkpoint_buttons = [
+        Button.MOVE_LEFT,
+        Button.MOVE_RIGHT,
+        Button.TURN_LEFT,
+        Button.TURN_RIGHT,
+        Button.ATTACK,
+    ]
+
+    env = base_env_common.VizdoomParallelEnvBase(
+        config_file="unused.cfg",
+        num_agents=2,
+        available_buttons=checkpoint_buttons,
+    )
+
+    assert env.available_buttons == tuple(checkpoint_buttons)
+    assert env.action_space("agent_0").n == 32
+
+
 def test_base_env_stacks_frames(monkeypatch):
     monkeypatch.setattr(
         base_env_common, "discover_buttons", lambda _path: [Button.ATTACK]
@@ -167,6 +596,254 @@ def test_base_env_stacks_frames(monkeypatch):
     assert np.array_equal(
         step_obs, np.concatenate([first, first, first, second], axis=-1)
     )
+
+
+@pytest.mark.parametrize("frame_stack", [1, 3])
+@pytest.mark.parametrize("audio", [False, True])
+def test_base_env_modality_stacking_state_and_rendering(audio, frame_stack):
+    env = base_env_common.VizdoomParallelEnvBase(
+        config_file="simple_tag_audio.cfg" if audio else "unused.cfg",
+        available_buttons=[Button.ATTACK],
+        num_agents=2,
+        resolution="4X3",
+        frame_stack=frame_stack,
+        render_mode="rgb_array",
+    )
+    channels = {"observation": 3, "audio": 2} if audio else {"observation": 3}
+
+    def modalities(observation):
+        if audio:
+            assert isinstance(observation, dict)
+            assert set(observation) == set(channels)
+            return observation
+        assert isinstance(observation, np.ndarray)
+        return {"observation": observation}
+
+    def frame(value):
+        result = {
+            key: np.full((3, 4, count), value + index, dtype=np.uint8)
+            for index, (key, count) in enumerate(channels.items())
+        }
+        return result if audio else result["observation"]
+
+    assert env.state_space.contains(env.state())
+    for value in modalities(env.state()).values():
+        assert not value.any()
+    first = {agent: frame(10 + index) for index, agent in enumerate(env.agents)}
+    second = {agent: frame(20 + index) for index, agent in enumerate(env.agents)}
+    reset_obs = env._stack_observations(first, reset=True)
+    step_obs = env._stack_observations(second, reset=False)
+    assert env.state_space.contains(env.state())
+    for agent in env.agents:
+        assert env.observation_space(agent).contains(step_obs[agent])
+        for key, count in channels.items():
+            reset_value = modalities(reset_obs[agent])[key]
+            step_value = modalities(step_obs[agent])[key]
+            assert step_value.shape == (3, 4, count * frame_stack)
+            np.testing.assert_array_equal(
+                reset_value,
+                np.concatenate([modalities(first[agent])[key]] * frame_stack, axis=-1),
+            )
+            np.testing.assert_array_equal(
+                step_value,
+                np.concatenate(
+                    [modalities(first[agent])[key]] * (frame_stack - 1)
+                    + [modalities(second[agent])[key]],
+                    axis=-1,
+                ),
+            )
+        np.testing.assert_array_equal(
+            env.rgb_observation(step_obs[agent]),
+            modalities(second[agent])["observation"],
+        )
+    for key, count in channels.items():
+        state_value = modalities(env.state())[key]
+        assert state_value.shape == (3, 4, count * frame_stack * 2)
+        np.testing.assert_array_equal(
+            state_value,
+            np.concatenate(
+                [modalities(step_obs[agent])[key] for agent in env.agents], axis=-1
+            ),
+        )
+    np.testing.assert_array_equal(
+        env.render(),
+        np.concatenate(
+            [modalities(second[agent])["observation"] for agent in env.agents], axis=1
+        ),
+    )
+    repeated = env._stack_observations(second, reset=True)
+    for agent in env.agents:
+        for key in channels:
+            np.testing.assert_array_equal(
+                modalities(repeated[agent])[key],
+                np.concatenate([modalities(second[agent])[key]] * frame_stack, axis=-1),
+            )
+
+
+@pytest.mark.parametrize("audio", [False, True])
+@pytest.mark.parametrize("notifications", [False, True])
+def test_worker_transports_separate_modalities_and_copies_snapshots(
+    monkeypatch, audio, notifications
+):
+    monkeypatch.setattr(
+        backend.VizdoomParallelEnv, "_spawn_agent_worker_process", lambda self: None
+    )
+    env = backend.VizdoomParallelEnv(
+        config_file="simple_tag_audio.cfg" if audio else "unused.cfg",
+        available_buttons=[Button.ATTACK],
+        num_agents=2,
+        resolution="16X12",
+        frame_stack=2,
+    )
+    games = []
+
+    def configure_game(**kwargs):
+        game = Mock()
+        rgb = np.full((3, 12, 16), 10 + kwargs["agent_idx"], dtype=np.uint8)
+        pcm = np.full((512, 2), 16000, dtype=np.int16)
+        pcm[::2] *= -1
+        game.get_state.return_value = SimpleNamespace(
+            screen_buffer=rgb,
+            audio_buffer=pcm,
+            notifications_buffer=f"Player{kwargs['agent_idx']}: RED",
+        )
+        game.is_notifications_buffer_enabled.return_value = notifications
+        game.get_available_game_variables.return_value = []
+        game.get_available_buttons_size.return_value = 1
+        game.is_player_dead.return_value = False
+        game.is_episode_finished.return_value = False
+        game.get_last_reward.return_value = 0.0
+        games.append(game)
+        return game
+
+    def initialize(coordinator):
+        coordinator._spawn_agent_worker_threads()
+        coordinator._dispatch([backend._Task("init", port=5029)] * 2, 3)
+
+    monkeypatch.setattr(backend, "configure_doom_game", configure_game)
+    monkeypatch.setattr(
+        backend._AgentWorkerCoordinator, "_initialize_agent_workers", initialize
+    )
+    coordinator = None
+    names = [shm.name for shm in env._shms.values()]
+    try:
+        assert len(names) == (2 if audio else 1)
+        assert len(set(names)) == len(names)
+        if audio:
+            assert env._shm_frames["observation"].shape == (2, 12, 16, 3)
+            assert env._shm_frames["audio"].shape == (2, 12, 16, 2)
+            assert not np.shares_memory(
+                env._shm_frames["observation"], env._shm_frames["audio"]
+            )
+        else:
+            assert env._shm_frames.shape == (2, 12, 16, 3)
+        coordinator = backend._AgentWorkerCoordinator(
+            config_path=env.config_file,
+            resolution=env.resolution,
+            timeout=None,
+            skip_frames=1,
+            num_agents=2,
+            host_address=env.host_address,
+            port=env.port,
+            slot_index=0,
+            async_mode=False,
+            netmode=0,
+            ticrate=35,
+            seed=1,
+            verbose=False,
+            audio_diagnostics=False,
+            available_buttons=env.available_buttons,
+            frames=env._shm_frames,
+        )
+        env._parent_conn = Mock()
+
+        def receive(**kwargs):
+            command = env._parent_conn.send.call_args.args[0]
+            return (
+                coordinator.reset()
+                if command["cmd"] == "reset"
+                else coordinator.step(command["actions"])
+            )
+
+        monkeypatch.setattr(env, "_recv_message", receive)
+        observations, infos = env.reset()
+        for index, agent in enumerate(env.agents):
+            obs = observations[agent]
+            assert env.observation_space(agent).contains(obs)
+            if notifications:
+                assert infos[agent]["_notifications"] == [f"Player{index}: RED"]
+            else:
+                assert "_notifications" not in infos[agent]
+            rgb = obs["observation"] if audio else obs
+            np.testing.assert_array_equal(rgb, 10 + index)
+            if audio:
+                assert obs["audio"].any()
+                assert obs["audio"].shape == (12, 16, 4)
+        for game in games:
+            game.get_state.return_value = None
+            game.is_episode_finished.return_value = True
+            game.is_episode_timeout_reached.return_value = True
+        terminal, _, terminated, truncated, _ = env.step({})
+        assert not any(terminated.values())
+        assert all(truncated.values())
+        for agent in env.agents:
+            assert env.observation_space(agent).contains(terminal[agent])
+            before = observations[agent]
+            after = terminal[agent]
+            before = before if audio else {"observation": before}
+            after = after if audio else {"observation": after}
+            for key, count in (
+                {"observation": 3, "audio": 2} if audio else {"observation": 3}
+            ).items():
+                assert before[key].any()
+                np.testing.assert_array_equal(
+                    after[key][..., :count], before[key][..., -count:]
+                )
+                assert not after[key][..., -count:].any()
+        env._hidden_reset_after_recovery()
+        assert env.state_space.contains(env.state())
+        values = env.state().values() if audio else [env.state()]
+        assert all(not value.any() for value in values)
+    finally:
+        if coordinator is not None:
+            coordinator.close()
+        env._parent_conn = None
+        env.close()
+        env.close()
+    for name in names:
+        with pytest.raises(FileNotFoundError):
+            backend.shared_memory.SharedMemory(name=name)
+
+
+@pytest.mark.parametrize("failure", ["allocation", "startup"])
+def test_audio_shared_memory_is_cleaned_up_on_init_failure(monkeypatch, failure):
+    allocated = []
+    shared_memory_class = backend.shared_memory.SharedMemory
+
+    def allocate(**kwargs):
+        if failure == "allocation" and allocated:
+            raise RuntimeError("allocation failed")
+        shm = shared_memory_class(**kwargs)
+        allocated.append(shm.name)
+        return shm
+
+    def spawn(self):
+        raise RuntimeError("startup failed")
+
+    monkeypatch.setattr(backend.shared_memory, "SharedMemory", allocate)
+    monkeypatch.setattr(
+        backend.VizdoomParallelEnv, "_spawn_agent_worker_process", spawn
+    )
+    with pytest.raises(RuntimeError, match=f"{failure} failed"):
+        backend.VizdoomParallelEnv(
+            config_file="simple_tag_audio.cfg",
+            resolution="4X3",
+            available_buttons=[Button.ATTACK],
+        )
+    assert len(allocated) == (1 if failure == "allocation" else 2)
+    for name in allocated:
+        with pytest.raises(FileNotFoundError):
+            shared_memory_class(name=name)
 
 
 def test_pettingzoo_action_api_selects_space_from_scenario_buttons():
