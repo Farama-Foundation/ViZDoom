@@ -1982,6 +1982,8 @@ Note: added in 1.1.9.
 Enables rendering of the audio buffer, it will be available in the state.
 The audio buffer will contain audio from the number of the last tics specified by [`setAudioBufferSize`](#setaudiobuffersize) method.
 Sampling rate can be set with [`setAudioSamplingRate`](#setaudiosamplingrate) method.
+Requires OpenAL Soft with loopback support.
+If audio capture is unavailable, initialization throws `ViZDoomNoOpenALSoundException`.
 
 Default value: false
 
