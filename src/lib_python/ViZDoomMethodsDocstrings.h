@@ -466,6 +466,8 @@ When using a Python dictionary:
   - Enums: Button, GameVariable, ScreenResolution, ScreenFormat, SamplingRate, Mode, AutomapMode
   - Lists: for 'available_buttons' and 'available_game_variables'
 
+Integer values use the same ranges as in configuration files, including seeds from 0 to 4294967295.
+
 Relative paths (e.g., for 'doom_scenario_path') are resolved relative to the current working directory.
 
 Python example:
