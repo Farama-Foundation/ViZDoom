@@ -74,10 +74,11 @@ static void* hmodOpenAL;
 #endif
 
 #ifdef __APPLE__
-// User's library (like OpenAL Soft installed manually or via Homebrew) has precedence
-// over Apple's OpenAL framework which lacks several important features
-#define OPENALLIB1 "libopenal.1.dylib"
-#define OPENALLIB2 "OpenAL.framework/OpenAL"
+//VIZDOOM_CODE
+// Prefer the wheel's OpenAL Soft, then the user's library and Apple's framework.
+#define OPENALLIB1 NicePath("$PROGDIR/.dylibs/libopenal.1.dylib")
+#define OPENALLIB2 "libopenal.1.dylib"
+#define OPENALLIB3 "OpenAL.framework/OpenAL"
 #else // !__APPLE__
 #define OPENALLIB1 NicePath("$PROGDIR/" OPENALLIB)
 #define OPENALLIB2 OPENALLIB
@@ -101,6 +102,13 @@ bool IsOpenALPresent()
 			if (hmodOpenAL == NULL)
 			{
 				hmodOpenAL = LoadLibrary(OPENALLIB2);
+#ifdef __APPLE__
+				//VIZDOOM_CODE
+				if (hmodOpenAL == NULL)
+				{
+					hmodOpenAL = LoadLibrary(OPENALLIB3);
+				}
+#endif
 				if (hmodOpenAL == NULL)
 				{
 					return false;
