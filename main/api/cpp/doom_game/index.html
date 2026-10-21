@@ -3364,7 +3364,9 @@ It will be available in the state.</p>
 </div>
 <p>Enables rendering of the audio buffer, it will be available in the state.
 The audio buffer will contain audio from the number of the last tics specified by <a class="reference internal" href="#setaudiobuffersize"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAudioBufferSize</span></code></span></a> method.
-Sampling rate can be set with <a class="reference internal" href="#setaudiosamplingrate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAudioSamplingRate</span></code></span></a> method.</p>
+Sampling rate can be set with <a class="reference internal" href="#setaudiosamplingrate"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setAudioSamplingRate</span></code></span></a> method.
+Requires OpenAL Soft with loopback support.
+If audio capture is unavailable, initialization throws <code class="docutils literal notranslate"><span class="pre">ViZDoomNoOpenALSoundException</span></code>.</p>
 <p>Default value: false</p>
 <p>Has no effect when the game is running.</p>
 <p>Config key: <code class="docutils literal notranslate"><span class="pre">audioBufferEnabled</span></code>/<code class="docutils literal notranslate"><span class="pre">audio_buffer_enabled</span></code></p>
