@@ -10,18 +10,8 @@ import re
 import shutil
 import subprocess
 import tempfile
-import urllib.request
 import zipfile
 from pathlib import Path
-
-
-OPENAL_VERSION = "1.25.2"
-OPENAL_SOURCE_URL = (
-    f"https://openal-soft.org/openal-releases/openal-soft-{OPENAL_VERSION}.tar.bz2"
-)
-OPENAL_SOURCE_SHA256 = (
-    "1dbaac44e7579d5bc8847ca8db4b2e8b9fd3961041f35ee20def4958301e1089"
-)
 
 
 def parse_args():
@@ -48,58 +38,14 @@ def required_architectures(require_archs):
     )
 
 
-def build_openal_soft(directory, require_archs, deployment_target):
-    directory.mkdir(parents=True, exist_ok=True)
-    archive = directory / f"openal-soft-{OPENAL_VERSION}.tar.bz2"
-    if archive.is_file():
-        source_data = archive.read_bytes()
-    else:
-        with urllib.request.urlopen(OPENAL_SOURCE_URL) as response:
-            source_data = response.read()
-    if hashlib.sha256(source_data).hexdigest() != OPENAL_SOURCE_SHA256:
-        raise RuntimeError("OpenAL Soft source archive checksum mismatch")
-    archive.write_bytes(source_data)
-    subprocess.run(["tar", "-xjf", str(archive), "-C", str(directory)], check=True)
-
-    source_dir = directory / f"openal-soft-{OPENAL_VERSION}"
-    build_dir = directory / "openal-build"
-    archs = ";".join(required_architectures(require_archs))
-    subprocess.run(
-        [
-            "cmake",
-            "-S",
-            str(source_dir),
-            "-B",
-            str(build_dir),
-            "-DCMAKE_BUILD_TYPE=Release",
-            # OpenAL 1.25.2's callbacks predate the new CoreAudio SDK annotations.
-            "-DHAVE_WFUNCTION_EFFECTS=OFF",
-            f"-DCMAKE_OSX_ARCHITECTURES={archs}",
-            f"-DCMAKE_OSX_DEPLOYMENT_TARGET={deployment_target}",
-            "-DALSOFT_UTILS=OFF",
-            "-DALSOFT_EXAMPLES=OFF",
-            "-DALSOFT_TESTS=OFF",
-            "-DALSOFT_BACKEND_JACK=OFF",
-            "-DALSOFT_BACKEND_PORTAUDIO=OFF",
-            "-DALSOFT_BACKEND_PIPEWIRE=OFF",
-            "-DALSOFT_BACKEND_PULSEAUDIO=OFF",
-            "-DALSOFT_BACKEND_SDL2=OFF",
-            "-DALSOFT_BACKEND_SDL3=OFF",
-        ],
-        check=True,
+def homebrew_library(formula, filename):
+    prefix = Path(
+        subprocess.check_output(["brew", "--prefix", formula], text=True).strip()
     )
-    subprocess.run(
-        ["cmake", "--build", str(build_dir), "--parallel", str(os.cpu_count() or 1)],
-        check=True,
-    )
-    library = directory / "libopenal.1.dylib"
-    shutil.copy2((build_dir / "libopenal.1.dylib").resolve(), library)
-    return library, {
-        "vizdoom/.dylibs/openal-soft/COPYING": source_dir / "COPYING",
-        # Ship the exact source alongside the LGPL library, including the
-        # notices for its embedded dependencies.
-        f"vizdoom/.dylibs/openal-soft/{archive.name}": archive,
-    }
+    library = prefix / "lib" / filename
+    if not library.is_file():
+        raise RuntimeError(f"Library not found at {library}")
+    return library
 
 
 def bundle_files(wheel, destination, files):
@@ -168,14 +114,17 @@ def main():
     args.dest_dir.mkdir(parents=True, exist_ok=True)
 
     if args.sdl3_library is None:
-        sdl3_prefix = Path(
-            subprocess.check_output(["brew", "--prefix", "sdl3"], text=True).strip()
-        )
-        sdl3_library = sdl3_prefix / "lib" / "libSDL3.dylib"
+        sdl3_library = homebrew_library("sdl3", "libSDL3.dylib")
     else:
         sdl3_library = args.sdl3_library
     if not sdl3_library.is_file():
         raise RuntimeError(f"SDL3 library not found at {sdl3_library}")
+    openal_library = homebrew_library("openal-soft", "libopenal.1.dylib")
+    openal_prefix = openal_library.parent.parent
+    notices = {
+        f"vizdoom/.dylibs/openal-soft/{name}": openal_prefix / name
+        for name in ("COPYING", "LICENSE-pffft")
+    }
 
     with tempfile.TemporaryDirectory(prefix="vizdoom-wheel-repair-") as temp_dir:
         temp_path = Path(temp_dir)
@@ -198,22 +147,15 @@ def main():
             env=repair_env,
         )
         (repaired_wheel,) = repaired_dir.glob("*.whl")
-        # Reuse the same native build across the CPython wheel variants.
-        openal_build_dir = (
-            Path(__file__).resolve().parents[1]
-            / "build"
-            / f"openal-soft-{OPENAL_VERSION}-{args.require_archs}-{deployment_target}"
-        )
-        openal_library, notices = build_openal_soft(
-            openal_build_dir, args.require_archs, deployment_target
-        )
         bundled_sdl3 = temp_path / "libSDL3.dylib"
         shutil.copy2(sdl3_library.resolve(), bundled_sdl3)
+        bundled_openal = temp_path / "libopenal.1.dylib"
+        shutil.copy2(openal_library.resolve(), bundled_openal)
 
         # These dlopen() dependencies need explicit bundling and architecture
         # checks. A second delocate pass checks their deployment targets and
         # relocates any additional dependencies.
-        libraries = [bundled_sdl3, openal_library]
+        libraries = [bundled_sdl3, bundled_openal]
         for library in libraries:
             subprocess.run(
                 [

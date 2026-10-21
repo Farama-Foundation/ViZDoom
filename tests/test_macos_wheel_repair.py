@@ -38,7 +38,7 @@ def test_bundle_files_updates_wheel_record(tmp_path, replace_existing):
         sdl_name: b"new SDL3",
         "vizdoom/.dylibs/libopenal.1.dylib": b"OpenAL Soft",
         "vizdoom/.dylibs/openal-soft/COPYING": b"OpenAL Soft license",
-        "vizdoom/.dylibs/openal-soft/source.tar.bz2": b"OpenAL Soft source archive",
+        "vizdoom/.dylibs/openal-soft/LICENSE-pffft": b"PFFFT license",
     }.items():
         path = tmp_path / Path(name).name
         path.write_bytes(data)
@@ -84,14 +84,28 @@ def test_wheel_deployment_target_requires_macos():
         repair.wheel_deployment_target(Path("vizdoom-1.3.2-py3-none-any.whl"))
 
 
-@pytest.mark.parametrize("cached", [False, True])
-def test_openal_source_checksum_is_verified(tmp_path, monkeypatch, cached):
-    if cached:
-        (tmp_path / f"openal-soft-{repair.OPENAL_VERSION}.tar.bz2").write_bytes(
-            b"incorrect cached archive"
-        )
+@pytest.mark.parametrize(
+    "formula,filename",
+    [("openal-soft", "libopenal.1.dylib"), ("sdl3", "libSDL3.dylib")],
+)
+def test_homebrew_library_discovery(tmp_path, monkeypatch, formula, filename):
+    prefix = tmp_path / "Homebrew prefix with spaces" / formula
+    library = prefix / "lib" / filename
+    library.parent.mkdir(parents=True)
+    library.write_bytes(b"Homebrew library")
+
+    def brew_prefix(command, *, text):
+        assert command == ["brew", "--prefix", formula]
+        assert text is True
+        return f"{prefix}\n"
+
+    monkeypatch.setattr(repair.subprocess, "check_output", brew_prefix)
+    assert repair.homebrew_library(formula, filename) == library
+
+
+def test_missing_homebrew_library(tmp_path, monkeypatch):
     monkeypatch.setattr(
-        repair.urllib.request, "urlopen", lambda url: io.BytesIO(b"incorrect archive")
+        repair.subprocess, "check_output", lambda command, **kwargs: f"{tmp_path}\n"
     )
-    with pytest.raises(RuntimeError, match="checksum mismatch"):
-        repair.build_openal_soft(tmp_path, "arm64", "14.0")
+    with pytest.raises(RuntimeError, match="Library not found"):
+        repair.homebrew_library("openal-soft", "libopenal.1.dylib")
