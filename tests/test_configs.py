@@ -5,6 +5,8 @@
 
 import os
 
+import pytest
+
 import vizdoom as vzd
 
 
@@ -171,6 +173,18 @@ def test_load_config():
 def test_set_config():
     _test_set_config(config_values, False)
     _test_set_config(config_values, True)
+
+
+@pytest.mark.parametrize(
+    "seed", [0, 2**31 - 1, 2**31, 2**32 - 1, -1, -(2**31) - 1, 2**32, 2**100]
+)
+def test_set_config_seed_range(seed):
+    valid = 0 <= seed < 2**32
+    for config in (f"seed = {seed}", {"seed": seed}):
+        game = vzd.DoomGame()
+        game.set_seed(42)
+        assert game.set_config(config) == valid
+        assert game.get_seed() == (seed if valid else 42)
 
 
 def test_scenario_configs():

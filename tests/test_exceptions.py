@@ -83,36 +83,37 @@ def test_file_does_not_exist_exception():
         game.init()
 
 
-def test_vizdoom_no_sound_exception():
+@pytest.mark.parametrize("game_args", ["-nosound", "+snd_backend null"])
+def test_vizdoom_no_sound_exception(game_args):
     print("Testing ViZDoomNoOpenALSoundException...")
 
     # Testing no sound device available with audio buffer enabled (should raise)
     game = vzd.DoomGame()
     game.set_audio_buffer_enabled(True)
     game.set_window_visible(False)
-    # game.add_game_args("+snd_backend null")
-    # with pytest.raises(vzd.ViZDoomNoOpenALSoundException):
-    #     game.init()
+    # -nosound keeps snd_backend set to openal but uses the null renderer,
+    # just as when OpenAL fails to initialize and falls back to no sound.
+    game.add_game_args(game_args)
+    try:
+        with pytest.raises(vzd.ViZDoomNoOpenALSoundException):
+            game.init()
+        assert not game.is_running()
+    finally:
+        game.close()
 
     # Testing no sound device available with audio buffer disabled (should not raise)
-    game.close()
     game.set_audio_buffer_enabled(False)
-    game.init()
-    state = game.get_state()
-    assert state is not None
-    assert state.audio_buffer is None
-    game.close()
-
-    # Testing with sound device available and audio buffer enabled (should not raise)
-    game.set_audio_buffer_enabled(True)
-    game.init()
-    state = game.get_state()
-    assert state is not None
-    assert state.audio_buffer is not None
-    game.close()
+    try:
+        game.init()
+        state = game.get_state()
+        assert state is not None
+        assert state.audio_buffer is None
+    finally:
+        game.close()
 
 
 if __name__ == "__main__":
     test_vizdoom_is_not_running_exception()
     test_file_does_not_exist_exception()
-    test_vizdoom_no_sound_exception()
+    for game_args in ("-nosound", "+snd_backend null"):
+        test_vizdoom_no_sound_exception(game_args)

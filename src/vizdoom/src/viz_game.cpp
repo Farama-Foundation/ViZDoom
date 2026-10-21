@@ -357,7 +357,7 @@ void VIZ_GameStateSMUpdate(){
     vizGameStateSM->AUTOMAP = *viz_automap;
     vizGameStateSM->OBJECTS = *viz_objects;
     vizGameStateSM->SECTORS = *viz_sectors;
-    vizGameStateSM->OPENAL_SOUND = ((stricmp(snd_backend, "openal") == 0) && GSnd && GSnd->IsValid());
+    vizGameStateSM->OPENAL_SOUND = ((stricmp(snd_backend, "openal") == 0) && GSnd && GSnd->IsValid() && !GSnd->IsNull());
     vizGameStateSM->AUDIO_BUFFER = *viz_soft_audio && vizGameStateSM->OPENAL_SOUND;
     vizGameStateSM->NOTIFICATIONS = *viz_notifications;
 
