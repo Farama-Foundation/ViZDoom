@@ -59,6 +59,7 @@ pip install vizdoom
 ```
 Both Intel and Apple Silicon CPUs are supported.
 Pre-build wheels are available for Intel macOS 12.0+ and Apple Silicon macOS 14.0+.
+The macOS wheels bundle OpenAL Soft for audio buffer support; a separate OpenAL installation is not required.
 
 If Python wheel is not available for your platform (Python version <3.8, older macOS version), pip will try to install (build) ViZDoom from the source.
 In this case, install the required dependencies using Homebrew:
