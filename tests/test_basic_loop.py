@@ -5,6 +5,8 @@
 
 import time
 
+import pytest
+
 import vizdoom as vzd
 
 
@@ -117,6 +119,29 @@ def test_sync_mode_waits_for_advance_action():
         state = game.get_state()
         assert state.tic == 3
         assert game.get_episode_time() == 3
+    finally:
+        game.close()
+
+
+@pytest.mark.parametrize("start_time", [1, 10, 35])
+def test_is_new_episode_with_start_time(start_time):
+    game = vzd.DoomGame()
+    game.set_window_visible(False)
+    game.set_episode_start_time(start_time)
+    game.init()
+
+    try:
+        for update_state in (False, True):
+            state = game.get_state()
+            assert state.number == 1
+            assert state.tic == start_time
+            assert game.is_new_episode()
+
+            game.advance_action(update_state=update_state)
+            assert not game.is_new_episode()
+
+            game.new_episode()
+            assert game.is_new_episode()
     finally:
         game.close()
 
