@@ -19,6 +19,49 @@ PANEL_BG = 20
 PANEL_TEXT = (240, 240, 240)
 WAVE_COLOR = (255, 255, 255)
 
+# Environments whose GIFs show a trained policy instead of random actions
+# (see --policy). A run without --policy for them keeps their GIFs as they are.
+LEARNED_POLICY_ENVS = {
+    "VizdoomBasic-v1",
+    "VizdoomDefendCenter-v1",
+}
+
+
+class PolicyActions:
+    """Chooses actions with a trained Stable-Baselines3 PPO policy.
+
+    The policy sees what it was trained on: the screen in grayscale at 80x60,
+    with its last 4 observations stacked, and it picks a new action every 4 tics
+    (frame_skip=4), repeating it in between. Requires stable-baselines3.
+    """
+
+    frame_skip = 4
+    stack = 4
+    size = (80, 60)  # width, height
+
+    def __init__(self, path: str):
+        from stable_baselines3 import PPO
+
+        self.model = PPO.load(path, device="cpu")
+        self.reset()
+
+    def reset(self):
+        # Stable-Baselines3's frame stack starts every episode from zeros.
+        empty = np.zeros((self.size[1], self.size[0], 1), dtype=np.uint8)
+        self.frames = [empty] * self.stack
+        self.tic = 0
+        self.action = 0
+
+    def __call__(self, obs: dict) -> int:
+        if self.tic % self.frame_skip == 0:
+            gray = cv2.cvtColor(obs["screen"], cv2.COLOR_RGB2GRAY)
+            frame = cv2.resize(gray, self.size, interpolation=cv2.INTER_AREA)
+            self.frames = self.frames[1:] + [frame[:, :, None]]
+            stacked = np.concatenate(self.frames, axis=2)
+            self.action = int(self.model.predict(stacked, deterministic=True)[0])
+        self.tic += 1
+        return self.action
+
 
 def _ensure_rgb_image(screen: np.ndarray) -> np.ndarray:
     """Convert any supported screen shape into HxWx3 uint8."""
@@ -311,8 +354,14 @@ def create_env_gif(
     fps: int = 20,
     seed: int = 1993,
     drop: int = 4,
+    policy: PolicyActions | None = None,
 ):
-    """Create a GIF for a single ViZDoom environment."""
+    """Create a GIF for a single ViZDoom environment.
+
+    With a policy, its actions (chosen from the Freedoom 2 observation) drive
+    both environments, and every episode resets with the next seed, so the GIF
+    does not replay one episode over and over.
+    """
     try:
         print(f"Creating GIF for {env_name}...")
         if drop <= 0:
@@ -332,6 +381,7 @@ def create_env_gif(
         observations_doom_graphics = []
         observations_freedoom_graphics = []
         total_frames = duration * fps
+        episodes_doom, episodes_freedoom = 0, 0
 
         for _ in range(total_frames):
             observations_doom_graphics.append(_copy_obs_for_render(obs_doom_graphics))
@@ -339,7 +389,10 @@ def create_env_gif(
                 _copy_obs_for_render(obs_freedoom_graphics)
             )
 
-            action = env_doom_graphics.action_space.sample()
+            if policy is not None:
+                action = policy(obs_freedoom_graphics)
+            else:
+                action = env_doom_graphics.action_space.sample()
             next_obs_doom, _, term_doom, trunc_doom, _ = env_doom_graphics.step(action)
             (
                 next_obs_freedoom,
@@ -350,11 +403,17 @@ def create_env_gif(
             ) = env_freedoom_graphics.step(action)
 
             if term_doom or trunc_doom:
-                obs_doom_graphics, _ = env_doom_graphics.reset(seed=seed)
+                episodes_doom += 1
+                next_seed = seed if policy is None else seed + episodes_doom
+                obs_doom_graphics, _ = env_doom_graphics.reset(seed=next_seed)
             else:
                 obs_doom_graphics = next_obs_doom
             if term_freedoom or trunc_freedoom:
-                obs_freedoom_graphics, _ = env_freedoom_graphics.reset(seed=seed)
+                episodes_freedoom += 1
+                next_seed = seed if policy is None else seed + episodes_freedoom
+                obs_freedoom_graphics, _ = env_freedoom_graphics.reset(seed=next_seed)
+                if policy is not None:
+                    policy.reset()
             else:
                 obs_freedoom_graphics = next_obs_freedoom
 
@@ -443,19 +502,35 @@ def main():
         default=1993 + 42,
         help="Random seed for action sampling.",
     )
+    parser.add_argument(
+        "--policy",
+        action="append",
+        default=[],
+        metavar="ENV_ID=MODEL.zip",
+        help="Record ENV_ID with a trained Stable-Baselines3 PPO policy instead "
+        "of random actions. Can be given more than once.",
+    )
     args = parser.parse_args()
+    policies = dict(spec.split("=", 1) for spec in args.policy)
 
     # Set random seed
     np.random.seed(args.seed)
 
     # Create GIFs for all environments
     for env_name in vizdoom_envs:
+        if env_name in LEARNED_POLICY_ENVS and env_name not in policies:
+            print(
+                f"Keeping the learned-policy GIF for {env_name}; "
+                f"pass --policy {env_name}=MODEL.zip to record it again."
+            )
+            continue
         create_env_gif(
             env_name,
             duration=args.duration,
             fps=args.fps,
             seed=args.seed,
             drop=args.drop,
+            policy=PolicyActions(policies[env_name]) if env_name in policies else None,
         )
 
 
