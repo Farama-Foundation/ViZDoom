@@ -163,6 +163,7 @@ Has no effect when the game is running.)DOCSTRING";
     const char *getAvailableButtonsSize = R"DOCSTRING(Returns the number of available :class:`.Button` s.)DOCSTRING";
 
     const char *setButtonMaxValue = R"DOCSTRING(Sets the maximum allowed absolute value for the specified :class:`.Button`.
+Actions beyond the positive or negative limit produce the same input as an action exactly at that limit.
 Setting the maximum value to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
 The constraints limit applies in all Modes.

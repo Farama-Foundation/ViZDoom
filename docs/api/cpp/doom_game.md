@@ -394,6 +394,7 @@ Returns the number of available [`Button`](./enums.md#button) s.
 | Python | `set_button_max_value(button: Button, maxValue: float = 0) -> None` |
 
 Sets the maximum allowed absolute value for the specified [`Button`](./enums.md#button).
+Actions beyond the positive or negative limit produce the same input as an action exactly at that limit.
 Setting the maximum value to 0 results in no constraint at all (infinity).
 This method makes sense only for delta buttons.
 The constraints limit applies in all Modes.
