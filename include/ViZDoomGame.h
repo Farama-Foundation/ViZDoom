@@ -290,6 +290,7 @@ namespace vizdoom {
 
         double livingReward;
         double deathPenalty;
+        int lastDeathCount;
         double mapExitReward;
 
         double killReward;

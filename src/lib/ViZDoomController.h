@@ -277,6 +277,7 @@ namespace vizdoom {
 
         unsigned int getMapTic();
         int getMapReward();
+        int getDeathCount();
         int getKillCount();
         int getSecretCount();
         int getItemCount();
