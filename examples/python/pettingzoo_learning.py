@@ -27,6 +27,9 @@ python -m examples.python.pettingzoo_learning
     --parallel_collection \
 """
 
+import os
+import signal
+import sys
 import time
 from argparse import ArgumentParser, BooleanOptionalAction
 from collections import deque
@@ -43,6 +46,7 @@ from benchmarl.environments import TaskClass
 from benchmarl.experiment import Experiment, ExperimentConfig
 from benchmarl.experiment.logger import Logger
 from benchmarl.models import CnnConfig
+from benchmarl.utils import seed_everything
 from tensordict import TensorDictBase
 from torch import nn
 from torchrl.data import Composite
@@ -98,7 +102,8 @@ class WandbLoggingWrapper(Logger):
         super().__init__(*args, **kwargs)
         self._skip_frames = max(1, int(skip_frames))
         self._ticrate = vzd.DEFAULT_TICRATE
-        self._env_steps = 0
+        self._env_steps = 0  # decisions == total_frames (the step axis)
+        self._engine_frames = 0  # decisions * skip_frames (raw frame count)
         self._fps_samples = deque(maxlen=12)
         self._has_wandb_logger = any(
             isinstance(logger, WandbLogger) for logger in self.loggers
@@ -111,17 +116,18 @@ class WandbLoggingWrapper(Logger):
             wandb.define_metric("*", step_metric=self.env_step_metric)
 
     def _prepare_iteration_metrics(self, total_frames: int):
-        self._env_steps = int(total_frames) * self._skip_frames
+        self._env_steps = int(total_frames)
+        self._engine_frames = self._env_steps * self._skip_frames
         self._pending_metrics = None
         now = time.perf_counter()
-        self._fps_samples.append((now, self._env_steps))
+        self._fps_samples.append((now, self._engine_frames))
         if len(self._fps_samples) > 1:
-            t0, env_steps0 = self._fps_samples[0]
+            t0, engine_frames0 = self._fps_samples[0]
             delta_time = now - t0
-            delta_env_steps = self._env_steps - env_steps0
-            if delta_time > 0 and delta_env_steps > 0:
+            delta_engine_frames = self._engine_frames - engine_frames0
+            if delta_time > 0 and delta_engine_frames > 0:
                 self._pending_metrics = {
-                    "counters/wallclock_fps": float(delta_env_steps / delta_time)
+                    "counters/wallclock_fps": float(delta_engine_frames / delta_time)
                 }
 
     def _add_fps(self, dict_to_log):
@@ -142,6 +148,7 @@ class WandbLoggingWrapper(Logger):
             payload["counters/fps"] = (
                 float(current_frames) * self._skip_frames / float(collection_time)
             )
+        payload["counters/engine_frames"] = float(self._engine_frames)
         return payload
 
     def log_collection(
@@ -302,10 +309,17 @@ class WandbLoggingWrapper(Logger):
             return metrics
         if self.task_name in COMMUNICATION_SCENARIOS:
             metrics.update(self._communication_metrics(rollouts))
-        combat_info = {
-            "DAMAGECOUNT": "damage",
-            "FRAGCOUNT": "frags",
-            "DEATHCOUNT": "deaths",
+        # info_key -> (metric_name, cumulative)
+        # cumulative=True: value is a running counter -> diffed per-step, with episode-reset masking
+        # cumulative=False: value is already a per-step signal -> summed directly over the episode
+        # "deaths" stays DEATHCOUNT-based so it is comparable with older runs
+        info_metrics = {
+            "DAMAGECOUNT": ("damage", True),
+            "FRAGCOUNT": ("frags", True),
+            "DEATHCOUNT": ("deaths", True),
+            "just_died": ("death_events", False),
+            "death_penalty": ("death_penalty", False),
+            "individual_reward": ("individual_reward", False),
         }
         for group, agents in self.group_map.items():
             returns = torch.stack(
@@ -321,24 +335,30 @@ class WandbLoggingWrapper(Logger):
                     returns[:, agent_index],
                 )
 
-                for info_key, metric_name in combat_info.items():
+                for info_key, (metric_name, cumulative) in info_metrics.items():
                     values = []
                     for rollout in rollouts:
                         info = rollout.get(("next", group, "info"), None)
                         value = None if info is None else info.get(info_key, None)
                         if value is None:
                             break
-                        deltas = value[1:, agent_index] - value[:-1, agent_index]
-                        reset = torch.zeros_like(deltas, dtype=torch.bool)
-                        for reset_key in ("DAMAGECOUNT", "DEATHCOUNT"):
-                            counter = info.get(reset_key, None)
-                            if counter is not None:
-                                reset |= (
-                                    counter[1:, agent_index] < counter[:-1, agent_index]
-                                )
-                        values.append(
-                            deltas.masked_fill(reset, 0).sum(dim=0).float().mean()
-                        )
+                        if cumulative:
+                            deltas = value[1:, agent_index] - value[:-1, agent_index]
+                            reset = torch.zeros_like(deltas, dtype=torch.bool)
+                            for reset_key in ("DAMAGECOUNT", "DEATHCOUNT"):
+                                counter = info.get(reset_key, None)
+                                if counter is not None:
+                                    reset |= (
+                                        counter[1:, agent_index]
+                                        < counter[:-1, agent_index]
+                                    )
+                            values.append(
+                                deltas.masked_fill(reset, 0).sum(dim=0).float().mean()
+                            )
+                        else:
+                            values.append(
+                                value[:, agent_index].float().sum(dim=0).mean()
+                            )
                     if len(values) == len(rollouts):
                         self._log_min_mean_max(
                             metrics,
@@ -453,7 +473,8 @@ class WandbLoggingWrapper(Logger):
         return metrics
 
     def log_evaluation(self, rollouts, total_frames: int, step: int, video_frames=None):
-        self._env_steps = int(total_frames) * self._skip_frames
+        self._env_steps = int(total_frames)
+        self._engine_frames = self._env_steps * self._skip_frames
         result = super().log_evaluation(
             rollouts=rollouts,
             total_frames=total_frames,
@@ -562,6 +583,29 @@ class VizdoomExperiment(Experiment):
     and turns on per-agent advantage normalization.
     """
 
+    def run(self):
+        """
+        Same as Experiment.run, except that a crash is recorded as such in W&B.
+
+        BenchMARL's run() closes the experiment, and with it the wandb run, so
+        a run that crashed halfway shows up as "finished" with a truncated
+        history. Finish the wandb run with a non-zero exit code first.
+        Replay buffers are already excluded from checkpoints through
+        ExperimentConfig.exclude_buffer_from_checkpoint (--save_replay_buffer).
+        """
+        try:
+            seed_everything(self.seed)
+            torch.cuda.empty_cache()
+            self._collection_loop()
+        except BaseException:
+            print("\n\nExperiment failed, marking the wandb run as failed\n\n")
+            import wandb
+
+            if wandb.run is not None:
+                wandb.run.finish(exit_code=1)
+            self.close()
+            raise
+
     def _evaluation_loop(self):
         return streaming_evaluation(self)
 
@@ -597,6 +641,7 @@ class VizdoomExperiment(Experiment):
             "group": self.task_name,
             "id": run_id,
             "name": run_id,
+            "tags": list(self.task.config.get("wandb_tags", [])),
         }
 
         original = self.config.wandb_extra_kwargs
@@ -789,7 +834,8 @@ class VizdoomTask(TaskClass):
             / f"{config['scenario']}.cfg"
         )
         self.action_buttons = discover_buttons(str(scenario_path))
-        self._continuous_actions = any(
+        # --continuous_actions opts binary-only scenarios into the per-button Box
+        self._continuous_actions = bool(config.get("continuous_actions", False)) or any(
             vzd.is_delta_button(button) for button in self.action_buttons
         )
 
@@ -856,6 +902,10 @@ class VizdoomTask(TaskClass):
             communication=cfg.get("communication", True),
             reward_kwargs=cfg.get("reward_kwargs"),
             chat_tokens=cfg.get("chat_tokens"),
+            vector_obs=cfg.get("vector_obs", False),
+            reward_mode=cfg.get("reward_mode", "individual"),
+            shared_reward_agg=cfg.get("shared_reward_agg", "sum"),
+            continuous_actions=cfg.get("continuous_actions", False),
         )
 
     def _build_training_env(self, seed: int, env_instance_index: int):
@@ -869,9 +919,10 @@ class VizdoomTask(TaskClass):
         )
         group_name = next(iter(env.group_map.keys()))
         selected_keys = [(group_name, "observation"), (group_name, "info")]
+        # "vector" comes from VectorStateObservationWrapper (--vector_obs)
         modalities = [
             key
-            for key in ("audio", "notifications", "features")
+            for key in ("audio", "notifications", "features", "vector")
             if (group_name, "observation", key) in env.observation_spec.keys(True, True)
         ]
         transforms = []
@@ -916,9 +967,17 @@ class VizdoomTask(TaskClass):
 
     def observation_spec(self, env: EnvBase) -> Composite:
         spec = env.observation_spec.clone()
-        for group in self.group_map(env):
+        group_map = self.group_map(env)
+        assert group_map is not None
+        for group in group_map:
             for key in list(spec[group].keys()):
-                if key not in ("observation", "audio", "notifications", "features"):
+                if key not in (
+                    "observation",
+                    "audio",
+                    "notifications",
+                    "features",
+                    "vector",
+                ):
                     del spec[group, key]
         return spec
 
@@ -956,6 +1015,12 @@ class VizdoomTask(TaskClass):
         return hasattr(env, "render")
 
     def max_steps(self, env: EnvBase) -> int:
+        # Agent steps from the scenario cfg (or --max_episode_steps). Kept separate
+        # from "timeout", which make() forwards to the engine in tics. An explicit
+        # timeout override (e.g. held-out evaluation) keeps the tic-based rule below.
+        episode_steps = self.config.get("max_episode_steps")
+        if episode_steps is not None and self.config.get("timeout") is None:
+            return int(episode_steps)
         if self.config["scenario"] in (*TAG_SCENARIOS, *COMMUNICATION_SCENARIOS):
             # Timeout is in engine tics; evaluation counts policy decisions.
             default = {
@@ -995,6 +1060,22 @@ def override_config(config, overrides) -> Any:
         if value is not None and key in valid_fields:
             setattr(config, key, value)
     return config
+
+
+def scenario_episode_steps(scenario: str, skip_frames: int) -> Optional[int]:
+    """
+    Agent steps in one episode, from the scenario's episode_timeout (in tics).
+    BenchMARL caps evaluation rollouts at Task.max_steps by default.
+    """
+    cfg_path = Path(__file__).parent.parent.parent / "scenarios" / f"{scenario}.cfg"
+    if not cfg_path.exists():
+        return None
+    for line in cfg_path.read_text().splitlines():
+        key, _, value = line.partition("=")
+        if key.strip().replace("_", "").lower() == "episodetimeout":
+            tics = int(value.split("#")[0].strip())
+            return -(-tics // max(1, skip_frames))
+    return None
 
 
 def override_algo_config(args):
@@ -1051,7 +1132,7 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
         "evaluation_episodes": args.evaluation_episodes,
         "loggers": ["wandb"],
         "project_name": "benchmarl-vizdoom",
-        "checkpoint_interval": args.rollout_steps * 100,
+        "checkpoint_interval": args.rollout_steps * args.checkpoint_every,
         "checkpoint_at_end": True,
         "exclude_buffer_from_checkpoint": not args.save_replay_buffer,
     }
@@ -1079,13 +1160,22 @@ def override_experiment_config(args, on_policy: bool, on_policy_minibatch_size: 
     return overrides
 
 
-def main():
+def main():  # noqa: C901
     ap = ArgumentParser()
     # Env args
     ap.add_argument("--scenario", type=str, default="pitfall_multi_agent")
     ap.add_argument("--num_agents", type=int, default=2)
     ap.add_argument("--resolution", type=str, default="160X120")
     ap.add_argument("--skip_frames", type=int, default=4)
+    ap.add_argument(
+        "--max_episode_steps",
+        type=int,
+        default=None,
+        help=(
+            "Evaluation episode length in agent steps "
+            "(defaults to the scenario cfg episode_timeout / skip_frames)"
+        ),
+    )
     ap.add_argument("--async-mode", action=BooleanOptionalAction, default=False)
     ap.add_argument("--host_address", type=str, default="127.0.0.1")
     ap.add_argument("--base_port", type=int, default=DEFAULT_BASE_UDP_PORT)
@@ -1094,6 +1184,38 @@ def main():
     ap.add_argument("--verbose", action="store_true", default=False)
     ap.add_argument(
         "--daemon", dest="daemon", action=BooleanOptionalAction, default=True
+    )
+    ap.add_argument(
+        "--vector_obs",
+        action=BooleanOptionalAction,
+        default=False,
+        help="Give agents direct access to other agents' hidden numeric game state.",
+    )
+    ap.add_argument(
+        "--reward_mode",
+        type=str,
+        default="individual",
+        choices=["individual", "shared"],
+    )
+    ap.add_argument(
+        "--shared_reward_agg", type=str, default="sum", choices=["sum", "mean"]
+    )
+    ap.add_argument(
+        "--continuous_actions",
+        action=BooleanOptionalAction,
+        default=False,
+        help=(
+            "Use a per-button continuous Box action space (thresholded at 0.5) even "
+            "without delta buttons, as in the original health gathering runs. "
+            "Default keeps the discrete button-combination action space."
+        ),
+    )
+    ap.add_argument(
+        "--wandb_tags",
+        type=str,
+        nargs="*",
+        default=[],
+        help="Tags to attach to the wandb run",
     )
 
     # Communication config
@@ -1176,6 +1298,15 @@ def main():
         action=BooleanOptionalAction,
         default=True,
         help=("policy inference in 1/2 of envs overlaps, env stepping the other 1/2."),
+    )
+    ap.add_argument(
+        "--checkpoint_every",
+        type=int,
+        default=0,
+        help=(
+            "Checkpoint every N rollouts during training. 0 (default) only saves "
+            "a checkpoint at the end of training."
+        ),
     )
     ap.add_argument(
         "--keep_checkpoints_num",
@@ -1336,6 +1467,15 @@ def main():
     if args.evaluation_episodes < 1 or args.evaluation_interval_iters < 1:
         raise ValueError("Evaluation episodes and interval must be positive")
 
+    if args.checkpoint_every < 0:
+        raise ValueError("--checkpoint_every must be nonnegative")
+    if args.max_episode_steps is not None and args.max_episode_steps < 1:
+        raise ValueError("--max_episode_steps must be positive")
+    if args.continuous_actions and args.scenario in COMMUNICATION_SCENARIOS:
+        raise ValueError(
+            f"{args.scenario} uses the factorized discrete policy, not --continuous_actions"
+        )
+
     torch.set_num_threads(1)
     torch.set_num_interop_threads(1)
 
@@ -1371,6 +1511,8 @@ def main():
             f"_symbols{len(chat_tokens) - 1}"
             f"_{'chat' if args.communication else 'nochat'}"
         )
+    # PID keeps runs launched in the same second (e.g. HPC arrays) from colliding
+    run_id += f"_{os.getpid()}"
     if args.algo not in ALGOS:
         raise NotImplementedError(
             f"{args.algo} is not currently implemented in this script"
@@ -1430,7 +1572,18 @@ def main():
             "timeout_penalty": args.timeout_penalty,
             "step_cost": args.step_cost,
         },
+        "wandb_tags": args.wandb_tags,
+        "vector_obs": args.vector_obs,
+        "reward_mode": args.reward_mode,
+        "shared_reward_agg": args.shared_reward_agg,
+        "continuous_actions": args.continuous_actions,
     }
+    # Evaluation length in agent steps. Not "timeout": make() passes that to the engine in tics.
+    max_episode_steps = args.max_episode_steps or scenario_episode_steps(
+        args.scenario, args.skip_frames
+    )
+    if max_episode_steps is not None:
+        task_cfg["max_episode_steps"] = max_episode_steps
     task = VizdoomTask(task_cfg)
 
     experiment = VizdoomExperiment(
@@ -1454,6 +1607,8 @@ def main():
         )
 
     Path(str(exp_cfg.save_folder)).mkdir(parents=True, exist_ok=True)
+    # Turn SIGTERM into SystemExit so run() marks the wandb run as failed
+    signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(128 + signum))
     # experiment.run() already closes the collector/envs at close(), but we dont call finish() so bot evaluation can be run and uploaded the videos.
     experiment.run()
     try:

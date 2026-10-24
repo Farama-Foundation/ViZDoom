@@ -166,14 +166,13 @@ class CommunicationWrapper(BaseParallelWrapper):
 
     @property
     def state_space(self):
-        return spaces.Dict(
-            {
-                key: spaces.Box(
-                    0, space.high.max(), (2, *space.shape), dtype=space.dtype
-                )
-                for key, space in self._observation_space.spaces.items()
-            }
-        )
+        fields = {}
+        for key, space in self._observation_space.spaces.items():
+            assert space.shape is not None
+            fields[key] = spaces.Box(
+                0, space.high.max(), (2, *space.shape), dtype=space.dtype
+            )
+        return spaces.Dict(fields)
 
     def state_observation(self, agent):
         return self._observations[agent]

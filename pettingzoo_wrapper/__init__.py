@@ -15,7 +15,12 @@ from vizdoom.pettingzoo_wrapper.reward_wrappers import (
     HideAndSeekRewardWrapper,
     PitfallRewardWrapper,
     RemedyRushRewardWrapper,
+    SharedRewardWrapper,
     SimpleTagRewardWrapper,
+)
+from vizdoom.pettingzoo_wrapper.vector_obs import (
+    SCENARIO_VECTOR_OBS,
+    VectorStateObservationWrapper,
 )
 
 
@@ -64,7 +69,6 @@ def make(
     ticrate: int = 35,
     render_mode: Optional[str] = None,
     seed: Optional[int] = None,
-    # video logging
     enable_video: bool = True,
     record_every: int = 100,  # every N episodes
     video_fps: int = 35,
@@ -78,6 +82,11 @@ def make(
     delivery: str = "natural",
     delivery_seed: Optional[int] = None,
     observer_info: bool = False,
+    vector_obs: bool = False,
+    privileged_info: bool = False,
+    reward_mode: str = "individual",
+    shared_reward_agg: str = "sum",
+    continuous_actions: bool = False,
 ):
     scenario = scenario.lower() if scenario is not None else None
     cfg = config_file if config_file is not None else f"{_SCENARIO_DIR}/{scenario}.cfg"
@@ -112,6 +121,8 @@ def make(
         verbose=verbose,
         daemon=daemon,
         available_buttons=available_buttons,
+        privileged_info=privileged_info,
+        continuous_actions=continuous_actions,
     )
 
     # if enable_video:
@@ -138,6 +149,21 @@ def make(
             raise
     elif scenario in _WRAPPERS:
         env = _WRAPPERS[scenario](env)
+
+    if reward_mode == "shared":
+        env = SharedRewardWrapper(env, agg=shared_reward_agg)
+    elif reward_mode != "individual":
+        raise ValueError(
+            f"reward_mode must be 'individual' or 'shared', got {reward_mode!r}"
+        )
+
+    if vector_obs:
+        spec = SCENARIO_VECTOR_OBS.get(scenario)
+        if spec is None:
+            raise ValueError(
+                f"vector_obs=True but '{scenario!r}' has no entry in SCENARIO_VECTOR_OBS."
+            )
+        env = VectorStateObservationWrapper(env, spec)
 
     # filter info key that is not in its spec
     return InternalInfoFilter(env)

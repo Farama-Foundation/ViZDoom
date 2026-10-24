@@ -50,6 +50,40 @@ def get_live_game_vars(game, available_game_vars) -> dict[str, float]:
     }
 
 
+# Changing the medikit health 25 --> 50 required defining a new actor ("MKit")
+HEALTH_ITEM_NAMES = ("Mkit", "Medikit", "Stimpack", "HealthBonus")
+
+
+def get_privileged_state(game) -> dict:
+    """
+    Ground truth straight from the engine, for rule-based/oracle agents.
+
+    Contains the agent's own pose and every object on the map (items and
+    players) whether or not it is on screen. Only collected when the env
+    is built with `privileged_info=True`. Not part of a normal training run.
+    """
+    state = game.get_state()
+    objects = []
+    if state is not None and state.objects is not None:
+        for obj in state.objects:
+            objects.append(
+                {
+                    "name": obj.name,
+                    "id": int(obj.id),
+                    "x": float(obj.position_x),
+                    "y": float(obj.position_y),
+                    "angle": float(obj.angle),
+                }
+            )
+    return {
+        "x": float(game.get_game_variable(vzd.GameVariable.POSITION_X)),
+        "y": float(game.get_game_variable(vzd.GameVariable.POSITION_Y)),
+        "angle": float(game.get_game_variable(vzd.GameVariable.ANGLE)),
+        "health": float(game.get_game_variable(vzd.GameVariable.HEALTH)),
+        "objects": objects,
+    }
+
+
 def get_flat_game_vars(state, available_game_vars) -> dict[str, float]:
     """Return game variables as flat scalars suitable for info (no nested dict).
     Returns {} on finished episode (see get_live_game_vars).

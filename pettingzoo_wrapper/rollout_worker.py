@@ -708,7 +708,7 @@ class RolloutWorker:
             },
             batch_size=[*batch_size, self.n_agents],
         )
-        for key in ("audio", "notifications", "features"):
+        for key in ("audio", "notifications", "features", "vector"):
             if storage.get(key) is not None:
                 group_td.set(key, storage.get(key))
                 next_group_td.set(key, storage.get(f"next_{key}"))

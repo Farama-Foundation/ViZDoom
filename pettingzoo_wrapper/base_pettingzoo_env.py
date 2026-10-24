@@ -21,6 +21,7 @@ from vizdoom.pettingzoo_wrapper.base_env_common import (
 from vizdoom.pettingzoo_wrapper.utils import (
     Observation,
     get_live_game_vars,
+    get_privileged_state,
     read_observation,
     reserve_init_slot,
     reserve_udp_port,
@@ -68,6 +69,9 @@ def _max_parallel_init(num_agents: int) -> int:
 # Info keys that _attach_pending_reset_infos adds for video and reward wrappers
 INTERNAL_INFO_KEYS = ("_hidden_reset", "reset_info", "_notifications")
 
+# Info key holding engine ground truth, present only when privileged_info=True. Intended for Oracle runs
+PRIVILEGED_INFO_KEY = "privileged"
+
 
 @dataclass(frozen=True)
 class _Task:
@@ -86,7 +90,7 @@ class _AgentWorkerCrashed(RuntimeError):
 _FORK_LOCK = threading.Lock()
 
 
-def _agent_worker_thread(
+def _agent_worker_thread(  # noqa: C901
     *,
     task_queue: queue.Queue[_Task],
     result_queue: queue.Queue[dict],
@@ -106,6 +110,7 @@ def _agent_worker_thread(
     verbose: bool,
     audio_diagnostics: bool,
     available_buttons: tuple[vzd.Button, ...],
+    privileged_info: bool = False,
 ) -> None:
     game = None
     available_game_vars = []
@@ -155,6 +160,7 @@ def _agent_worker_thread(
                         netmode=netmode,
                         agent_idx=agent_id,
                         available_buttons=available_buttons,
+                        privileged_info=privileged_info,
                     )
                     if audio_diagnostics:
                         game.add_available_game_variable(vzd.GameVariable.POSITION_X)
@@ -191,6 +197,8 @@ def _agent_worker_thread(
                         ]
                     if audio_diagnostics:
                         info["audio_buffer"] = np.array(state.audio_buffer, copy=True)
+                    if privileged_info:
+                        info[PRIVILEGED_INFO_KEY] = get_privileged_state(game)
                     frames_advanced = 0
                     # Frames go through shared memory
                     _write_frame(state)
@@ -216,11 +224,14 @@ def _agent_worker_thread(
                 action = task.action if task.action is not None else []
                 tics = max(1, int(task.tics))
                 was_dead_before = game.is_player_dead()
+                died_during_step = False
                 game.set_action(action)
                 snapshots = []
                 for tic in range(tics):
                     update_state = tic == tics - 1
                     game.advance_action(1, update_state or notifications)
+                    if game.is_player_dead():
+                        died_during_step = True
                     if notifications:
                         text_state = game.get_state()
                         snapshot = (
@@ -235,7 +246,7 @@ def _agent_worker_thread(
                         step_barrier.wait(timeout=_STEP_TIMEOUT)
                 reward = float(game.get_last_reward())
                 is_dead = game.is_player_dead()
-                just_died = (not was_dead_before) and is_dead
+                just_died = died_during_step and not was_dead_before
                 episode_finished = bool(game.is_episode_finished())
                 truncated = episode_finished and bool(game.is_episode_timeout_reached())
                 terminated = episode_finished and not truncated
@@ -257,6 +268,8 @@ def _agent_worker_thread(
                         if state is None or state.audio_buffer is None
                         else np.array(state.audio_buffer, copy=True)
                     )
+                if privileged_info:
+                    info[PRIVILEGED_INFO_KEY] = get_privileged_state(game)
                 _write_frame(state)
                 result_queue.put(
                     {
@@ -295,6 +308,7 @@ class _AgentWorkerCoordinator:
         audio_diagnostics: bool,
         available_buttons: tuple[vzd.Button, ...],
         frames: Observation,
+        privileged_info: bool = False,
     ) -> None:
         self.config_path = config_path
         self.resolution = resolution
@@ -311,6 +325,7 @@ class _AgentWorkerCoordinator:
         self.verbose = bool(verbose)
         self.audio_diagnostics = bool(audio_diagnostics)
         self.available_buttons = available_buttons
+        self.privileged_info = bool(privileged_info)
         self._shm_frames = (
             frames  # Inherit through fork(), mapped MAP_SHARED by the parent
         )
@@ -370,6 +385,7 @@ class _AgentWorkerCoordinator:
                     verbose=self.verbose,
                     audio_diagnostics=self.audio_diagnostics,
                     available_buttons=self.available_buttons,
+                    privileged_info=self.privileged_info,
                 ),
                 daemon=True,
             )
@@ -628,6 +644,7 @@ class VizdoomParallelEnv(VizdoomParallelEnvBase):
                     verbose=self.verbose,
                     audio_diagnostics=self.audio_diagnostics,
                     available_buttons=self.available_buttons,
+                    privileged_info=self.privileged_info,
                     frames=self._shm_frames,
                 ),
             ),

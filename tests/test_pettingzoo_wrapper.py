@@ -39,9 +39,18 @@ from vizdoom.pettingzoo_wrapper.human_policy_duel import (  # noqa: E402
     player_frags,
     summary_payload,
 )
+from vizdoom.pettingzoo_wrapper.oracle_base import BaseOracle  # noqa: E402
+from vizdoom.pettingzoo_wrapper.oracle_health_gathering import (  # noqa: E402
+    HealthGatheringOracle,
+)
 from vizdoom.pettingzoo_wrapper.reward_wrappers import (  # noqa: E402
     DeathmatchRewardWrapper,
     HideAndSeekRewardWrapper,
+    SharedRewardWrapper,
+)
+from vizdoom.pettingzoo_wrapper.vector_obs import (  # noqa: E402
+    SCENARIO_VECTOR_OBS,
+    VectorStateObservationWrapper,
 )
 
 
@@ -551,6 +560,192 @@ def test_base_env_exposes_joint_categorical_binary_actions(monkeypatch):
     assert env._encode_env_action(7) == [1.0, 1.0, 1.0]
 
 
+def test_base_env_continuous_actions_opt_in_for_binary_buttons(monkeypatch):
+    monkeypatch.setattr(
+        base_env_common,
+        "discover_buttons",
+        lambda _path: [Button.MOVE_LEFT, Button.MOVE_RIGHT, Button.ATTACK],
+    )
+    env = base_env_common.VizdoomParallelEnvBase(
+        config_file="unused.cfg",
+        num_agents=2,
+        skip_frames=4,
+        continuous_actions=True,
+    )
+
+    action_space = env.action_space("agent_0")
+    assert isinstance(action_space, base_env_common.spaces.Box)
+    assert action_space.shape == (3,)
+    np.testing.assert_array_equal(action_space.low, np.zeros(3))
+    np.testing.assert_array_equal(action_space.high, np.ones(3))
+    np.testing.assert_array_equal(env._noop_action(), np.zeros(3))
+    assert env._encode_env_action(np.asarray([0.2, 0.5, 0.9])) == [0.0, 1.0, 1.0]
+
+
+class _ScriptedInfoEnv:
+    """Two-agent env with fixed observations and scripted rewards/infos."""
+
+    metadata = {}
+
+    def __init__(self, observation, reset_infos, steps):
+        self.possible_agents = ["agent_0", "agent_1"]
+        self.agents = list(self.possible_agents)
+        self._observation = observation
+        self._reset_infos = reset_infos
+        self._steps = iter(steps)
+
+    def observation_space(self, agent):
+        if isinstance(self._observation, dict):
+            return base_env_common.spaces.Dict(
+                {
+                    key: base_env_common.spaces.Box(
+                        0, 255, shape=value.shape, dtype=np.uint8
+                    )
+                    for key, value in self._observation.items()
+                }
+            )
+        return base_env_common.spaces.Box(
+            0, 255, shape=self._observation.shape, dtype=np.uint8
+        )
+
+    def action_space(self, agent):
+        return base_env_common.spaces.Discrete(2)
+
+    def reset(self, seed=None, options=None):
+        infos = {agent: dict(info) for agent, info in self._reset_infos.items()}
+        return {agent: self._observation for agent in self.agents}, infos
+
+    def step(self, actions):
+        rewards, infos = next(self._steps)
+        done = {agent: False for agent in self.agents}
+        return (
+            {agent: self._observation for agent in self.agents},
+            dict(rewards),
+            done,
+            done,
+            {agent: dict(info) for agent, info in infos.items()},
+        )
+
+
+def test_vector_obs_adds_vector_next_to_the_image_observation():
+    spec = SCENARIO_VECTOR_OBS["health_gathering_multi_agent"]
+    image = np.zeros((4, 4, 3), dtype=np.uint8)
+    env = VectorStateObservationWrapper(
+        _ScriptedInfoEnv(
+            image,
+            {"agent_0": {"HEALTH": 100.0}, "agent_1": {"HEALTH": 50.0}},
+            [({}, {"agent_0": {"HEALTH": 80.0}, "agent_1": {"HEALTH": 20.0}})],
+        ),
+        spec,
+    )
+
+    space = env.observation_space("agent_0")
+    assert set(space.spaces) == {"observation", "vector"}
+    assert space["vector"].shape == (2,)
+
+    obs, _ = env.reset()
+    assert obs["agent_0"]["observation"] is image
+    # Own health first, then the other agents' in possible_agents order.
+    np.testing.assert_allclose(obs["agent_0"]["vector"], [1.0, 0.5])
+    np.testing.assert_allclose(obs["agent_1"]["vector"], [0.5, 1.0])
+
+    obs, *_ = env.step({"agent_0": 0, "agent_1": 0})
+    np.testing.assert_allclose(obs["agent_0"]["vector"], [0.8, 0.2])
+
+
+def test_vector_obs_keeps_existing_dict_observation_keys():
+    spec = SCENARIO_VECTOR_OBS["health_gathering_multi_agent"]
+    observation = {
+        "observation": np.zeros((4, 4, 3), dtype=np.uint8),
+        "audio": np.zeros((4, 4, 2), dtype=np.uint8),
+    }
+    env = VectorStateObservationWrapper(
+        _ScriptedInfoEnv(
+            observation,
+            {"agent_0": {"HEALTH": 100.0}, "agent_1": {"HEALTH": 100.0}},
+            [],
+        ),
+        spec,
+    )
+
+    assert set(env.observation_space("agent_0").spaces) == {
+        "observation",
+        "audio",
+        "vector",
+    }
+    obs, _ = env.reset()
+    assert set(obs["agent_0"]) == {"observation", "audio", "vector"}
+
+
+@pytest.mark.parametrize("agg, expected", [("sum", 3.0), ("mean", 1.5)])
+def test_shared_reward_pools_rewards_and_keeps_individual_reward(agg, expected):
+    env = SharedRewardWrapper(
+        _ScriptedInfoEnv(
+            np.zeros((4, 4, 3), dtype=np.uint8),
+            {"agent_0": {}, "agent_1": {}},
+            [({"agent_0": 2.0, "agent_1": 1.0}, {"agent_0": {}, "agent_1": {}})],
+        ),
+        agg=agg,
+    )
+
+    _, infos = env.reset()
+    assert infos["agent_0"]["individual_reward"] == 0.0
+    _, rewards, _, _, infos = env.step({"agent_0": 0, "agent_1": 0})
+    assert rewards == {"agent_0": expected, "agent_1": expected}
+    assert infos["agent_0"]["individual_reward"] == 2.0
+    assert infos["agent_1"]["individual_reward"] == 1.0
+
+
+def test_oracle_packs_buttons_into_discrete_bitmask():
+    assert BaseOracle.to_discrete(np.asarray([0.0, 0.0, 0.0])) == 0
+    assert BaseOracle.to_discrete(np.asarray([1.0, 0.0, 1.0])) == 5
+    assert BaseOracle.to_discrete(np.asarray([1.0, 1.0, 1.0])) == 7
+
+    buttons = [Button.TURN_LEFT, Button.TURN_RIGHT, Button.MOVE_FORWARD]
+    agents = ["agent_0", "agent_1"]
+    assert HealthGatheringOracle(buttons=buttons, agents=agents).discrete
+    assert not HealthGatheringOracle(
+        buttons=buttons, agents=agents, discrete=False
+    ).discrete
+
+
+def test_health_gathering_vector_obs_with_continuous_actions():
+    env = pettingzoo_wrapper.make(
+        scenario="health_gathering_multi_agent",
+        num_agents=2,
+        resolution="160X120",
+        timeout=300,
+        barrier_timeout=10.0,
+        skip_frames=4,
+        async_mode=False,
+        ticrate=35,
+        seed=7,
+        port=next(_PORTS),
+        enable_video=False,
+        verbose=False,
+        vector_obs=True,
+        continuous_actions=True,
+    )
+    try:
+        action_space = env.action_space("agent_0")
+        assert isinstance(action_space, base_env_common.spaces.Box)
+        obs, infos = env.reset(seed=7)
+        for agent in env.possible_agents:
+            assert set(obs[agent]) == {"observation", "vector"}
+            assert obs[agent]["vector"].shape == (2,)
+            assert obs[agent]["vector"][0] == pytest.approx(
+                infos[agent]["HEALTH"] / 100.0
+            )
+        actions = {
+            agent: np.ones(action_space.shape, dtype=np.float32) for agent in env.agents
+        }
+        obs, rewards, _, _, infos = env.step(actions)
+        assert set(rewards) == set(env.possible_agents)
+        assert all("death_penalty" in infos[agent] for agent in env.possible_agents)
+    finally:
+        env.close()
+
+
 def test_base_env_uses_checkpoint_buttons_over_current_scenario(monkeypatch):
     monkeypatch.setattr(
         base_env_common,
@@ -755,10 +950,11 @@ def test_worker_transports_separate_modalities_and_copies_snapshots(
             available_buttons=env.available_buttons,
             frames=env._shm_frames,
         )
-        env._parent_conn = Mock()
+        parent_conn = Mock()
+        env._parent_conn = parent_conn
 
         def receive(**kwargs):
-            command = env._parent_conn.send.call_args.args[0]
+            command = parent_conn.send.call_args.args[0]
             return (
                 coordinator.reset()
                 if command["cmd"] == "reset"

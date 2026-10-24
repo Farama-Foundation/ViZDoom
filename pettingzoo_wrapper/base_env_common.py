@@ -6,8 +6,9 @@ from __future__ import annotations
 
 import math
 import time
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 import numpy as np
 import pygame
@@ -39,11 +40,18 @@ TRAINING_RESPAWN_DELAY = 2
 
 
 def encode_env_action(
-    agent_action: Any, available_buttons: tuple[vzd.Button, ...] | list[vzd.Button]
+    agent_action: Any,
+    available_buttons: tuple[vzd.Button, ...] | list[vzd.Button],
+    continuous: bool = False,
 ) -> list[float]:
-    """Discretize actions for those with buttons, otherwise the action distribution becomes weird"""
+    """
+    Discretize actions for those with buttons, otherwise the action distribution becomes weird.
+    continuous=True keeps the raw per-button vector even without delta buttons.
+    """
     raw = np.asarray(agent_action, dtype=np.float32).reshape(-1)
-    if not any(vzd.is_delta_button(button) for button in available_buttons):
+    if not continuous and not any(
+        vzd.is_delta_button(button) for button in available_buttons
+    ):
         if raw.size != 1:
             raise ValueError(f"expected one discrete action, got {raw.size} values")
         action = int(raw.item())
@@ -81,6 +89,7 @@ def configure_doom_game(
     netmode: int,
     agent_idx: int,
     available_buttons: Sequence[vzd.Button] | None = None,
+    privileged_info: bool = False,
 ) -> vzd.DoomGame:
     """
     Create and configure a DoomGame instance without calling game.init().
@@ -100,6 +109,9 @@ def configure_doom_game(
     game.set_screen_resolution(get_screen_resolution(resolution))
     game.set_ticrate(ticrate)
     game.set_mode(vzd.Mode.ASYNC_PLAYER if async_mode else vzd.Mode.PLAYER)
+    if privileged_info:
+        # Ground-truth object list. Meant for the oracle agent. Turn off to avoid cheating
+        game.set_objects_info_enabled(True)
     if timeout is not None:
         game.set_episode_timeout(timeout)
     if seed is not None:
@@ -152,6 +164,8 @@ class VizdoomParallelEnvBase(ParallelEnv):
         daemon: bool = True,
         audio_diagnostics: bool = False,
         available_buttons: Sequence[vzd.Button] | None = None,
+        privileged_info: bool = False,
+        continuous_actions: bool = False,
     ) -> None:
         assert num_agents >= 1
         self.config_file = config_file
@@ -170,6 +184,8 @@ class VizdoomParallelEnvBase(ParallelEnv):
         self.verbose = verbose
         self.daemon = daemon
         self.audio_diagnostics = bool(audio_diagnostics)
+        self.privileged_info = bool(privileged_info)
+        self.continuous_actions = bool(continuous_actions)
 
         self.possible_agents: list[str] = [
             f"agent_{i}" for i in range(self._num_agents)
@@ -194,9 +210,10 @@ class VizdoomParallelEnvBase(ParallelEnv):
         self._delta_count = len(self._delta_indices)
         self._binary_count = len(self._binary_indices)
         self._act_len = self._delta_count + self._binary_count
+        # continuous_actions opts binary-only scenarios into the per-button Box
         self._action_space = (
             self._continuous_space()
-            if self._delta_count
+            if self._delta_count or self.continuous_actions
             else spaces.Discrete(1 << self._binary_count)
         )
 
@@ -238,17 +255,16 @@ class VizdoomParallelEnvBase(ParallelEnv):
     @property
     def state_space(self) -> spaces.Space:
         if self._audio_observations:
-            return spaces.Dict(
-                {
-                    key: spaces.Box(
-                        0,
-                        255,
-                        shape=(*space.shape[:2], space.shape[2] * self.num_agents),
-                        dtype=np.uint8,
-                    )
-                    for key, space in self._observation_space.spaces.items()
-                }
-            )
+            fields = {}
+            for key, space in self._observation_space.spaces.items():
+                assert space.shape is not None
+                fields[key] = spaces.Box(
+                    0,
+                    255,
+                    shape=(*space.shape[:2], space.shape[2] * self.num_agents),
+                    dtype=np.uint8,
+                )
+            return spaces.Dict(fields)
         return spaces.Box(
             0,
             255,
@@ -285,7 +301,9 @@ class VizdoomParallelEnvBase(ParallelEnv):
         return np.zeros((self._act_len,), dtype=np.float32)
 
     def _encode_env_action(self, agent_action: Any) -> list[float]:
-        return encode_env_action(agent_action, self.available_buttons)
+        return encode_env_action(
+            agent_action, self.available_buttons, continuous=self.continuous_actions
+        )
 
     def _stack_observations(
         self, observations: dict[str, Observation], *, reset: bool
