@@ -201,6 +201,11 @@ namespace vizdoom {
                 this->MQDoom->send(MSG_CODE_UPDATE);
                 this->waitForDoomWork();
 
+                // Check the requested setting: AUDIO_BUFFER is false when OpenAL initialization fails.
+                if (this->softSoundAudio && !this->isOpenALSoundInitialized()) {
+                    throw ViZDoomNoOpenALSoundException();
+                }
+
                 *this->input = *this->_input;
 
                 this->mapLastTic = this->gameState->MAP_TIC;

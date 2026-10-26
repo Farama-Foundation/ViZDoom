@@ -108,7 +108,7 @@ struct VIZSector{
     double floorHeight;
     double ceilingHeight;
     unsigned int lineCount;
-    unsigned int lines[128];
+    unsigned int lines[VIZ_MAX_SECTOR_LINES];
 };
 
 struct VIZLine{

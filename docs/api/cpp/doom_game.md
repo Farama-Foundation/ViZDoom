@@ -1081,6 +1081,8 @@ When using a Python dictionary:
   - Enums: Button, GameVariable, ScreenResolution, ScreenFormat, SamplingRate, Mode, AutomapMode
   - Lists: for 'available_buttons' and 'available_game_variables'
 
+Integer values use the same ranges as in configuration files, including seeds from 0 to 4294967295.
+
 Relative paths (e.g., for 'doom_scenario_path') are resolved relative to the current working directory.
 
 Python example:
@@ -1982,6 +1984,8 @@ Note: added in 1.1.9.
 Enables rendering of the audio buffer, it will be available in the state.
 The audio buffer will contain audio from the number of the last tics specified by [`setAudioBufferSize`](#setaudiobuffersize) method.
 Sampling rate can be set with [`setAudioSamplingRate`](#setaudiosamplingrate) method.
+Requires OpenAL Soft with loopback support.
+If audio capture is unavailable, initialization throws `ViZDoomNoOpenALSoundException`.
 
 Default value: false
 
