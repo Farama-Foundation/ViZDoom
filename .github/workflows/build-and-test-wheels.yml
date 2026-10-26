@@ -25,7 +25,6 @@ on:
 env:
   HOMEBREW_NO_AUTO_UPDATE: 1
   HOMEBREW_NO_INSTALL_CLEANUP: 1
-  DYLD_LIBRARY_PATH: "/opt/homebrew/opt/openal-soft/lib:/usr/local/opt/openal-soft/lib"
 
 jobs:
   build_wheels:
@@ -118,10 +117,6 @@ jobs:
           uname -p
           python -c "import sys; print(sys.version)"
 
-      - name: Install OpenAL on macOS
-        if: runner.os == 'macOS'
-        run: brew install openal-soft
-
       - name: Install OpenAL on Ubuntu
         if: runner.os == 'Linux'
         run: sudo apt install -y libopenal-dev
@@ -149,6 +144,13 @@ jobs:
 
       - name: Import and init check
         run: python -c "import vizdoom; g = vizdoom.DoomGame(); g.set_window_visible(False); g.set_console_enabled(True); g.set_audio_buffer_enabled(True); g.init()"
+        timeout-minutes: 1
+
+      - name: Verify bundled audio on macOS
+        if: runner.os == 'macOS'
+        run: |
+          python -c "from pathlib import Path; import vizdoom; assert Path(vizdoom.install_path, '.dylibs', 'libopenal.1.dylib').is_file()"
+          env -u DYLD_LIBRARY_PATH -u DYLD_FALLBACK_LIBRARY_PATH pytest -q tests/test_get_state.py::test_audio_buffer_contains_sound
         timeout-minutes: 1
 
       - name: Run tests
