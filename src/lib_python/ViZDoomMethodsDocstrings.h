@@ -247,6 +247,7 @@ Config key: ``livingReward``/``living_reward``)DOCSTRING";
     const char *getDeathPenalty = R"DOCSTRING(Returns the penalty for the player's death.)DOCSTRING";
 
     const char *setDeathPenalty = R"DOCSTRING(Sets a penalty for the player's death. Note that in case of a negative value, the player will be rewarded upon dying.
+The penalty is applied once per death, including deaths followed by an automatic respawn between state updates.
 
 Default value: 0
 

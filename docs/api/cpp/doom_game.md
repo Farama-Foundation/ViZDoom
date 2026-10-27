@@ -609,6 +609,7 @@ Returns the penalty for the player's death.
 | Python | `set_death_penalty(death_penalty: float) -> None` |
 
 Sets a penalty for the player's death. Note that in case of a negative value, the player will be rewarded upon dying.
+The penalty is applied once per death, including deaths followed by an automatic respawn between state updates.
 
 Default value: 0
 
