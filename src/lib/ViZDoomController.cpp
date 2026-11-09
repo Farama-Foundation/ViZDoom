@@ -139,6 +139,8 @@ namespace vizdoom {
 
         this->doomStaticSeed = true;
         this->doomSeed = 0;
+        this->instanceSeed = 0;
+        this->userSetSeed = false;
 
         this->instanceSeed = this->getSeed();
         this->instanceRng.seed(this->instanceSeed);
@@ -392,7 +394,11 @@ namespace vizdoom {
             if (this->gameState->DEMO_RECORDING) this->sendCommand("stop");
 
             if(this->gameState->GAME_MULTIPLAYER){
-                this->setDoomSeed(this->getNextDoomSeed());
+                if (this->userSetSeed) {
+                    this->setDoomSeed(this->getNextDoomSeed());
+                } else {
+                    this->clearDoomSeed();
+                }
                 if(this->gameState->GAME_SETTINGS_CONTROLLER) this->sendCommand(std::string("changemap ") + this->map);
             }
             else if(this->demoPath.length()){
@@ -575,6 +581,7 @@ namespace vizdoom {
     }
 
     void DoomController::setInstanceSeed(unsigned int seed) {
+        this->userSetSeed = true;
         this->instanceSeed = seed;
         this->instanceRng.seed(seed);
     }
@@ -1247,11 +1254,21 @@ namespace vizdoom {
         }
     }
 
+    bool DoomController::hasNetGameArgs() const {
+        for (const auto &arg : this->customArgs) {
+            if (arg == "-host" || arg == "-join" || arg == "-connect" || arg == "-solo-net") {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /* Init */
     /*----------------------------------------------------------------------------------------------------------------*/
 
     void DoomController::createDoomArgs() {
         this->doomArgs.clear();
+        const bool netGameArgs = this->hasNetGameArgs();
 
         // exe
         if (this->exePath.length() == 0){
@@ -1394,9 +1411,14 @@ namespace vizdoom {
 
         // seed
         if (this->doomStaticSeed) {
-            this->forceDoomSeed(this->getNextDoomSeed());
-            this->doomArgs.push_back("-rngseed");
-            this->doomArgs.push_back(b::lexical_cast<std::string>(this->doomSeed));
+            if (!netGameArgs || this->userSetSeed) {
+                this->forceDoomSeed(this->getNextDoomSeed());
+                this->doomArgs.push_back("-rngseed");
+                this->doomArgs.push_back(b::lexical_cast<std::string>(this->doomSeed));
+            } else {
+                // For multiplayer games rely on the host-provided seed to keep all nodes in sync.
+                this->doomStaticSeed = false;
+            }
         }
 
         // depth duffer
