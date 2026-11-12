@@ -225,7 +225,9 @@ namespace vizdoom {
                     configStream << (boolValue ? "true" : "false") << "\n";
                 } else if (pyb::isinstance<pyb::int_>(value)) {
                     // Integer values
-                    configStream << pyb::str(value).cast<std::string>() << "\n";
+                    pyb::object integer = pyb::reinterpret_steal<pyb::object>(PyNumber_Index(value.ptr()));
+                    if (!integer) throw pyb::error_already_set();
+                    configStream << pyb::str(integer).cast<std::string>() << "\n";
                 } else if (pyb::isinstance<pyb::float_>(value)) {
                     // Float values
                     configStream << value.cast<double>() << "\n";
