@@ -432,7 +432,7 @@ namespace vizdoom {
 
                 if (restartTics > 3 && !this->gameState->GAME_MULTIPLAYER) {
                     if (this->demoPath.length())
-                        this->sendCommand(std::string("recordmap ") + this->demoPath + " " + this->map);
+                        this->sendCommand(std::string("recordmap ") + prepareFilePathCmd(this->demoPath) + " " + this->map);
                     else this->sendCommand(std::string("map ") + this->map);
                     restartTics = 0;
                 }
@@ -466,7 +466,8 @@ namespace vizdoom {
             this->MQDoom->send(MSG_CODE_TIC);
             this->waitForDoomWork();
 
-            this->sendCommand(std::string("playdemo ") + prepareLmpFilePath(demoPath));
+            const std::string command = std::string("playdemo ") + prepareLmpFilePath(demoPath);
+            this->sendCommand(command);
 
             this->mapChanging = true;
 
@@ -480,7 +481,7 @@ namespace vizdoom {
                 this->waitForDoomWork();
 
                 if (restartTics > 3) {
-                    this->sendCommand(std::string("playdemo ") + demoPath);
+                    this->sendCommand(command);
                     restartTics = 0;
                 }
 

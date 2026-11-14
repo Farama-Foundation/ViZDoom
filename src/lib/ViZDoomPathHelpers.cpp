@@ -115,8 +115,11 @@ namespace vizdoom {
 
     std::string prepareFilePathCmd(std::string filePath) {
         filePath = prepareFilePathArg(filePath);
-        if (b::find_first(filePath, " ") && filePath[0] != '\"' && filePath[filePath.length() - 1] != '\"')
+        if (b::find_first(filePath, " ") && filePath[0] != '\"' && filePath[filePath.length() - 1] != '\"') {
+            // The engine interprets backslash escapes inside quoted arguments.
+            b::replace_all(filePath, "\\", "\\\\");
             filePath = std::string("\"") + filePath + "\"";
+        }
 
         return filePath;
     }
