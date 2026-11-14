@@ -28,10 +28,11 @@ repos:
       - id: codespell
         exclude: >
             (?x)^(
-                .*\.svg
+                .*\.svg|
+                skills/vizdoom-scenario-design/references/(acs_functions|acs_unsupported|line_specials|actor_classes)\.md
             )$
         args:
-          - --ignore-words-list=msdos,MSDOS,LTS,STLE,parms,bord,partialy,nd,siz,ore,CLER
+          - --ignore-words-list=msdos,MSDOS,LTS,STLE,parms,bord,partialy,nd,siz,ore,CLER,vertexes
   - repo: https://github.com/python/black
     rev: 25.11.0
     hooks:
