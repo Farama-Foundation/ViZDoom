@@ -46,7 +46,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022]
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.11', '3.12', '3.13', '3.14']
       fail-fast: false
     runs-on: ${{ matrix.os }}
 
@@ -153,8 +153,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-2022]
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        os: [windows-2022, windows-2025]
+        python-version: ['3.11', '3.12', '3.13', '3.14']
       fail-fast: false
 
     steps:
@@ -170,7 +170,7 @@ jobs:
       - name: Download artificat
         uses: actions/download-artifact@v8
         with:
-          name: artifact-${{ matrix.os }}-${{ matrix.python-version }}
+          name: artifact-windows-2022-${{ matrix.python-version }}
           path: dist
 
       - name: Report dist directory
