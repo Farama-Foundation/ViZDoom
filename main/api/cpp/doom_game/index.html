@@ -609,7 +609,8 @@ processes the specified number of tics, updates the state and calculates a new r
 </tbody>
 </table>
 </div>
-<p>Returns true if the current episode is in the initial state - the first state, no actions were performed yet.</p>
+<p>Returns true if the current episode is in the initial state - the first state, no actions were performed yet.
+The initial tic includes the delay configured with <a class="reference internal" href="#setepisodestarttime"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setEpisodeStartTime</span></code></span></a>, so it can be greater than 1.</p>
 </section>
 <hr class="docutils" />
 <section id="isepisodefinished">
