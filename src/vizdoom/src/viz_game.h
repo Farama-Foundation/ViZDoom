@@ -256,6 +256,8 @@ void VIZ_GameStateUpdateSectors();
 
 void VIZ_GameStateUpdateNotifications();
 
+void VIZ_GameStateResetCounters();
+
 void VIZ_GameStateInitNew();
 
 void VIZ_GameStateClose();

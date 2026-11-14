@@ -2,6 +2,8 @@
 
 import os
 
+import pytest
+
 import vizdoom as vzd
 
 
@@ -117,6 +119,66 @@ def test_weapon_ammo_related_variables():
             )
             assert game.get_game_variable(ammo_variable) == selected_weapon_ammo
 
+    finally:
+        game.close()
+
+
+@pytest.mark.parametrize("multiplayer", [False, True])
+@pytest.mark.parametrize("kill_player", [False, True])
+def test_episode_counters_reset(multiplayer, kill_player):
+    counters = [
+        vzd.GameVariable.DEATHCOUNT,
+        vzd.GameVariable.HITCOUNT,
+        vzd.GameVariable.DAMAGECOUNT,
+        vzd.GameVariable.HITS_TAKEN,
+        vzd.GameVariable.DAMAGE_TAKEN,
+    ]
+    game = vzd.DoomGame()
+    game.load_config(os.path.join(vzd.scenarios_path, "defend_the_line.cfg"))
+    game.set_window_visible(False)
+    game.set_available_game_variables(counters)
+    game.set_seed(0)
+    if multiplayer:
+        game.add_game_args("-host 1 +sv_cheats 1")
+    game.init()
+
+    try:
+        for _ in range(2):
+            assert all(game.get_game_variable(counter) == 0 for counter in counters)
+            assert (game.get_state().game_variables == 0).all()
+
+            game.make_action([0, 0, 1], 250)
+            assert all(game.get_game_variable(counter) > 0 for counter in counters[1:])
+            if kill_player:
+                game.send_game_command("kill")
+                game.advance_action()
+                assert game.is_player_dead()
+                assert game.get_game_variable(vzd.GameVariable.DEATHCOUNT) == 1
+
+            game.new_episode()
+            assert all(game.get_game_variable(counter) == 0 for counter in counters)
+            assert (game.get_state().game_variables == 0).all()
+    finally:
+        game.close()
+
+
+def test_death_count_survives_respawn():
+    game = vzd.DoomGame()
+    game.load_config(os.path.join(vzd.scenarios_path, "multi.cfg"))
+    game.set_window_visible(False)
+    game.set_mode(vzd.Mode.PLAYER)
+    game.add_game_args("-host 1 -deathmatch +sv_cheats 1")
+    game.init()
+
+    try:
+        for deaths in range(1, 3):
+            game.send_game_command("kill")
+            game.advance_action()
+            assert game.is_player_dead()
+            assert game.get_game_variable(vzd.GameVariable.DEATHCOUNT) == deaths
+            game.respawn_player()
+            assert not game.is_player_dead()
+            assert game.get_game_variable(vzd.GameVariable.DEATHCOUNT) == deaths
     finally:
         game.close()
 

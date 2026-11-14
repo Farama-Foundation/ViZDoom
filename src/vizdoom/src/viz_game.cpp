@@ -696,16 +696,21 @@ void VIZ_GameStateUpdateNotifications(){
     vizGameStateSM->NOTIFICATIONS_TEXT[VIZ_MAX_NOTIFICATIONS_CHARS - 1] = '\0';
 }
 
+void VIZ_GameStateResetCounters(){
+    if(!vizGameStateSM) return;
+
+    vizGameStateSM->PLAYER_DEATHCOUNT = 0;
+    for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
+        vizPlayerLogger[i].reset();
+    }
+}
+
 void VIZ_GameStateInitNew(){
     if(!vizGameStateSM) return;
 
     if(*viz_loop_map && !level.MapName.Compare(level.NextMap)){
         level.NextMap = level.MapName;
         level.NextSecretMap = level.MapName;
-    }
-
-    for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
-        vizPlayerLogger[i].reset();
     }
 
     vizUniqueObjectsCount = 0;
