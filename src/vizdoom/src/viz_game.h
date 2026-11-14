@@ -108,7 +108,7 @@ struct VIZSector{
     double floorHeight;
     double ceilingHeight;
     unsigned int lineCount;
-    unsigned int lines[128];
+    unsigned int lines[VIZ_MAX_SECTOR_LINES];
 };
 
 struct VIZLine{
@@ -255,6 +255,8 @@ void VIZ_GameStateUpdateObjects();
 void VIZ_GameStateUpdateSectors();
 
 void VIZ_GameStateUpdateNotifications();
+
+void VIZ_GameStateResetCounters();
 
 void VIZ_GameStateInitNew();
 

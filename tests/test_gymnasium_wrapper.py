@@ -222,6 +222,36 @@ def test_gymnasium_wrapper_obs_space(env_config: str, obs_space: Dict):
     ), f"Step observation: {obs!r} not in space"
 
 
+@pytest.mark.parametrize("frame_skip", [1, 4])
+@pytest.mark.parametrize("audio_buffer_size", [None, 1, 8])
+def test_gymnasium_wrapper_audio_buffer_size(frame_skip, audio_buffer_size):
+    kwargs = {}
+    if audio_buffer_size is not None:
+        kwargs["audio_buffer_size"] = audio_buffer_size
+    env = VizdoomEnv(
+        config_file=os.path.join(TEST_ENV_CONFIGS, "basic_g8_i_1_0_audio.cfg"),
+        frame_skip=frame_skip,
+        episode_timeout=20,
+        **kwargs,
+    )
+    try:
+        obs, _ = env.reset(seed=123)
+        buffer_size = frame_skip if audio_buffer_size is None else audio_buffer_size
+        expected_shape = (int(env.game.get_audio_sampling_rate() / 35) * buffer_size, 2)
+        assert env.game.get_audio_buffer_size() == buffer_size
+        assert obs["audio"].shape == expected_shape
+        assert env.observation_space["audio"].shape == expected_shape
+        assert env.observation_space.contains(obs)
+
+        terminated = truncated = False
+        while not (terminated or truncated):
+            obs, _, terminated, truncated, _ = env.step(np.array([0], dtype=np.int8))
+            assert obs["audio"].shape == expected_shape
+            assert env.observation_space.contains(obs)
+    finally:
+        env.close()
+
+
 def _compare_action_spaces(env: gymnasium.Env, expected_action_space: gymnasium.Space):
     """
     Helper function to compare the action space of the environment with the expected action space.

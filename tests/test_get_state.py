@@ -167,6 +167,33 @@ def test_get_state(num_iterations=10, num_states=20):
     )
 
 
+def test_audio_buffer_contains_sound():
+    game = vzd.DoomGame()
+    game.load_config("basic.cfg")
+    game.set_window_visible(False)
+    game.set_audio_buffer_enabled(True)
+    game.set_available_buttons([vzd.Button.ATTACK])
+    game.set_seed(0)
+    # Disable reverb to avoid the OpenAL 1.19 bug described above.
+    game.add_game_args("+snd_efx 0")
+
+    try:
+        game.init()
+        for _ in range(vzd.DEFAULT_TICRATE):
+            game.make_action([1])
+            state = game.get_state()
+            assert state is not None
+            assert state.audio_buffer is not None
+            if np.any(state.audio_buffer):
+                break
+        else:
+            raise AssertionError(
+                "The audio buffer stayed silent while firing the weapon"
+            )
+    finally:
+        game.close()
+
+
 def _check_state(
     state,
     expect_game_variables=False,
@@ -569,6 +596,7 @@ def test_server_state():
 
 if __name__ == "__main__":
     test_get_state()
+    test_audio_buffer_contains_sound()
     test_buffer_sizes()
     test_if_none()
     test_types()

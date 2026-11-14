@@ -77,7 +77,7 @@ The category assignment may not be accurate, especcialy for custom objects and W
 
 **value** - value that represents this particular object in **labelsBuffer**.
 
-**x**, **y**, **width**, **height** - describes bounding box of this particular object in **labelsBuffer**. Note: added in 1.1.5.
+**x**, **y**, **width**, **height** - describes bounding box of this particular object in **labelsBuffer**. Note: added in 1.1.5. Width and height count pixels, including the rightmost column and bottom row. In Python, the box is `labels_buffer[y:y + height, x:x + width]`.
 
 
 See also:

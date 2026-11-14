@@ -36,7 +36,8 @@
 #define MAX_LABELS              256
 #define MAX_OBJECTS             4096
 #define MAX_SECTORS             2048
-#define MAX_LINES               8192
+#define MAX_LINES               16384
+#define MAX_SECTOR_LINES        1024
 #define MAX_NOTIFICATIONS_CHARS 32768
 
 namespace vizdoom {
@@ -91,7 +92,7 @@ namespace vizdoom {
         double floorHeight;
         double ceilingHeight;
         unsigned int lineCount;
-        unsigned int lines[128];
+        unsigned int lines[MAX_SECTOR_LINES];
     };
 
     struct SMLine{

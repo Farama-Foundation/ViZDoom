@@ -33,7 +33,7 @@ See also:
 
 **value** - value that represents this particular object in **labels_buffer**.
 
-**x**, **y**, **width**, **height** - describes bounding box of this particular object in **labels_buffer**. Note: added in 1.1.5.
+**x**, **y**, **width**, **height** - describes bounding box of this particular object in **labels_buffer**. Note: added in 1.1.5. Width and height count pixels, including the rightmost column and bottom row. The box is `labels_buffer[y:y + height, x:x + width]`.
 
 
 See also:

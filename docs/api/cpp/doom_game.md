@@ -179,6 +179,7 @@ processes the specified number of tics, updates the state and calculates a new r
 | Python | `is_new_episode() -> bool` |
 
 Returns true if the current episode is in the initial state - the first state, no actions were performed yet.
+The initial tic includes the delay configured with [`setEpisodeStartTime`](#setepisodestarttime), so it can be greater than 1.
 
 
 ---
@@ -1982,6 +1983,8 @@ Note: added in 1.1.9.
 Enables rendering of the audio buffer, it will be available in the state.
 The audio buffer will contain audio from the number of the last tics specified by [`setAudioBufferSize`](#setaudiobuffersize) method.
 Sampling rate can be set with [`setAudioSamplingRate`](#setaudiosamplingrate) method.
+Requires OpenAL Soft with loopback support.
+If audio capture is unavailable, initialization throws `ViZDoomNoOpenALSoundException`.
 
 Default value: false
 
