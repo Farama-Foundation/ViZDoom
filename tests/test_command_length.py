@@ -19,7 +19,7 @@ def game(tmp_path, monkeypatch):
         game.close()
 
 
-@pytest.mark.parametrize("length", [127, 128, 129, 4095])
+@pytest.mark.parametrize("length", [127, 128, 129, 1023])
 def test_command_length_boundary(game, length):
     # Keep the effect at the end so truncation cannot silently pass this test.
     command = " " * (length - len("kill")) + "kill"
@@ -28,10 +28,10 @@ def test_command_length_boundary(game, length):
     assert game.is_player_dead()
 
 
-@pytest.mark.parametrize("length", [4096, 4097])
+@pytest.mark.parametrize("length", [1024, 1025])
 @pytest.mark.parametrize("method", ["send_game_command", "new_episode", "save", "load"])
 def test_oversized_command_raises_and_game_recovers(game, method, length):
-    with pytest.raises(vzd.ViZDoomErrorException, match="maximum length of 4095 bytes"):
+    with pytest.raises(vzd.ViZDoomErrorException, match="maximum length of 1023 bytes"):
         getattr(game, method)("x" * length)
 
     game.new_episode()
