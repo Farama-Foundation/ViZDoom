@@ -84,6 +84,10 @@ add_custom_target(assemble_package ALL
 )
 
 if(WIN32) # Copy DLLs for Windows
+    add_custom_command(
+        TARGET assemble_package
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SDL2_DLL}" "${VIZDOOM_PYTHON_PACKAGE_DIR}"
+    )
     file(GLOB TXT_FILES "${VIZDOOM_OUTPUT_DIR}/*.dll")
 
     foreach(file ${TXT_FILES})

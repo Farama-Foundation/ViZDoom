@@ -86,51 +86,12 @@ if( WIN32 )
 	set( FMOD_INC_PATH_SUFFIXES PATH_SUFFIXES inc )
 	set( FMOD_LIB_PATH_SUFFIXES PATH_SUFFIXES lib )
 
-	message( "Could not find xinput.h. XInput will be disabled." )
-
-	find_path( D3D_INCLUDE_DIR d3d9.h
-		PATHS ENV DXSDK_DIR
-		PATH_SUFFIXES Include )
-	if( NOT D3D_INCLUDE_DIR )
-		message( SEND_ERROR "Could not find DirectX 9 header files" )
-	else( NOT D3D_INCLUDE_DIR )
-		include_directories( ${D3D_INCLUDE_DIR} )
-	endif( NOT D3D_INCLUDE_DIR )
-
-	find_path( XINPUT_INCLUDE_DIR xinput.h
-		PATHS ENV DXSDK_DIR
-		PATH_SUFFIXES Include )
-	if( NOT XINPUT_INCLUDE_DIR )
-		message( WARNING "Could not find xinput.h. XInput will be disabled." )
-		add_definitions( -DNO_XINPUT )
-	else( NOT XINPUT_INCLUDE_DIR )
-		include_directories( ${XINPUT_INCLUDE_DIR} )
-	endif( NOT XINPUT_INCLUDE_DIR )
-
-	find_library( DX_dxguid_LIBRARY dxguid
-		PATHS ENV DXSDK_DIR
-		PATH_SUFFIXES Lib Lib/${XBITS} )
-	find_library( DX_dinput8_LIBRARY dinput8
-		PATHS ENV DXSDK_DIR
-		PATH_SUFFIXES Lib Lib/${XBITS} )
-
-	set( DX_LIBS_FOUND YES )
-	if( NOT DX_dxguid_LIBRARY )
-		set( DX_LIBS_FOUND NO )
-	endif( NOT DX_dxguid_LIBRARY )
-	if( NOT DX_dinput8_LIBRARY )
-		set( DX_LIBS_FOUND NO )
-	endif( NOT DX_dinput8_LIBRARY )
-
-	if( NOT DX_LIBS_FOUND )
-		message( FATAL_ERROR "Could not find DirectX 9 libraries" )
-	endif( NOT DX_LIBS_FOUND )
+	# //VIZDOOM_CODE: SDL2 replaces the DirectX video and input backends.
+	add_definitions( -DNO_GTK=1 )
 
 	set( ZDOOM_LIBS
 		wsock32
 		winmm
-		"${DX_dxguid_LIBRARY}"
-		"${DX_dinput8_LIBRARY}"
 		ole32
 		user32
 		gdi32
@@ -178,11 +139,24 @@ else( WIN32 )
 		add_definitions( -DNO_GTK=1 )
 	endif( NO_GTK )
 
-	# Non-Windows version needs SDL2
-	find_package( SDL2 REQUIRED )
-	include_directories( "${SDL2_INCLUDE_DIR}" )
-	set( ZDOOM_LIBS ${ZDOOM_LIBS} "${SDL2_LIBRARY}" )
 endif( WIN32 )
+
+# //VIZDOOM_CODE: Use the same SDL2 backend on all platforms.
+find_package( SDL2 REQUIRED )
+include_directories( "${SDL2_INCLUDE_DIR}" )
+set( ZDOOM_LIBS ${ZDOOM_LIBS} ${SDL2_LIBRARY} )
+if( WIN32 )
+	if( NOT SDL2MAIN_LIBRARY )
+		message( FATAL_ERROR "SDL2main is required for the Windows SDL2 entry point" )
+	endif()
+	get_filename_component( SDL2_LIBRARY_DIR "${SDL2MAIN_LIBRARY}" DIRECTORY )
+	find_file( SDL2_DLL SDL2.dll
+		HINTS "${SDL2_LIBRARY_DIR}" ENV SDL2DIR
+		PATH_SUFFIXES bin lib/${XBITS} )
+	if( NOT SDL2_DLL )
+		message( FATAL_ERROR "Could not find SDL2.dll; set SDL2DIR or SDL2_DLL" )
+	endif()
+endif()
 
 
 if( NOT NO_OPENAL )
@@ -299,7 +273,7 @@ if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 	set( CMAKE_C_FLAGS "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-missing-field-initializers ${CMAKE_C_FLAGS}" )
 	set( CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-missing-field-initializers ${CMAKE_CXX_FLAGS}" )
 
-	# Remove extra warnings when using the official DirectX headers.
+	# //VIZDOOM_CODE: DirectX headers are no longer used.
 	# Also, TDM-GCC 4.4.0 no longer accepts glibc-style printf formats as valid,
 	# which is a royal pain. The previous version I had been using was fine with them.
 	if( WIN32 )
@@ -413,49 +387,35 @@ else( NOT DYN_FLUIDSYNTH )
 endif( NOT DYN_FLUIDSYNTH )
 
 # Start defining source files for ZDoom
+# //VIZDOOM_CODE: Share SDL video, input and startup; retain native system services.
 set( PLAT_WIN32_SOURCES
-	win32/eaxedit.cpp
-	win32/fb_d3d9.cpp
-	win32/fb_d3d9_wipe.cpp
-	win32/fb_ddraw.cpp
-	win32/hardware.cpp
 	win32/helperthread.cpp
 	win32/i_cd.cpp
-	win32/i_crash.cpp
-	win32/i_input.cpp
-	win32/i_keyboard.cpp
-	win32/i_mouse.cpp
-	win32/i_dijoy.cpp
-	win32/i_rawps2.cpp
-	win32/i_xinput.cpp
-	win32/i_main.cpp
-	win32/i_movie.cpp
-	win32/i_system.cpp
-	win32/st_start.cpp
-	win32/win32video.cpp )
+	win32/i_system.cpp )
 set( PLAT_POSIX_SOURCES
 	posix/i_cd.cpp
-	posix/i_movie.cpp
-	posix/i_steam.cpp )
+	posix/i_steam.cpp
+	posix/crashcatcher.c
+	posix/i_system.cpp
+	posix/i_timer.cpp )
 set( PLAT_SDL_SOURCES
-	posix/sdl/crashcatcher.c
-	posix/sdl/hardware.cpp
-	posix/sdl/i_gui.cpp
-	posix/sdl/i_input.cpp
-	posix/sdl/i_joystick.cpp
-	posix/sdl/i_main.cpp
-	posix/sdl/i_system.cpp
-	posix/sdl/i_timer.cpp
-	posix/sdl/sdlvideo.cpp
-	posix/sdl/st_start.cpp )
+	sdl/i_movie.cpp
+	sdl/hardware.cpp
+	sdl/i_gui.cpp
+	sdl/i_input.cpp
+	sdl/i_joystick.cpp
+	sdl/i_main.cpp
+	sdl/sdlvideo.cpp
+	sdl/st_start.cpp )
 set( PLAT_OSX_SOURCES
 	posix/osx/iwadpicker_cocoa.mm
 	posix/osx/zdoom.icns )
 
 if( WIN32 )
-	set( SYSTEM_SOURCES_DIR win32 )
-	set( SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} )
-	set( OTHER_SYSTEM_SOURCES ${PLAT_POSIX_SOURCES} ${PLAT_SDL_SOURCES} ${PLAT_OSX_SOURCES} ${PLAT_COCOA_SOURCES} )
+	# //VIZDOOM_CODE: Native system headers take precedence over shared SDL headers.
+	set( SYSTEM_SOURCES_DIR win32 sdl )
+	set( SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} ${PLAT_SDL_SOURCES} )
+	set( OTHER_SYSTEM_SOURCES ${PLAT_POSIX_SOURCES} ${PLAT_OSX_SOURCES} ${PLAT_COCOA_SOURCES} )
 
 	if( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 		# CMake is not set up to compile and link rc files with GCC. :(
@@ -467,9 +427,9 @@ if( WIN32 )
 		set( SYSTEM_SOURCES ${SYSTEM_SOURCES} win32/zdoom.rc )
 	endif( ZD_CMAKE_COMPILER_IS_GNUCXX_COMPATIBLE )
 elseif( APPLE )
-	set( SYSTEM_SOURCES_DIR posix posix/sdl )
+	set( SYSTEM_SOURCES_DIR posix sdl ) # //VIZDOOM_CODE
 	set( SYSTEM_SOURCES ${PLAT_SDL_SOURCES} )
-	set( PLAT_OSX_SOURCES ${PLAT_OSX_SOURCES} posix/sdl/i_system.mm )
+	set( PLAT_OSX_SOURCES ${PLAT_OSX_SOURCES} posix/osx/i_system.mm )
 	set( OTHER_SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} ${PLAT_COCOA_SOURCES} )
 
 	set( SYSTEM_SOURCES ${SYSTEM_SOURCES} ${PLAT_POSIX_SOURCES} ${PLAT_OSX_SOURCES} "${FMOD_LIBRARY}" )
@@ -477,7 +437,7 @@ elseif( APPLE )
 	set_source_files_properties( posix/osx/zdoom.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 	set_source_files_properties( "${FMOD_LIBRARY}" PROPERTIES MACOSX_PACKAGE_LOCATION Frameworks )
 else( WIN32 )
-	set( SYSTEM_SOURCES_DIR posix posix/sdl )
+	set( SYSTEM_SOURCES_DIR posix sdl ) # //VIZDOOM_CODE
 	set( SYSTEM_SOURCES ${PLAT_POSIX_SOURCES} ${PLAT_SDL_SOURCES} )
 	set( OTHER_SYSTEM_SOURCES ${PLAT_WIN32_SOURCES} ${PLAT_OSX_SOURCES} ${PLAT_COCOA_SOURCES} )
 endif( WIN32 )
@@ -508,12 +468,13 @@ endif( DYN_FLUIDSYNTH )
 
 # Project files should be aware of the header files. We can GLOB these since
 # there's generally a new cpp for every header so this file will get changed
+# //VIZDOOM_CODE: Shared SDL headers are included below for every platform.
 if( WIN32 )
 	set( EXTRA_HEADER_DIRS win32/*.h )
 elseif( APPLE )
-	set( EXTRA_HEADER_DIRS posix/*.h posix/sdl/*.h )
+	set( EXTRA_HEADER_DIRS posix/*.h )
 else( WIN32 )
-	set( EXTRA_HEADER_DIRS posix/*.h posix/sdl/*.h )
+	set( EXTRA_HEADER_DIRS posix/*.h )
 endif( WIN32 )
 file( GLOB HEADER_FILES
 	${EXTRA_HEADER_DIRS}
@@ -529,7 +490,7 @@ file( GLOB HEADER_FILES
 	oplsynth/*.h
 	oplsynth/dosbox/*.h
 	posix/*.h
-	posix/sdl/*.h
+	sdl/*.h # //VIZDOOM_CODE
 	r_data/*.h
 	resourcefiles/*.h
 	sfmt/*.h
@@ -967,6 +928,11 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "SunOS")
 endif(${CMAKE_SYSTEM_NAME} STREQUAL "SunOS")
 
 target_link_libraries( vizdoom ${ZDOOM_LIBS} gdtoa dumb lzma )
+# //VIZDOOM_CODE: Ship SDL2 beside the standalone Windows executable.
+if( WIN32 )
+	add_custom_command( TARGET vizdoom POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SDL2_DLL}" "$<TARGET_FILE_DIR:vizdoom>" )
+endif()
 include_directories( .
 	g_doom
 	g_heretic
@@ -1080,7 +1046,8 @@ source_group("Render Interface" FILES r_defs.h r_renderer.h r_sky.cpp r_sky.h r_
 source_group("Resource Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/resourcefiles/.+")
 source_group("POSIX Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/posix/.+")
 source_group("OS X Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/posix/osx/.+")
-source_group("SDL Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/posix/sdl/.+")
+# //VIZDOOM_CODE
+source_group("SDL Files" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/sdl/.+")
 source_group("SFMT" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/sfmt/.+")
 source_group("Shared Game" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/g_shared/.+")
 source_group("Versioning" FILES version.h win32/zdoom.rc)

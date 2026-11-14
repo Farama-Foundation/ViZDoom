@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL.h> //VIZDOOM_CODE
 
 #include "doomdef.h"
 #include "templates.h"
@@ -274,6 +274,7 @@ void I_ShutdownJoysticks()
 	if(JoystickManager)
 	{
 		delete JoystickManager;
+		JoystickManager = NULL; //VIZDOOM_CODE
 		SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
 	}
 }

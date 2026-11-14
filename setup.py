@@ -167,6 +167,8 @@ class BuildCommand(build):
             if deps_root is None:
                 raise RuntimeError("VIZDOOM_WIN_DEPS_ROOT is not set")  # TODO: Improve
 
+            os.environ.setdefault("SDL2DIR", os.path.join(deps_root, "SDL2"))
+
             mpg123_include = os.path.join(deps_root, "libmpg123")
             mpg123_lib = os.path.join(deps_root, "libmpg123/libmpg123-0.lib")
             mpg123_dll = os.path.join(deps_root, "libmpg123/libmpg123-0.dll")

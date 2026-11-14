@@ -70,6 +70,14 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
+if(WIN32)
+  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(SDL2_ARCH_LIB_SUFFIX lib/x64)
+  else()
+    set(SDL2_ARCH_LIB_SUFFIX lib/x86)
+  endif()
+endif()
+
 file(GLOB SDL2_SEARCH_PATHS "/usr/local/Cellar/sdl2/2.*" "/opt/homebrew/Cellar/sdl2/2.*")
 
 FIND_PATH(SDL2_INCLUDE_DIR SDL.h
@@ -95,7 +103,7 @@ FIND_LIBRARY(SDL2_LIBRARY_TEMP
   NAMES SDL2
   HINTS
   $ENV{SDL2DIR}
-  PATH_SUFFIXES lib64 lib
+  PATH_SUFFIXES ${SDL2_ARCH_LIB_SUFFIX} lib64 lib
   PATHS
   /usr/local/Cellar/sdl2
   /sw
@@ -119,7 +127,7 @@ IF(NOT SDL2_BUILDING_LIBRARY)
       NAMES SDL2main
       HINTS
       $ENV{SDL2DIR}
-      PATH_SUFFIXES lib64 lib
+      PATH_SUFFIXES ${SDL2_ARCH_LIB_SUFFIX} lib64 lib
       PATHS
       /usr/local/Cellar/sdl2
       /sw

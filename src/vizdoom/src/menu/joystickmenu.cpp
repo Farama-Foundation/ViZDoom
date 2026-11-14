@@ -371,14 +371,7 @@ void UpdateJoystickMenu(IJoystickConfig *selected)
 		// Todo: Block joystick for changing this one.
 		it = new FOptionMenuItemOption("Enable controller support", "use_joystick", "YesNo", NULL, false);
 		opt->mItems.Push(it);
-		#ifdef _WIN32
-			it = new FOptionMenuItemOption("Enable DirectInput controllers", "joy_dinput", "YesNo", NULL, false);
-			opt->mItems.Push(it);
-			it = new FOptionMenuItemOption("Enable XInput controllers", "joy_xinput", "YesNo", NULL, false);
-			opt->mItems.Push(it);
-			it = new FOptionMenuItemOption("Enable raw PlayStation 2 adapters", "joy_ps2raw", "YesNo", NULL, false);
-			opt->mItems.Push(it);
-		#endif
+		//VIZDOOM_CODE: SDL manages all controllers through use_joystick.
 
 		it = new FOptionMenuItemStaticText(" ", false);
 		opt->mItems.Push(it);

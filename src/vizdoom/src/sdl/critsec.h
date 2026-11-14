@@ -5,7 +5,7 @@
 #ifndef CRITSEC_H
 #define CRITSEC_H
 
-#include "SDL2/SDL.h"
+#include "SDL.h" //VIZDOOM_CODE
 #include "SDL_thread.h"
 #include "i_system.h"
 

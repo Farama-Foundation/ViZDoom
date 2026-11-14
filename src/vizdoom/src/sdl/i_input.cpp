@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL.h> //VIZDOOM_CODE
 #include <ctype.h>
 #include "doomtype.h"
 #include "c_dispatch.h"
