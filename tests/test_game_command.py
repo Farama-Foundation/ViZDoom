@@ -10,6 +10,8 @@ def game(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     game = vzd.DoomGame()
     game.load_config(os.path.join(vzd.scenarios_path, "basic.cfg"))
+    # Nightmare difficulty blocks inventory commands such as give and take.
+    game.set_doom_skill(3)
     game.set_window_visible(False)
     game.set_episode_timeout(20)
     try:
@@ -17,6 +19,46 @@ def game(tmp_path, monkeypatch):
         yield game
     finally:
         game.close()
+
+
+@pytest.mark.parametrize("command", ["give Clip 7", 'give "Clip" 7'])
+def test_command_with_arguments(game, command):
+    ammo = game.get_game_variable(vzd.GameVariable.AMMO2)
+
+    game.send_game_command(command)
+    game.advance_action()
+
+    assert game.get_game_variable(vzd.GameVariable.AMMO2) == ammo + 7
+
+
+@pytest.mark.parametrize("combine_commands", [False, True])
+def test_commands_execute_in_order(game, combine_commands):
+    commands = ["take ammo", "give Clip 7", "take Clip 2"]
+    if combine_commands:
+        commands = ["; ".join(commands)]
+
+    for command in commands:
+        game.send_game_command(command)
+    game.advance_action()
+
+    assert game.get_game_variable(vzd.GameVariable.AMMO2) == 5
+
+
+@pytest.mark.parametrize("command", ["", "   ", "vizdoom_nonexistent_test_command"])
+def test_empty_or_unknown_command_keeps_game_usable(game, command):
+    ammo = game.get_game_variable(vzd.GameVariable.AMMO2)
+    episode_time = game.get_episode_time()
+
+    game.send_game_command(command)
+    game.advance_action()
+
+    assert game.get_state() is not None
+    assert game.get_episode_time() == episode_time + 1
+    assert game.get_game_variable(vzd.GameVariable.AMMO2) == ammo
+
+    game.send_game_command("give Clip 7")
+    game.advance_action()
+    assert game.get_game_variable(vzd.GameVariable.AMMO2) == ammo + 7
 
 
 @pytest.mark.parametrize("length", [127, 128, 129, 1023])
