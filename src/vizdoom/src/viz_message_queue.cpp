@@ -58,9 +58,9 @@ void VIZ_MQInit(const char * id){
 
 
 void VIZ_MQSend(uint8_t code, const char * command){
-    VIZMessage msg;
+    VIZMessage msg = {};
     msg.code = code;
-    if(command) strncpy(msg.command, command, VIZ_MQ_MAX_CMD_LEN);
+    if(command) strncpy(msg.command, command, VIZ_MQ_MAX_CMD_LEN - 1);
 
     if(vizMQController) vizMQController->send(&msg, sizeof(VIZMessage), 0);
 

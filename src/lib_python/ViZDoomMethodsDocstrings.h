@@ -23,6 +23,7 @@ The game can be initialized again after being closed.)DOCSTRING";
     const char *newEpisode = R"DOCSTRING(Initializes a new episode. The state of an environment is completely restarted (all variables and rewards are reset to their initial values).
 After calling this method, the first state from the new episode will be available.
 If the ``recording_file_path`` argument is not empty, the new episode will be recorded to this file (as a Doom lump).
+Raises :class:`.ViZDoomErrorException` if the generated console command, including the path and any quoting, exceeds 4095 bytes.
 
 In a multiplayer game, the host can call this method to finish the game.
 Then the rest of the players must also call this method to start a new episode.
@@ -34,6 +35,7 @@ Players are numbered from 1, If ``player`` argument is equal to 0,
 the episode will be replayed using the perspective of the default player in the recording file.
 After calling this method, the first state from the replay will be available.
 All rewards, variables, and states are available when replaying the episode.
+Raises :class:`.ViZDoomErrorException` if the generated console command, including the path and any quoting, exceeds 4095 bytes.
 
 See also:
 
@@ -105,6 +107,7 @@ See also:
 
     const char *sendGameCommand = R"DOCSTRING(Sends the command to Doom console. It can be used for controlling the game, changing settings, cheats, etc.
 Some commands will be blocked in some modes.
+Raises :class:`.ViZDoomErrorException` if the command exceeds 4095 bytes (excluding the terminating NUL).
 
 See also:
 
@@ -129,6 +132,7 @@ Most useful in ``SPECTATOR`` mode.)DOCSTRING";
     const char *getEpisodeTime = R"DOCSTRING(Returns number of current episode tic.)DOCSTRING";
 
     const char *save = R"DOCSTRING(Saves a game's internal state to the file using ZDoom save game functionality.
+Raises :class:`.ViZDoomErrorException` if the generated console command, including the path and any quoting, exceeds 4095 bytes.
 
 Note: added in 1.1.9.)DOCSTRING";
 
@@ -136,6 +140,7 @@ Note: added in 1.1.9.)DOCSTRING";
 A new state is available after loading.
 Loading the game state does not reset the current episode state,
 tic counter/time and total reward state keep their values.
+Raises :class:`.ViZDoomErrorException` if the generated console command, including the path and any quoting, exceeds 4095 bytes.
 
 Note: added in 1.1.9.)DOCSTRING";
 

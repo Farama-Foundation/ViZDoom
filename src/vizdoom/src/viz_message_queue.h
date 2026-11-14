@@ -35,7 +35,7 @@ extern bip::message_queue *vizMQDoom;
 #define VIZ_MQ_NAME_DOOM_BASE "ViZDoomMQDoom"
 #define VIZ_MQ_MAX_MSG_NUM 64
 #define VIZ_MQ_MAX_MSG_SIZE sizeof(VIZMessageCommand)
-#define VIZ_MQ_MAX_CMD_LEN 128
+#define VIZ_MQ_MAX_CMD_LEN 4096
 
 #define VIZ_MSG_CODE_DOOM_DONE 11
 #define VIZ_MSG_CODE_DOOM_CLOSE 12
