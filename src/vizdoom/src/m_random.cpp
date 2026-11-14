@@ -120,7 +120,7 @@ CCMD(rngseed)
 		}
 		else
 		{
-			staticrngseed = atoi(argv[2]);
+			staticrngseed = static_cast<DWORD>(strtoul(argv[2], nullptr, 10)); //VIZDOOM_CODE
 			use_staticrng = true;
 			Printf("Static rngseed %d will be set for next game\n", staticrngseed);
 		}
