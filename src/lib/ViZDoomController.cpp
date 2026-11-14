@@ -595,7 +595,7 @@ namespace vizdoom {
     void DoomController::setMapTimeout(unsigned int tics) { this->mapTimeout = tics; }
 
     bool DoomController::isMapFirstTic() {
-        return this->doomRunning && this->gameState->MAP_TIC <= 1;
+        return this->doomRunning && this->gameState->MAP_TIC <= this->mapStartTime;
     }
 
     bool DoomController::isMapLastTic() {

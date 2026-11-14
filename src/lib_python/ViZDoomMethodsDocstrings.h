@@ -82,7 +82,8 @@ and :meth:`get_last_reward` called in this sequance.
 Sets the player's action for all the next tics (the same action will be repeated for each tic),
 processes the specified number of tics, updates the state and calculates a new reward from all processed tics, which is returned.)DOCSTRING";
 
-    const char *isNewEpisode = R"DOCSTRING(Returns ``True`` if the current episode is in the initial state - the first state, no actions were performed yet.)DOCSTRING";
+    const char *isNewEpisode = R"DOCSTRING(Returns ``True`` if the current episode is in the initial state - the first state, no actions were performed yet.
+The initial tic includes the delay configured with :meth:`set_episode_start_time`, so it can be greater than 1.)DOCSTRING";
 
     const char *isEpisodeFinished = R"DOCSTRING(Returns ``True`` if the current episode is in the terminal state (is finished).
 :meth:`make_action` and :meth:`advance_action` methods

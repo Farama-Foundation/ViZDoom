@@ -179,6 +179,7 @@ processes the specified number of tics, updates the state and calculates a new r
 | Python | `is_new_episode() -> bool` |
 
 Returns true if the current episode is in the initial state - the first state, no actions were performed yet.
+The initial tic includes the delay configured with [`setEpisodeStartTime`](#setepisodestarttime), so it can be greater than 1.
 
 
 ---
