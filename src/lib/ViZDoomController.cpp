@@ -466,8 +466,8 @@ namespace vizdoom {
             this->MQDoom->send(MSG_CODE_TIC);
             this->waitForDoomWork();
 
-            const std::string command = std::string("playdemo ") + prepareLmpFilePath(demoPath);
-            this->sendCommand(command);
+            const std::string playdemoCommand = std::string("playdemo ") + prepareLmpFilePath(demoPath);
+            this->sendCommand(playdemoCommand);
 
             this->mapChanging = true;
 
@@ -481,7 +481,7 @@ namespace vizdoom {
                 this->waitForDoomWork();
 
                 if (restartTics > 3) {
-                    this->sendCommand(command);
+                    this->sendCommand(playdemoCommand);
                     restartTics = 0;
                 }
 
