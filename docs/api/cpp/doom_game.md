@@ -43,7 +43,6 @@ The game can be initialized again after being closed.
 Initializes a new episode. The state of an environment is completely restarted (all variables and rewards are reset to their initial values).
 After calling this method, the first state from the new episode will be available.
 If the `recordingFilePath` argument is not empty, the new episode will be recorded to this file (as a Doom lump).
-Raises [`ViZDoomErrorException`](./exceptions.md#vizdoomerrorexception) if the generated console command, including the path and any quoting, exceeds 4095 bytes.
 
 In a multiplayer game, the host can call this method to finish the game.
 Then the rest of the players must also call this method to start a new episode.
@@ -62,7 +61,6 @@ Players are numbered from 1, If `player` argument is equal to 0,
 the episode will be replayed using the perspective of the default player in the recording file.
 After calling this method, the first state from the replay will be available.
 All rewards, variables, and states are available when replaying the episode.
-Raises [`ViZDoomErrorException`](./exceptions.md#vizdoomerrorexception) if the generated console command, including the path and any quoting, exceeds 4095 bytes.
 
 See also:
 - [examples/python/record_episodes.py](https://github.com/Farama-Foundation/ViZDoom/tree/main/examples/python/record_episodes.py)
@@ -306,7 +304,6 @@ Returns number of current episode tic.
 | Python | `save(file_path: str) -> None`    |
 
 Saves a game's internal state to the file using ZDoom save game functionality.
-Raises [`ViZDoomErrorException`](./exceptions.md#vizdoomerrorexception) if the generated console command, including the path and any quoting, exceeds 4095 bytes.
 
 Note: added in 1.1.9.
 
@@ -322,7 +319,6 @@ Loads a game's internal state from the file using ZDoom load game functionality.
 A new state is available after loading.
 Loading the game state does not reset the current episode state,
 tic counter/time and total reward state keep their values.
-Raises [`ViZDoomErrorException`](./exceptions.md#vizdoomerrorexception) if the generated console command, including the path and any quoting, exceeds 4095 bytes.
 
 Note: added in 1.1.9.
 
