@@ -124,6 +124,8 @@ class VizdoomEnv(gym.Env, EzPickle):
           or ``MultiBinary(len(num_binary_buttons))`` if :attr:`max_buttons_pressed` == 0 and :attr:`use_multi_binary_action_space` is True,
           or ``MultiDiscrete([2] * num_binary_buttons)`` if :attr:`max_buttons_pressed` == 0 and :attr:`use_multi_binary_action_space` is False,
         - "continuous": Is ``Box(float32.min, float32.max, (num_delta_buttons,), float32)``.
+
+        Discrete actions accept Python integers, NumPy integer scalars, and zero-dimensional integer arrays.
         """
         EzPickle.__init__(
             self,
@@ -249,7 +251,7 @@ class VizdoomEnv(gym.Env, EzPickle):
             if self.num_delta_buttons != 0:
                 agent_action = agent_action["binary"]
 
-            if np.issubdtype(type(agent_action), np.integer):
+            if self.max_buttons_pressed > 0:
                 agent_action = self.button_map[agent_action]
 
             # binary actions offset by number of delta buttons
