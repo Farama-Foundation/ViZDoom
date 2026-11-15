@@ -1,4 +1,6 @@
 import os
+import tempfile
+from pathlib import Path
 
 import pytest
 
@@ -6,8 +8,17 @@ import vizdoom as vzd
 
 
 @pytest.fixture
-def game(tmp_path, monkeypatch):
-    monkeypatch.chdir(tmp_path)
+def game_dir(monkeypatch):
+    # Keep long demo filenames below Windows MAX_PATH, including the directory.
+    # pytest's per-test directory names can push a 180-character filename over it.
+    with tempfile.TemporaryDirectory(prefix="vzd-") as directory:
+        with monkeypatch.context() as context:
+            context.chdir(directory)
+            yield Path(directory)
+
+
+@pytest.fixture
+def game(game_dir):
     game = vzd.DoomGame()
     game.load_config(os.path.join(vzd.scenarios_path, "basic.cfg"))
     # Nightmare difficulty blocks inventory commands such as give and take.
@@ -82,13 +93,13 @@ def test_oversized_command_raises_and_game_recovers(game, method, length):
 
 
 @pytest.mark.parametrize("path_length", [112, 113, 119, 120, 180])
-def test_long_recording_and_replay_path(game, tmp_path, path_length):
+def test_long_recording_and_replay_path(game, game_dir, path_length):
     path = "a" * (path_length - len(".lmp")) + ".lmp"
     game.new_episode(path)
     game.make_action([0, 0, 1], 20)
     reward = game.get_total_reward()
     game.new_episode()
-    assert (tmp_path / path).stat().st_size > 0
+    assert (game_dir / path).stat().st_size > 0
 
     game.replay_episode(path)
     assert game.is_replaying_episode()
