@@ -382,7 +382,8 @@ To install openal-soft-devel on RHEL/CentOS/Alma/Rocky Linux 9, one needs to ena
 </pre></div>
 </div>
 <p>Both Intel and Apple Silicon CPUs are supported.
-Pre-build wheels are available for Intel macOS 12.0+ and Apple Silicon macOS 14.0+.</p>
+Pre-build wheels are available for Intel macOS 12.0+ and Apple Silicon macOS 14.0+.
+The macOS wheels bundle OpenAL Soft for audio buffer support; a separate OpenAL installation is not required.</p>
 <p>If Python wheel is not available for your platform (Python version &lt;3.8, older macOS version), pip will try to install (build) ViZDoom from the source.
 In this case, install the required dependencies using Homebrew:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>boost<span class="w"> </span>sdl2<span class="w"> </span>openal-soft
