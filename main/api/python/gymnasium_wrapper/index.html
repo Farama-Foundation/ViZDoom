@@ -377,6 +377,7 @@ or <code class="docutils literal notranslate"><span class="pre">MultiBinary(len(
 or <code class="docutils literal notranslate"><span class="pre">MultiDiscrete([2]</span> <span class="pre">*</span> <span class="pre">num_binary_buttons)</span></code> if <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_buttons_pressed</span></code> == 0 and <code class="xref py py-attr docutils literal notranslate"><span class="pre">use_multi_binary_action_space</span></code> is False,</p></li>
 <li><p>“continuous”: Is <code class="docutils literal notranslate"><span class="pre">Box(float32.min,</span> <span class="pre">float32.max,</span> <span class="pre">(num_delta_buttons,),</span> <span class="pre">float32)</span></code>.</p></li>
 </ul>
+<p>Discrete actions accept Python integers, NumPy integer scalars, and zero-dimensional integer arrays.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vizdoom.gymnasium_wrapper.base_gymnasium_env.VizdoomEnv.close" title="Link to this definition">¶</a></dt>
