@@ -56,9 +56,9 @@ namespace vizdoom {
     }
 
     void MessageQueue::send(uint8_t code, const char *command) {
-        Message msg;
+        Message msg = {};
         msg.code = code;
-        if (command) strncpy(msg.command, command, MQ_MAX_CMD_LEN);
+        if (command) strncpy(msg.command, command, MQ_MAX_CMD_LEN - 1);
 
         try {
             this->mq->send(&msg, sizeof(Message), 0);

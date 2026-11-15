@@ -105,6 +105,7 @@ See also:
 
     const char *sendGameCommand = R"DOCSTRING(Sends the command to Doom console. It can be used for controlling the game, changing settings, cheats, etc.
 Some commands will be blocked in some modes.
+Raises :class:`.ViZDoomErrorException` if the command exceeds 1023 bytes (excluding the terminating NUL).
 
 See also:
 

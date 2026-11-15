@@ -363,7 +363,10 @@ namespace vizdoom {
     }
 
     void DoomController::sendCommand(std::string command) {
-        if (this->doomRunning && this->MQDoom && command.length() <= MQ_MAX_CMD_LEN)
+        if (command.length() >= MQ_MAX_CMD_LEN)
+            throw ViZDoomErrorException("Game command exceeds the maximum length of "
+                + std::to_string(MQ_MAX_CMD_LEN - 1) + " bytes.");
+        if (this->doomRunning && this->MQDoom)
             this->MQDoom->send(MSG_CODE_COMMAND, command.c_str());
     }
 

@@ -36,7 +36,7 @@ namespace vizdoom {
     /* Message queues' settings */
     #define MQ_MAX_MSG_NUM      64
     #define MQ_MAX_MSG_SIZE     sizeof(Message)
-    #define MQ_MAX_CMD_LEN      128
+    #define MQ_MAX_CMD_LEN      1024
 
     /* Message struct */
     struct Message {
