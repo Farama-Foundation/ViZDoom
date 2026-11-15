@@ -2196,7 +2196,7 @@ static void D_DoomInit()
 	const char *v = Args->CheckValue("-rngseed");
 	if (v)
 	{
-		rngseed = staticrngseed = atoi(v);
+		rngseed = staticrngseed = static_cast<DWORD>(strtoul(v, nullptr, 10)); //VIZDOOM_CODE
 		use_staticrng = true;
 		Printf("D_DoomInit: Static RNGseed %d set.\n", rngseed);
 	}

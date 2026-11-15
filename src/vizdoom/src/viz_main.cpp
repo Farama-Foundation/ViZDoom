@@ -124,7 +124,7 @@ CVAR (Int, viz_notifications_tics, 1, 0)
 
 CCMD(viz_set_seed){
     viz_seed.CmdSet(argv[1]);
-    rngseed = atoi(argv[1]);
+    rngseed = static_cast<DWORD>(strtoul(argv[1], nullptr, 10));
     staticrngseed = rngseed;
     use_staticrng = true;
     VIZ_DebugMsg(2, VIZ_FUNC, "viz_seed changed to: %d.", rngseed);
