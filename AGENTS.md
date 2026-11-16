@@ -41,11 +41,9 @@
 
 
 ## Branch names
-
-- Use short, descriptive branch names without a prefix. Do not add `codex/` to branch names.
+- Use short, descriptive branch names.
 - Use lowercase words separated by hyphens, for example `save-load-tests` or `fix-reward-reset`.
 - Describe the purpose of the change rather than using generic names such as `updates` or `fixes`.
-- When continuing work on an existing branch, keep its name unless the user asks to rename it.
 
 
 ## Editable install (builds C++ + Python package)
