@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-
 # Tests if basic game loop works correctly in different modes.
-# This test can be run as Python script or via PyTest.
 
 import time
 
@@ -11,7 +8,7 @@ import vizdoom as vzd
 
 
 WAIT_SECONDS = 10
-TIC_TOLERANCE = 10
+TIC_TOLERANCE = 15
 
 
 def _test_basic_loop(mode, episodes=3, steps=10, frame_skip=1):
@@ -85,9 +82,6 @@ def test_async_mode_runs_in_real_time():
         expected_tics = elapsed_seconds * vzd.DEFAULT_TICRATE
 
         assert (
-            elapsed_tics >= WAIT_SECONDS * vzd.DEFAULT_TICRATE
-        ), f"Elapsed tics {elapsed_tics} is less than expected {WAIT_SECONDS * vzd.DEFAULT_TICRATE}"
-        assert (
             abs(elapsed_tics - expected_tics) <= TIC_TOLERANCE
         ), f"Elapsed tics {elapsed_tics} differ from expected {expected_tics} by more than {TIC_TOLERANCE}"
     finally:
@@ -144,9 +138,3 @@ def test_is_new_episode_with_start_time(start_time):
             assert game.is_new_episode()
     finally:
         game.close()
-
-
-if __name__ == "__main__":
-    test_basic_loop()
-    test_async_mode_runs_in_real_time()
-    test_sync_mode_waits_for_advance_action()

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # This test should be run manually.
+# It checks that concurrent game processes use distinct IPC identifiers.
 
 import glob
 import multiprocessing

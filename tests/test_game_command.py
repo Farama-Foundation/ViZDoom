@@ -1,3 +1,5 @@
+# Tests console commands, argument handling, command length limits, and recording paths.
+
 import os
 import tempfile
 from pathlib import Path

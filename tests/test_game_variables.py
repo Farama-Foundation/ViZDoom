@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# Tests weapon and ammo variables, episode counters, and death counts after respawn.
 
 import os
 
@@ -181,7 +181,3 @@ def test_death_count_survives_respawn():
             assert game.get_game_variable(vzd.GameVariable.DEATHCOUNT) == deaths
     finally:
         game.close()
-
-
-if __name__ == "__main__":
-    test_weapon_ammo_related_variables()

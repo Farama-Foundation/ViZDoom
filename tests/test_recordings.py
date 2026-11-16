@@ -1,3 +1,5 @@
+# Tests recording paths, replay consistency, independent recordings, and finalization.
+
 import os
 
 import numpy as np

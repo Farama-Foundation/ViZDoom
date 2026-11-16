@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-
 # Tests for get_state() method and returned State object.
-# This test can be run as Python script or via PyTest.
 
 import os
 import pickle
@@ -589,16 +586,3 @@ def test_server_state():
     assert (
         server_state.player_count == 1
     ), f"Server state player count is: {server_state.player_count}, expected 1 for singeplayer game"
-
-
-# TODO: Add more tests for server state
-
-
-if __name__ == "__main__":
-    test_get_state()
-    test_audio_buffer_contains_sound()
-    test_buffer_sizes()
-    test_if_none()
-    test_types()
-    test_modifing_buffers_while_game_is_running()
-    test_server_state()

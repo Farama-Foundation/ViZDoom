@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-
 # Test correctness of labels buffer.
-# This test can be run as Python script or via PyTest
 
 import os
 import random
@@ -107,11 +104,3 @@ def test_labels_buffer(seed):
     print(
         f"Seen {seen_labels} labels with {len(seen_unique_objects)} unique objects in {state_count} states."
     )
-
-
-if __name__ == "__main__":
-    test_label_pixels_outside_box((2, 7))
-    test_label_pixels_outside_box((7, 2))
-    test_label_box_edges_and_other_objects()
-    for seed in [0, 1, 2, 63]:
-        test_labels_buffer(seed)

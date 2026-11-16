@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-
 # Tests for Gymnasium wrapper.
-# This test can be run as Python script or via PyTest
 
 import os
 import pickle
@@ -90,17 +87,6 @@ def _check_if_main_wad_available(env_name: str, env: gymnasium.Env) -> None:
             pytest.skip(
                 f"Main WAD file {main_wad_path} not available for {env_name}, skipping test."
             )
-
-
-def _run_with_pytest_skip(func, *args, **kwargs):
-    skip_exception = getattr(getattr(pytest, "skip", None), "Exception", None)
-    try:
-        func(*args, **kwargs)
-    except BaseException as exc:
-        if skip_exception is not None and isinstance(exc, skip_exception):
-            print(f"Skipped: {exc}")
-            return
-        raise
 
 
 # Testing with different non-default kwargs (since each has a different obs space)
@@ -474,42 +460,3 @@ def test_gymnasium_wrapper_seed(env_name: str):
         env2_name="Second",
         seed=1993,
     )
-
-
-if __name__ == "__main__":
-    print("Testing Gymnasium wrapper compatibility with gymnasium API")
-    for env_name in VIZDOOM_ENVS:
-        _run_with_pytest_skip(test_gymnasium_wrapper, env_name)
-
-    print("Testing Gymnasium rollout (checking terminal state)")
-    for env_name in VIZDOOM_ENVS:
-        _run_with_pytest_skip(test_gymnasium_wrapper_terminal_state, env_name)
-
-    test_gymnasium_wrapper_truncated_state()
-
-    print("Testing Gymnasium wrapper action spaces")
-    for (
-        env_config,
-        multi_binary_action_space,
-        multi_discrete_action_space,
-        discrete_action_spaces,
-    ) in ACTION_SPACE_PARAMS:
-        _run_with_pytest_skip(
-            test_gymnasium_wrapper_action_space,
-            env_config,
-            multi_binary_action_space,
-            multi_discrete_action_space,
-            discrete_action_spaces,
-        )
-
-    print("Testing Gymnasium wrapper observation spaces")
-    for env_config, obs_space in OBS_SPACE_PARAMS:
-        _run_with_pytest_skip(test_gymnasium_wrapper_obs_space, env_config, obs_space)
-
-    print("Testing Gymnasium wrapper pickling (EzPickle).")
-    for env_name in VIZDOOM_ENVS:
-        _run_with_pytest_skip(test_gymnasium_wrapper_pickle, env_name)
-
-    print("Testing gymnasium wrapper seeding.")
-    for env_name in VIZDOOM_ENVS:
-        _run_with_pytest_skip(test_gymnasium_wrapper_seed, env_name)

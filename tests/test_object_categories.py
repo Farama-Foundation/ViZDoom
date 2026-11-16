@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-
 # Tests for category mapping functionality (semantic segmentation).
-# This test can be run as Python script or via PyTest
 
 import glob
 import os
@@ -73,7 +70,3 @@ def test_object_categories():
             continue
         custom_categories_test(scenario)
     print("\nTest completed!")
-
-
-if __name__ == "__main__":
-    test_object_categories()

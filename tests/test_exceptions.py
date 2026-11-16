@@ -1,3 +1,5 @@
+# Tests exceptions for unavailable games, missing files, and unsupported sound settings.
+
 import struct
 import subprocess
 import sys
@@ -167,10 +169,3 @@ def test_vizdoom_no_sound_exception(game_args):
         assert state.audio_buffer is None
     finally:
         game.close()
-
-
-if __name__ == "__main__":
-    test_vizdoom_is_not_running_exception()
-    test_file_does_not_exist_exception()
-    for game_args in ("-nosound", "+snd_backend null"):
-        test_vizdoom_no_sound_exception(game_args)

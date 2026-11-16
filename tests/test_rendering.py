@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # Tests for rendering options and the screen buffer.
 
 import os
@@ -63,8 +61,3 @@ def test_render_screen_flashes_disables_pickup_flash():
 
     changed_pixels = np.any(flashed_buffer != unflashed_buffer, axis=2)
     assert np.mean(changed_pixels) > 0.9
-
-
-if __name__ == "__main__":
-    test_screen_buffer_always_uses_flashed_palette()
-    test_render_screen_flashes_disables_pickup_flash()

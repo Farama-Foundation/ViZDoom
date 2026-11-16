@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-
 # Tests for ViZDoom enums and related methods.
-# This test can be run as Python script or via PyTest
 
 import vizdoom as vzd
 
@@ -63,8 +60,3 @@ def test_buttons():
 
 def test_game_variables():
     _test_enums("GameVariable", "available_game_variable")
-
-
-if __name__ == "__main__":
-    test_buttons()
-    test_game_variables()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3ch
+#!/usr/bin/env python3
 
 # This test should be run manually and can be run as Python script or via PyTest.
 # It tests seed option.
