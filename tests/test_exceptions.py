@@ -1,3 +1,8 @@
+import struct
+import subprocess
+import sys
+import textwrap
+
 import pytest
 
 import vizdoom as vzd
@@ -81,6 +86,58 @@ def test_file_does_not_exist_exception():
     game.set_doom_game_path("non_existent_file.wad")
     with pytest.raises(vzd.FileDoesNotExistException):
         game.init()
+
+
+def test_engine_startup_error(tmp_path):
+    decorate = b"actor BadActor 16000 { Stop }\n"
+    wad_path = tmp_path / "bad_decorate.wad"
+    wad_path.write_bytes(
+        struct.pack("<4sII", b"PWAD", 1, 12 + len(decorate))
+        + decorate
+        + struct.pack("<II8s", 12, len(decorate), b"DECORATE")
+    )
+
+    # Isolate native crashes so a regression fails this test, not the test runner.
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            textwrap.dedent(
+                """
+                import sys
+                import pytest
+                import vizdoom as vzd
+
+                game = vzd.DoomGame()
+                game.set_window_visible(False)
+                game.set_sound_enabled(False)
+                game.set_doom_scenario_path(sys.argv[1])
+                try:
+                    for _ in range(2):
+                        with pytest.raises((vzd.ViZDoomErrorException,
+                                            vzd.ViZDoomUnexpectedExitException)):
+                            game.init()
+                        assert not game.is_running()
+                        game.close()
+                        game.close()
+
+                    # Failed initialization must leave the game reusable.
+                    game.set_doom_scenario_path("")
+                    game.init()
+                    assert game.is_running()
+                    assert game.get_state() is not None
+                    game.advance_action()
+                finally:
+                    game.close()
+                """
+            ),
+            str(wad_path),
+        ],
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
 
 
 @pytest.mark.parametrize("game_args", ["-nosound", "+snd_backend null"])
