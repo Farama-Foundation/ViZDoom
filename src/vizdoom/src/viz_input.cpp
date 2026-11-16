@@ -143,7 +143,7 @@ int VIZ_AxisFilter(VIZButton button, double value){
             else maxValue = vizInput->BT_MAX_VALUE[axis];
 
             if(std::abs(value) > std::abs(maxValue))
-                value = value/std::abs(value) * std::abs(maxValue) + 1;
+                value = value/std::abs(value) * std::abs(maxValue);
         }
         if(button == VIZ_BT_VIEW_ANGLE_AXIS || button == VIZ_BT_VIEW_PITCH_AXIS)
             vizInput->BT[button] = value/32768.0 * 180.0;
