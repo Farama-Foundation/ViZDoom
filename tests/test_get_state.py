@@ -586,6 +586,3 @@ def test_server_state():
     assert (
         server_state.player_count == 1
     ), f"Server state player count is: {server_state.player_count}, expected 1 for singeplayer game"
-
-
-# TODO: Add more tests for server state
