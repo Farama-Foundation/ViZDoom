@@ -1,3 +1,5 @@
+# Tests macOS wheel repair, bundled libraries, RECORD entries, and deployment targets.
+
 import base64
 import csv
 import hashlib

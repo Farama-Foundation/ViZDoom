@@ -1,8 +1,9 @@
 # Tests
 
-This directory contains the tests for the project that can be run with pytest or by running the `test_*.py` or `manual_test_*.py` files directly.
+Run the automated tests in `test_*.py` with `pytest -s tests` (or `pytest -n auto -s tests` to run them in parallel).
+Run `manual_test_*.py` files directly with Python.
 
-Manual tests may require significant amount of time or manual comparison of results, so they are not run by CI/CD.
+The manual tests may require significant amount of time or manual comparison of results, so they are not run by CI/CD.
 
 The `build_test_*.sh` scripts test the build process of the project under different distributions and environments.
 To run them docker and cibuildwheels is required.

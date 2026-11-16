@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-
 # Tests ViZDoom load_config method and all the config files from the scenario directory.
-# This test can be run as Python script or via PyTest
 
 import os
 
@@ -225,9 +222,3 @@ def test_scenario_configs():
             assert (
                 w == 320 and h == 240
             ), f"Config file {file} is using non-default screen resolution: {w}x{h} instead 320x240."
-
-
-if __name__ == "__main__":
-    test_set_config()
-    test_load_config()
-    test_scenario_configs()

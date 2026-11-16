@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-
+# Tests API docstrings for default values and matching configuration keys.
 
 import re
 
@@ -46,7 +45,3 @@ def _check_object_docstrings(_object):
 def test_docstrings():
     print("Testing all docstrings ...")
     _check_object_docstrings(vzd.DoomGame)
-
-
-if __name__ == "__main__":
-    test_docstrings()

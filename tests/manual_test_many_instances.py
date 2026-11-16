@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # This test should be run manually.
+# It stress-tests running many game instances across multiple processes.
 
 import os
 from argparse import ArgumentParser

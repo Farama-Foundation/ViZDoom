@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-
-# Tests for ViZDoom enums and related methods.
-# This test can be run as Python script or via PyTest
+# Tests setting, appending, and clearing custom game arguments.
 
 import vizdoom as vzd
 
@@ -27,7 +24,3 @@ def test_game_args():
     assert (
         game.get_game_args() == args_all
     ), f"Game args not set correctly. Expected: {args_all}, Got: {game.get_game_args()}"
-
-
-if __name__ == "__main__":
-    test_game_args()

@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-
 # Tests for make_action method.
-# This test can be run as Python script or via PyTest
 
 import numpy as np
 
@@ -178,12 +175,3 @@ def test_advance_action():
     state = game.get_state()
     assert state is not None
     assert state.tic == prev_tic + tics_to_advance + 1
-
-
-if __name__ == "__main__":
-    test_make_action_list()
-    test_make_action_numpy()
-    test_make_action_tuple()
-    test_make_action_mixed_list()
-    test_keyword_arguments()
-    test_advance_action()
