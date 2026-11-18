@@ -34,7 +34,7 @@ env:
   BUILD_TYPE: Release
   # Set paths to dependencies here
   BOOST_DIR: ${{ github.workspace }}\deps\boost
-  DXSDK_DIR: ${{ github.workspace }}\deps\DXSDK
+  SDL2DIR: ${{ github.workspace }}\deps\SDL2
   OPENALDIR: ${{ github.workspace }}\deps\openal-soft
   # Point to the correct generator and dependencies
   VIZDOOM_WIN_DEPS_ROOT: ${{ github.workspace }}\deps
@@ -88,15 +88,13 @@ jobs:
         # NOTE: If a boost version matching all requirements cannot be found,
         # this build step will fail
 
-    - name:  Download DXSDK
-      id: download-dxsdk
+    - name: Download SDL2
       working-directory: ${{ github.workspace }}/deps
       run: |
-        curl -L https://download.microsoft.com/download/a/e/7/ae743f1f-632b-4809-87a9-aa1bb3458e31/DXSDK_Jun10.exe -o _DX2010_.exe
-        7z x _DX2010_.exe DXSDK/Include -o_DX2010_
-        7z x _DX2010_.exe DXSDK/Lib -o_DX2010_
-        mv _DX2010_/DXSDK .
-        rm -fR _DX*_ _DX*_.exe
+        curl --fail -L https://github.com/libsdl-org/SDL/releases/download/release-2.32.10/SDL2-devel-2.32.10-VC.zip -o SDL2.zip
+        7z x SDL2.zip
+        mv SDL2-2.32.10 SDL2
+        rm SDL2.zip
       shell: bash
 
     - name: Report working directory structure (cmd)
@@ -118,7 +116,7 @@ jobs:
         echo $BUILD_TYPE
         echo $BOOST_DIR
         echo $BOOST_ROOT
-        echo $DXSDK_DIR
+        echo $SDL2DIR
         echo $VIZDOOM_BUILD_GENERATOR_NAME
         echo $VIZDOOM_WIN_DEPS_ROOT
 

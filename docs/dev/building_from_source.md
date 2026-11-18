@@ -96,8 +96,13 @@ On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.
 * Boost libraries 1.54.0+
 * Python 3.10+ for Python binding (optional)
 
-Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Windows) are needed.
-Most of them (except Boost) are gathered in this repository: [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).
+Windows uses the same SDL2 video and input backend as Linux and macOS; the DirectX SDK is not required.
+Download the SDL2 Visual C++ development archive (`SDL2-devel-*-VC.zip`) from
+[SDL releases](https://github.com/libsdl-org/SDL/releases/tag/release-2.32.10) and extract it so that
+`SDL2/include/SDL.h` and `SDL2/lib/x64/SDL2.dll` are under your dependency directory.
+CMake copies `SDL2.dll` beside the engine executable and into the Python package.
+
+The additional audio dependencies are gathered in [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).
 You can download Boost from [here](https://www.boost.org/users/download).
 
 
@@ -122,7 +127,8 @@ On Linux and macOS dependencies should be found automatically.
 On Windows you need to manually set following environment variables:
 * `BOOST_ROOT` - the path to the directory with Boost libraries (e.g. `C:\boost_1_76_0`),
 * `VIZDOOM_BUILD_GENERATOR_NAME` - generator name (e.g. `Visual Studio 16 2019`),
-* `VIZDOOM_WIN_DEPS_ROOT` - the path to the directory with ZDoom dependencies (e.g. `C:\ViZDoomWinDepBin`).
+* `VIZDOOM_WIN_DEPS_ROOT` - the path to the directory with ZDoom dependencies (e.g. `C:\ViZDoomWinDepBin`),
+* `SDL2DIR` - the path to the extracted SDL2 development directory (defaults to `SDL2` under `VIZDOOM_WIN_DEPS_ROOT` for pip builds).
 
 The process of building ViZDoom this way on Windows is demonstarted in [scripts/windows_build_wheels.bat](https://github.com/Farama-Foundation/ViZDoom/tree/main/scripts/windows_build_wheels.bat).
 

@@ -34,10 +34,15 @@
 
 // HEADER FILES ------------------------------------------------------------
 
+#include <SDL.h> //VIZDOOM_CODE
+
+//VIZDOOM_CODE
+#ifndef _WIN32
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <termios.h>
+#endif //VIZDOOM_CODE
 
 #include "st_start.h"
 #include "doomdef.h"
@@ -70,7 +75,10 @@ class FTTYStartupScreen : public FStartupScreen
 		bool DidNetInit;
 		int NetMaxPos, NetCurPos;
 		const char *TheNetMessage;
+//VIZDOOM_CODE
+#ifndef _WIN32
 		termios OldTermIOS;
+#endif
 };
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
@@ -190,7 +198,6 @@ void FTTYStartupScreen::NetInit(const char *message, int numplayers)
 {
 	if (!DidNetInit)
 	{
-		termios rawtermios;
 
 		//VIZDOOM_CODE
 		//fprintf (stderr, "Press 'Q' to abort network game synchronization.\n"); // When using as controlled subpcrocess, this won't work.
@@ -198,10 +205,14 @@ void FTTYStartupScreen::NetInit(const char *message, int numplayers)
         fprintf (stderr, "Network game synchronization timeout: %ds.", (unsigned int)*viz_connect_timeout);
         // Set stdin to raw mode so we can get keypresses in ST_CheckNetAbort()
 		// immediately without waiting for an EOL.
+//VIZDOOM_CODE
+#ifndef _WIN32
+		termios rawtermios;
 		tcgetattr (STDIN_FILENO, &OldTermIOS);
 		rawtermios = OldTermIOS;
 		rawtermios.c_lflag &= ~(ICANON | ECHO);
 		tcsetattr (STDIN_FILENO, TCSANOW, &rawtermios);
+#endif //VIZDOOM_CODE
 		DidNetInit = true;
 	}
 	if (numplayers == 1)
@@ -233,7 +244,10 @@ void FTTYStartupScreen::NetDone()
 	// Restore stdin settings
 	if (DidNetInit)
 	{
+//VIZDOOM_CODE
+#ifndef _WIN32
 		tcsetattr (STDIN_FILENO, TCSANOW, &OldTermIOS);
+#endif
 		printf ("\n");
 		DidNetInit = false;
 	}
@@ -316,16 +330,13 @@ void FTTYStartupScreen::NetProgress(int count)
 
 bool FTTYStartupScreen::NetLoop(bool (*timer_callback)(void *), void *userdata)
 {
-	fd_set rfds;
-	struct timeval tv;
-	int retval;
-	char k;
+	//VIZDOOM_CODE: Network startup does not poll stdin.
 
 	unsigned int loopEnterTime = I_MSTime();
 
 	for (;;)
 	{
-        usleep(100 * 1000);
+        SDL_Delay(100); //VIZDOOM_CODE
         VIZ_InterruptionPoint();
 
         if((unsigned int)*viz_connect_timeout * 1000 < I_MSTime() - loopEnterTime) {

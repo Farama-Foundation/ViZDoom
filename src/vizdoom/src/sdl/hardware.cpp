@@ -32,7 +32,7 @@
 **
 */
 
-#include <SDL2/SDL.h>
+#include <SDL.h> //VIZDOOM_CODE
 #include <signal.h>
 #include <time.h>
 
@@ -215,7 +215,26 @@ void I_ClosestResolution (int *width, int *height, int bits)
 EXTERN_CVAR(Int, vid_maxfps);
 EXTERN_CVAR(Bool, cl_capfps);
 
-#ifndef __APPLE__
+//VIZDOOM_CODE
+#ifdef _WIN32
+static unsigned int FPSLimitInterval;
+static unsigned int FPSLimitNextFrame;
+
+void I_SetFPSLimit(int limit)
+{
+	if (limit < 0) limit = vid_maxfps;
+	FPSLimitInterval = limit > 0 ? 1000 / limit : 0;
+	FPSLimitNextFrame = SDL_GetTicks();
+}
+
+void I_WaitForFPSLimit()
+{
+	if (FPSLimitInterval == 0) return;
+	int delay = int(FPSLimitNextFrame - SDL_GetTicks());
+	if (delay > 0) SDL_Delay(delay);
+	FPSLimitNextFrame = SDL_GetTicks() + FPSLimitInterval;
+}
+#elif !defined(__APPLE__)
 Semaphore FPSLimitSemaphore;
 
 static void FPSLimitNotify(sigval val)
