@@ -256,8 +256,15 @@ void VIZ_GameStateUpdateSectors();
 
 void VIZ_GameStateUpdateNotifications();
 
-void VIZ_GameStateResetCounters();
+// Called by G_DoLoadLevel() before P_SetupLevel(), including startup and map
+// transitions and save restoration. Resets player counters, clears the audio
+// buffer, and recreates the audio renderer when configured to do so, before
+// saved sound channels are restored.
+void VIZ_GameStateLoadLevel();
 
+// Called by both G_DeferedInitNew() overloads when a new game is requested,
+// before the new level is loaded. Resets the object-ID counter and applies the
+// map-loop settings.
 void VIZ_GameStateInitNew();
 
 void VIZ_GameStateClose();

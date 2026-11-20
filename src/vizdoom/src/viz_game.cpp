@@ -696,13 +696,23 @@ void VIZ_GameStateUpdateNotifications(){
     vizGameStateSM->NOTIFICATIONS_TEXT[VIZ_MAX_NOTIFICATIONS_CHARS - 1] = '\0';
 }
 
-void VIZ_GameStateResetCounters(){
+void VIZ_GameStateLoadLevel(){
     if(!vizGameStateSM) return;
 
     vizGameStateSM->PLAYER_DEATHCOUNT = 0;
     for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
         vizPlayerLogger[i].reset();
     }
+
+    // Reset at the level-load boundary, before any sounds from the new map.
+    // Resetting when a map change is requested lets the old map feed the new
+    // renderer, leaving reverb and dithering state dependent on that episode.
+    if (*viz_soft_audio && *viz_reset_audio_on_map_change) {
+        I_ShutdownMusic();
+        I_ShutdownSound();
+        I_InitSound();
+    }
+    VIZ_ClearAudioBuffer();
 }
 
 void VIZ_GameStateInitNew(){
@@ -714,13 +724,6 @@ void VIZ_GameStateInitNew(){
     }
 
     vizUniqueObjectsCount = 0;
-
-    if (*viz_soft_audio && *viz_reset_audio_on_map_change) {
-        I_ShutdownMusic();
-        I_ShutdownSound();
-        I_InitSound();
-    }
-    VIZ_ClearAudioBuffer();
 }
 
 void VIZ_GameStateClose(){

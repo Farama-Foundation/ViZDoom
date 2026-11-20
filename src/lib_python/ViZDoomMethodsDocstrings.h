@@ -135,8 +135,13 @@ Note: added in 1.1.9.)DOCSTRING";
 
     const char *load = R"DOCSTRING(Loads a game's internal state from the file using ZDoom load game functionality.
 A new state is available after loading.
-Loading the game state does not reset the current episode state,
+Loading the game state does not start a new episode;
 tic counter/time and total reward state keep their values.
+Death and combat counters (``DEATHCOUNT``, ``HITCOUNT``, ``HITS_TAKEN``, ``DAMAGECOUNT``,
+and ``DAMAGE_TAKEN``) are reset rather than restored from the save file.
+The audio buffer is cleared and, by default, the audio renderer is reset before
+saved sound channels are restored. Audio buffers and the renderer's internal
+state are not restored from the save file.
 
 Note: added in 1.1.9.)DOCSTRING";
 
