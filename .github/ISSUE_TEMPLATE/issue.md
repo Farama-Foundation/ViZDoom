@@ -1,7 +1,12 @@
-### Questions, features suggestions and requests
+---
+name: Issue, question or feature request
+about: Report a problem, ask a question or suggest a feature for ViZDoom.
+---
 
-If you have a question, features suggestions or requests, do not hesitate to ask.
-However, you can check **[FAQ](doc/FAQ.md)** section and already existing issues with "question" tag ([is:issue label:question](https://github.com/mwydmuch/ViZDoom/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3Aquestion)) first.
+### Questions, feature suggestions and requests
+
+If you have a question, feature suggestions or requests, do not hesitate to ask.
+However, you can check the **[FAQ](https://vizdoom.farama.org/faq/)** section and already existing issues with the "question" tag ([is:issue label:question](https://github.com/Farama-Foundation/ViZDoom/issues?q=is%3Aissue+label%3Aquestion)) first.
 
 ### Issues
 
