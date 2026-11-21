@@ -974,10 +974,7 @@ void G_DoLoadLevel (int position, bool autosave)
 	}
 
 	//VIZDOOM_CODE
-	if (!savegamerestore)
-	{
-		VIZ_GameStateResetCounters();
-	}
+	VIZ_GameStateLoadLevel(savegamerestore);
 
 	level.maptime = 0;
 	TexMan.ResetAnimations();

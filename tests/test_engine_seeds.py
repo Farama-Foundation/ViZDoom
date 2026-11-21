@@ -1,4 +1,4 @@
-# Tests unsigned engine seeds and reproducible seeds across episodes and recordings.
+# Tests unsigned engine seeds and reproducible episodes, audio, and recordings.
 
 import os
 
@@ -69,3 +69,38 @@ def test_startup_and_episode_seeds_match_unsigned_rng(tmp_path, monkeypatch):
         0, 2**32, size=len(paths), dtype=np.uint32
     )
     assert [demo_seed(path) for path in paths] == expected.tolist()
+
+
+@pytest.mark.parametrize("frame_skip", [1, 4])
+@pytest.mark.parametrize("seed", [0, 66316749])
+def test_audio_is_reproducible_across_episodes(tmp_path, frame_skip, seed):
+    game = vzd.DoomGame()
+    game.load_config(os.path.join(vzd.scenarios_path, "basic_audio.cfg"))
+    game.set_window_visible(False)
+    game.set_doom_config_path(str(tmp_path / "audio.ini"))
+    game.set_audio_buffer_size(frame_skip)
+    game.set_available_buttons([vzd.Button.MOVE_LEFT, vzd.Button.ATTACK])
+    # Keep environmental effects enabled: they exposed audio leaking from the
+    # previous episode while the new map was still waiting to load.
+    game.add_game_args("+snd_efx 1")
+    game.set_seed(seed)
+    try:
+        game.init()
+        initial_audio = game.get_state().audio_buffer
+        assert initial_audio is not None
+        initial_audio = initial_audio.copy()
+        game.make_action([False, False], frame_skip)
+        step_audio = game.get_state().audio_buffer
+        assert step_audio is not None
+        step_audio = step_audio.copy()
+        assert np.any(step_audio), "The determinism check must include sound"
+
+        for previous_action in ([True, False], [False, True], [False, False]):
+            game.make_action(previous_action, 4)
+            game.set_seed(seed)
+            game.new_episode()
+            np.testing.assert_array_equal(game.get_state().audio_buffer, initial_audio)
+            game.make_action([False, False], frame_skip)
+            np.testing.assert_array_equal(game.get_state().audio_buffer, step_audio)
+    finally:
+        game.close()
