@@ -94,7 +94,7 @@ html_theme = "celshast"
 html_title = "ViZDoom Documentation"
 html_baseurl = "https://vizdoom.farama.org"
 html_copy_source = False
-html_favicon = "_static/img/favicon.png"
+html_favicon = "_static/img/favicon.svg"
 html_theme_options = {
     "light_logo": "img/vizdoom-black.svg",
     "dark_logo": "img/vizdoom-white.svg",
