@@ -62,7 +62,7 @@ def game(tmp_path, monkeypatch):
         ),
     ],
 )
-def test_load_resets_combat_counters_and_reward_baselines(
+def test_load_preserves_combat_counters_and_reward_baselines(
     game, variable, setting, setup, command, delta, reward_per_unit
 ):
     getattr(game, f"set_{setting}")(reward_per_unit)
@@ -78,14 +78,14 @@ def test_load_resets_combat_counters_and_reward_baselines(
     assert game.get_game_variable(variable) == 2 * delta
     total_reward = game.get_total_reward()
 
-    for _ in range(2):
+    for previous_events in (2, 3):
         game.load("counters.png")
-        assert game.get_game_variable(variable) == 0
+        assert game.get_game_variable(variable) == previous_events * delta
         assert game.get_last_reward() == 0
         assert game.get_total_reward() == total_reward
         game.send_game_command(command)
         assert game.make_action([0]) == expected_reward
-        assert game.get_game_variable(variable) == delta
+        assert game.get_game_variable(variable) == (previous_events + 1) * delta
         total_reward += expected_reward
         assert game.get_total_reward() == total_reward
 

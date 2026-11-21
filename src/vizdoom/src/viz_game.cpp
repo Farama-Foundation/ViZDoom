@@ -696,12 +696,14 @@ void VIZ_GameStateUpdateNotifications(){
     vizGameStateSM->NOTIFICATIONS_TEXT[VIZ_MAX_NOTIFICATIONS_CHARS - 1] = '\0';
 }
 
-void VIZ_GameStateLoadLevel(){
+void VIZ_GameStateLoadLevel(bool restoringSave){
     if(!vizGameStateSM) return;
 
-    vizGameStateSM->PLAYER_DEATHCOUNT = 0;
-    for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
-        vizPlayerLogger[i].reset();
+    if (!restoringSave) {
+        vizGameStateSM->PLAYER_DEATHCOUNT = 0;
+        for (size_t i = 0; i < VIZ_MAX_PLAYERS; ++i) {
+            vizPlayerLogger[i].reset();
+        }
     }
 
     // Reset at the level-load boundary, before any sounds from the new map.
