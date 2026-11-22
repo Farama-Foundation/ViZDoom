@@ -13,7 +13,7 @@ However, you can check the **[FAQ](https://vizdoom.farama.org/faq/)** section an
 If you encountered an issue, please post the following things:
 * description of an issue,
 * ViZDoom version you are using,
-* information about your OS platform, distribution and environment (GCC, Python, Java, Lua versions etc.),
+* information about your OS platform, distribution and environment (GCC, Python, etc.),
 * if you have a problem with installation/building, post pip, CMake and Make output etc.,
 * if you encountered a crash, post `vizdoom-crash.log` that should be created in your working directory,
 * if you encountered a crash or bug, provide information about scenarios you are using and configuration of the ViZDoom environment,

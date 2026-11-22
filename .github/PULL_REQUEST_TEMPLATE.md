@@ -12,13 +12,10 @@
 
 ## Checklist
 
-- [ ] I have run the [`pre-commit` checks](https://pre-commit.com/) with `pre-commit run --all-files` (see `CONTRIBUTING.md` instructions to set it up).
-- [ ] I have commented my code, particularly in hard-to-understand areas.
-- [ ] I have made corresponding changes to the documentation. For public API changes, updated `docs/api/cpp/` and regenerated Python docs, docstrings, and stubs.
-- [ ] My changes generate no new warnings.
-- [ ] I have added tests that prove my fix is effective or that my feature works.
-- [ ] New and existing unit tests pass locally with my changes.
+<!-- Remove items that do not apply to this PR. -->
 
-- [ ] Added or updated tests where applicable.
-- [ ] Updated documentation where applicable.
-- [ ] Called out any breaking changes or compatibility concerns in the description.
+- [ ] Added or updated tests that cover the change.
+- [ ] Ran the relevant tests and reported the results above.
+- [ ] Ran `pre-commit run --all-files`.
+- [ ] Updated the affected documentation. For public API changes, updated `docs/api/cpp/`, regenerated the Python docs and docstrings, and rebuilt to regenerate the Python stubs.
+- [ ] Described any breaking changes and what users need to do when upgrading.
