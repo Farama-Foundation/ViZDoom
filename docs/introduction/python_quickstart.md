@@ -7,7 +7,7 @@ To install the latest release of ViZDoom, just run:
 pip install vizdoom
 ```
 Both x86-64 and AArch64 (ARM64) architectures are supported.
-Wheels are available for Python 3.10+ on Linux.
+Wheels are available for Python 3.11+ on Linux.
 
 ### Audio buffer requirement
 If you want to use audio buffer, you need to have OpenAL library installed.
@@ -53,21 +53,20 @@ It requires the to have the above dependencies installed.
 
 
 ## macOS
-To install the latest release of ViZDoom, just run (it may take a few minutes as it will build ViZDoom from source on M1/M2 chips):
+To install the latest release of ViZDoom, just run:
 ```sh
 pip install vizdoom
 ```
-Both Intel and Apple Silicon CPUs are supported.
-Pre-build wheels are available for Intel macOS 12.0+ and Apple Silicon macOS 14.0+.
+Pre-build wheels are available for Apple Silicon (M-series chips) macOS 15.0+.
 The macOS wheels bundle OpenAL Soft for audio buffer support; a separate OpenAL installation is not required.
 
-If Python wheel is not available for your platform (Python version <3.8, older macOS version), pip will try to install (build) ViZDoom from the source.
+If Python wheel is not available for your platform (older Python or macOS version), pip will try to install (build) ViZDoom from the source.
 In this case, install the required dependencies using Homebrew:
 ```sh
 brew install cmake boost sdl2 openal-soft
 ```
 We recommend using at least macOS High Sierra 10.13+ with Python 3.10+.
-On Apple Silicon (M1, M2, and M3), make sure you are using Python/Pip for Apple Silicon.
+On Apple Silicon, make sure you are using Python/Pip for Apple Silicon.
 
 To install the main branch version of ViZDoom, run, in this case you also need to have the above dependencies installed:
 ```sh
@@ -81,7 +80,7 @@ To install the latest release of ViZDoom, just run:
 pip install vizdoom
 ```
 At the moment, only x86-64 architecture is supported on Windows.
-Wheels are available for Python 3.10+ x86-64 on Windows.
+Wheels are available for Python 3.11+ x86-64 on Windows.
 
 Please note that the Windows version is not as well-tested as Linux and macOS versions.
 It can be used for development and testing but if you want to conduct serious (time and resource-extensive) experiments on Windows,
