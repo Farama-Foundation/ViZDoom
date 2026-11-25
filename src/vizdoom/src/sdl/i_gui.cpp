@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-#include <SDL2/SDL.h>
+#include <SDL.h> //VIZDOOM_CODE
 
 #include "bitmap.h"
 #include "v_palette.h"

@@ -879,11 +879,7 @@ OptionMenu "MiscOptions"
 {
 	Title "Miscellaneous Options"
 	//Indent 220
-	IfOption(Windows)
-	{
-		Option "Merge left+right Alt/Ctrl/Shift", 		"k_mergekeys", "OnOff"
-		Option "Alt-Enter toggles fullscreen",			"k_allowfullscreentoggle", "OnOff"
-	}
+	//VIZDOOM_CODE: The native Windows keyboard options are not used by SDL.
 	IfOption(Mac)
 	{
 		Option "Command-F toggles fullscreen",			"k_allowfullscreentoggle", "OnOff"
