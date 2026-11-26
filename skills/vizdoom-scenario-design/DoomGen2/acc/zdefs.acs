@@ -1,0 +1,1183 @@
+//**************************************************************************
+//**
+//** zdefs.acs
+//**
+//** Common definitions for use when compiling ACS scripts for ZDoom
+//**
+//**************************************************************************
+
+#define TRUE                    1
+#define FALSE                   0
+#define ON                      1
+#define OFF                     0
+#define YES                     1
+#define NO                      0
+
+#define LINE_FRONT              0
+#define LINE_BACK               1
+
+#define SIDE_FRONT              0
+#define SIDE_BACK               1
+
+#define TEXTURE_TOP             0
+#define TEXTURE_MIDDLE          1
+#define TEXTURE_BOTTOM          2
+
+// same information as combinable bit flags
+#define TEXFLAG_TOP				1
+#define TEXFLAG_MIDDLE			2
+#define TEXFLAG_BOTTOM			4
+#define TEXFLAG_ADDOFFSET		8
+
+#define GAME_SINGLE_PLAYER      0
+#define GAME_NET_COOPERATIVE    1
+#define GAME_NET_DEATHMATCH     2
+#define GAME_TITLE_MAP		3
+
+// Classes are only useful with Hexen
+#define CLASS_FIGHTER           0
+#define CLASS_CLERIC            1
+#define CLASS_MAGE              2
+
+#define SKILL_VERY_EASY         0
+#define SKILL_EASY              1
+#define SKILL_NORMAL            2
+#define SKILL_HARD              3
+#define SKILL_VERY_HARD         4
+
+#define BLOCK_NOTHING           0
+#define BLOCK_CREATURES         1
+#define BLOCK_EVERYTHING        2
+#define BLOCK_RAILING			3
+#define BLOCK_PLAYERS			4
+
+#define SCROLL                  0
+#define CARRY                   1
+#define SCROLL_AND_CARRY        2
+
+// Means-of-death for Sector_SetDamage --------------------------------------
+
+#define MOD_UNKNOWN             0
+#define MOD_ROCKET              5
+#define MOD_R_SPLASH            6
+#define MOD_PLASMARIFLE         7
+#define MOD_BFG_BOOM            8
+#define MOD_BFG_SPLASH          9
+#define MOD_CHAINSAW            10
+#define MOD_SSHOTGUN            11
+#define MOD_WATER               12
+#define MOD_SLIME               13
+#define MOD_LAVA                14
+#define MOD_CRUSH               15
+#define MOD_TELEFRAG            16
+#define MOD_FALLING             17
+#define MOD_SUICIDE             18
+#define MOD_BARREL              19
+#define MOD_EXIT                20
+#define MOD_SPLASH              21
+#define MOD_HIT                 22
+#define MOD_RAILGUN		23
+#define MOD_ICE			24
+#define MOD_DISINTEGRATE	25
+#define MOD_POISON		26
+#define MOD_ELECTRIC		27
+
+// Return values for PlayMovie ----------------------------------------------
+
+#define MOVIE_Played            0
+#define MOVIE_Played_NoVideo    1
+#define MOVIE_Played_Aborted    2
+#define MOVIE_Failed           -1
+
+
+// Player properties --------------------------------------------------------
+
+#define PROP_FROZEN					0
+#define PROP_NOTARGET				1
+#define PROP_INSTANTWEAPONSWITCH	2
+#define PROP_FLY					3
+#define PROP_TOTALLYFROZEN			4
+#define PROP_BUDDHA					16
+#define PROP_BUDDHA2				17
+#define PROP_FRIGHTENING 			18
+#define PROP_NOCLIP 				19
+#define PROP_NOCLIP2 				20
+#define PROP_GODMODE 				21
+#define PROP_GODMODE2 				22
+
+// The following properties correspond to powers given by certain items
+#define PROP_INVULNERABILITY		5
+#define PROP_STRENGTH				6
+#define PROP_INVISIBILITY			7
+#define PROP_RADIATIONSUIT			8
+#define PROP_ALLMAP					9
+#define PROP_INFRARED				10
+#define PROP_WEAPONLEVEL2			11
+#define PROP_FLIGHT					12
+#define PROP_SPEED					15
+
+// Player input -------------------------------------------------------------
+
+// These are the original inputs sent by the player.
+#define INPUT_OLDBUTTONS		0
+#define INPUT_BUTTONS			1
+#define INPUT_PITCH				2
+#define INPUT_YAW				3
+#define INPUT_ROLL				4
+#define INPUT_FORWARDMOVE		5
+#define INPUT_SIDEMOVE			6
+#define INPUT_UPMOVE			7
+
+// These are the inputs, as modified by P_PlayerThink().
+// Most of the time, these will match the original inputs, but
+// they can be different if a player is frozen or using a
+// chainsaw.
+#define MODINPUT_OLDBUTTONS		8
+#define MODINPUT_BUTTONS		9
+#define MODINPUT_PITCH			10
+#define MODINPUT_YAW			11
+#define MODINPUT_ROLL			12
+#define MODINPUT_FORWARDMOVE	13
+#define MODINPUT_SIDEMOVE		14
+#define MODINPUT_UPMOVE			15
+
+// Player buttons -----------------------------------------------------------
+
+#define BT_ATTACK				1
+#define BT_USE					2
+#define BT_JUMP					4
+#define BT_CROUCH				8
+#define BT_TURN180				16
+#define BT_ALTATTACK			32
+#define BT_RELOAD				64
+#define BT_ZOOM					128
+
+#define BT_SPEED				256
+#define BT_STRAFE				512
+
+#define BT_MOVERIGHT			1024
+#define BT_MOVELEFT				2048
+#define BT_BACK					4096
+#define BT_FORWARD				8192
+#define BT_RIGHT				16384
+#define BT_LEFT					32768
+#define BT_LOOKUP				65536
+#define BT_LOOKDOWN				131072
+#define BT_MOVEUP				262144
+#define BT_MOVEDOWN				524288
+#define BT_SHOWSCORES			1048576
+#define BT_RUN					33554432
+
+// Do whatever you want with these.
+#define BT_USER1				2097152
+#define BT_USER2				4194304
+#define BT_USER3				8388608
+#define BT_USER4				16777216
+
+// Text colors --------------------------------------------------------------
+
+#define CR_UNTRANSLATED         -1
+#define CR_BRICK                0
+#define CR_TAN                  1
+#define CR_GRAY                 2
+#define CR_GREY                 2
+#define CR_GREEN                3
+#define CR_BROWN                4
+#define CR_GOLD                 5
+#define CR_RED                  6
+#define CR_BLUE                 7
+#define CR_ORANGE               8
+#define CR_WHITE                9
+#define CR_YELLOW               10
+#define CR_BLACK				12
+#define CR_LIGHTBLUE			13
+#define CR_CREAM				14
+#define CR_OLIVE				15
+#define CR_DARKGREEN			16
+#define CR_DARKRED				17
+#define CR_DARKBROWN			18
+#define CR_PURPLE				19
+#define CR_DARKGRAY				20
+#define CR_DARKGREY				20
+#define CR_CYAN					21
+#define CR_ICE					22
+#define CR_FIRE					23
+#define CR_SAPPHIRE				24
+#define CR_TEAL					25
+
+// HUD message types --------------------------------------------------------
+
+#define HUDMSG_PLAIN		0
+#define HUDMSG_FADEOUT		1
+#define HUDMSG_TYPEON		2
+#define HUDMSG_FADEINOUT	3
+
+// OR this with one of the above to log the hudmessage to the console.
+// i.e. instead of HUDMSG_PLAIN, you can use HUDMSG_PLAIN | HUDMSG_LOG
+#define HUDMSG_LOG					0x80000000
+
+// OR this with one of the above if the color you passed is a string
+// instead of one of the CR_ constants.
+#define HUDMSG_COLORSTRING			0x40000000
+
+// OR this with one of the above to use additive blending when drawing the
+// HUD message.
+#define HUDMSG_ADDBLEND				0x20000000
+
+// OR this with one of the above to use the extra alpha parameter
+#define HUDMSG_ALPHA				0x10000000
+
+// Or this with one of the above to not wrap lines
+#define HUDMSG_NOWRAP				0x08000000
+
+// HUD message layers; these are not flags
+#define HUDMSG_LAYER_OVERHUD		0x00000000
+#define HUDMSG_LAYER_UNDERHUD		0x00001000
+#define HUDMSG_LAYER_OVERMAP		0x00002000
+
+// HUD message visibility flags
+#define HUDMSG_NOTWITH3DVIEW		0x00010000
+#define HUDMSG_NOTWITHFULLMAP		0x00020000
+#define HUDMSG_NOTWITHOVERLAYMAP	0x00040000
+
+
+// "Scripted" Marine weapon types -------------------------------------------
+
+#define MARINEWEAPON_Dummy		0
+#define MARINEWEAPON_Fist		1
+#define MARINEWEAPON_BerserkFist	2
+#define MARINEWEAPON_Chainsaw		3
+#define MARINEWEAPON_Pistol		4
+#define MARINEWEAPON_Shotgun		5
+#define MARINEWEAPON_SuperShotgun	6
+#define MARINEWEAPON_Chaingun		7
+#define MARINEWEAPON_RocketLauncher	8
+#define MARINEWEAPON_PlasmaRifle	9
+#define MARINEWEAPON_Railgun		10
+#define MARINEWEAPON_BFG		11
+
+// Actor properties you can get/set -----------------------------------------
+
+#define APROP_Health		0
+#define APROP_Speed			1
+#define APROP_Damage		2
+#define APROP_Alpha			3
+#define APROP_RenderStyle	4
+#define APROP_SeeSound		5	// Sounds can only be set, not gotten
+#define APROP_AttackSound	6
+#define APROP_PainSound		7
+#define APROP_DeathSound	8
+#define APROP_ActiveSound	9
+#define APROP_Ambush		10
+#define APROP_Invulnerable	11
+#define APROP_JumpZ			12
+#define APROP_ChaseGoal		13
+#define APROP_Frightened	14
+#define APROP_Gravity		15
+#define APROP_Friendly		16
+#define APROP_SpawnHealth	17
+#define APROP_Dropped		18
+#define APROP_Notarget		19
+#define APROP_Species		20
+#define APROP_Nametag		21
+#define APROP_Score			22
+#define APROP_Notrigger		23
+#define APROP_DamageFactor	24
+#define APROP_MasterTID 	25
+#define APROP_TargetTID 	26
+#define APROP_TracerTID 	27
+#define APROP_Waterlevel	28
+#define APROP_ScaleX        29
+#define APROP_ScaleY        30
+#define APROP_Dormant		31
+#define APROP_Mass			32
+#define APROP_Accuracy      33
+#define APROP_Stamina       34
+#define APROP_Height		35
+#define APROP_Radius		36
+#define APROP_Reactiontime	37
+#define APROP_MeleeRange	38
+#define APROP_ViewHeight	39
+#define APROP_AttackZOffset	40
+#define APROP_StencilColor	41
+#define APROP_Friction		42
+#define APROP_DamageMultiplier	43
+#define APROP_MaxStepHeight 44
+#define APROP_MaxDropOffHeight 45
+#define APROP_DamageType	46
+#define APROP_SoundClass	47
+#define APROP_FriendlySeeBlocks 48
+#define APROP_WaterDepth 49
+
+// New to Eternity
+#define APROP_Counter0      100
+#define APROP_Counter1      101
+#define APROP_Counter2      102
+#define APROP_Counter3      103
+#define APROP_Counter4      104
+#define APROP_Counter5      105
+#define APROP_Counter6      106
+#define APROP_Counter7      107
+
+// Render Styles ------------------------------------------------------------
+
+#define STYLE_None			0	// Do not draw
+#define STYLE_Normal		1	// Normal; just copy the image to the screen
+#define STYLE_Fuzzy			2	// Draw silhouette using "fuzz" effect
+#define STYLE_SoulTrans		3	// Draw translucent with amount in r_transsouls
+#define STYLE_OptFuzzy		4	// Draw as fuzzy, translucent or shadow, based on user preference
+#define STYLE_Stencil		5	// Draw as solid color
+#define STYLE_AddStencil	6	// Draw as additive solid color
+#define STYLE_AddShaded		7	//
+#define STYLE_Translucent	64	// Draw translucent
+#define STYLE_Add			65	// Draw additive
+#define STYLE_Shaded		66	//
+#define STYLE_TranslucentStencil 67
+#define STYLE_Shadow		68	// Draw dark translucent stencil
+#define STYLE_Subtract  69  // Draw subtractive
+
+// Properties you can use with GetLevelInfo() -------------------------------
+
+#define LEVELINFO_PAR_TIME		0
+#define LEVELINFO_CLUSTERNUM		1
+#define LEVELINFO_LEVELNUM		2
+#define LEVELINFO_TOTAL_SECRETS		3
+#define LEVELINFO_FOUND_SECRETS		4
+#define LEVELINFO_TOTAL_ITEMS		5
+#define LEVELINFO_FOUND_ITEMS		6
+#define LEVELINFO_TOTAL_MONSTERS	7
+#define LEVELINFO_KILLED_MONSTERS	8
+#define LEVELINFO_SUCK_TIME		9
+
+// Properties you can use with GetPlayerInfo() ------------------------------
+
+#define PLAYERINFO_TEAM			0
+#define PLAYERINFO_AIMDIST		1
+#define PLAYERINFO_COLOR		2
+#define PLAYERINFO_GENDER		3
+#define PLAYERINFO_NEVERSWITCH	4
+#define PLAYERINFO_MOVEBOB		5
+#define PLAYERINFO_STILLBOB		6
+#define PLAYERINFO_PLAYERCLASS	7
+#define PLAYERINFO_FOV			8
+#define PLAYERINFO_DESIREDFOV	9
+#define PLAYERINFO_FVIEWBOB		10
+
+
+// Flags for ReplaceTextures ------------------------------------------------
+
+#define NOT_BOTTOM				1
+#define NOT_MIDDLE				2
+#define NOT_TOP					4
+#define NOT_FLOOR				8
+#define NOT_CEILING				16
+
+// Flags for SectorDamage ---------------------------------------------------
+
+#define DAMAGE_PLAYERS				1
+#define DAMAGE_NONPLAYERS			2
+#define DAMAGE_IN_AIR				4
+#define DAMAGE_SUBCLASSES_PROTECT	8
+#define DAMAGE_NO_ARMOR			16
+
+// Flags for MorphActor -----------------------------------------------------
+
+#define MRF_OLDEFFECTS			0x00000000
+#define MRF_ADDSTAMINA			0x00000001
+#define MRF_FULLHEALTH			0x00000002
+#define MRF_UNDOBYTOMEOFPOWER	0x00000004
+#define MRF_UNDOBYCHAOSDEVICE	0x00000008
+#define MRF_FAILNOTELEFRAG		0x00000010
+#define MRF_FAILNOLAUGH			0x00000020
+#define MRF_WHENINVULNERABLE	0x00000040
+#define MRF_LOSEACTUALWEAPON	0x00000080
+#define MRF_NEWTIDBEHAVIOUR		0x00000100
+#define MRF_UNDOBYDEATH			0x00000200
+#define MRF_UNDOBYDEATHFORCED	0x00000400
+#define MRF_UNDOBYDEATHSAVES	0x00000800
+#define MRF_UNDOALWAYS			0x00001000
+#define MRF_TRANSFERTRANSLATION 0x00002000
+
+// Shared spawnable things from Hexen. You can spawn these in the other -----
+// games if you provide sprites for them, otherwise they'll be invisible. ---
+
+#define T_ROCK1                 41
+#define T_ROCK2                 42
+#define T_ROCK3                 43
+#define T_DIRT1                 44
+#define T_DIRT2                 45
+#define T_DIRT3                 46
+#define T_DIRT4                 47
+#define T_DIRT5                 48
+#define T_DIRT6                 49
+#define T_STAINEDGLASS1         54
+#define T_STAINEDGLASS2         55
+#define T_STAINEDGLASS3         56
+#define T_STAINEDGLASS4         57
+#define T_STAINEDGLASS5         58
+#define T_STAINEDGLASS6         59
+#define T_STAINEDGLASS7         60
+#define T_STAINEDGLASS8         61
+#define T_STAINEDGLASS9         62
+#define T_STAINEDGLASS0         63
+
+// Doom Spawnable things (used for thingcount() and thing spawners) ---------
+
+#define T_NONE                  0
+#define T_SHOTGUY               1
+#define T_CHAINGUY              2
+#define T_BARON                 3
+#define T_ZOMBIE                4
+#define T_IMP                   5
+#define T_ARACHNOTRON           6
+#define T_SPIDERMASTERMIND      7
+#define T_DEMON                 8
+#define T_SPECTRE               9
+#define T_IMPFIREBALL           10
+#define T_CLIP                  11
+#define T_SHELLS                12
+#define T_CACODEMON             19
+#define T_REVENANT              20
+#define T_BRIDGE                21
+#define T_ARMORBONUS            22
+#define T_STIMPACK              23
+#define T_MEDKIT                24
+#define T_SOULSPHERE            25
+#define T_SHOTGUN               27
+#define T_CHAINGUN              28
+#define T_ROCKETLAUNCHER        29
+#define T_PLASMAGUN             30
+#define T_BFG                   31
+#define T_CHAINSAW              32
+#define T_SUPERSHOTGUN          33
+#define T_PLASMABOLT            51
+#define T_TRACER                53
+#define T_GREENARMOR            68
+#define T_BLUEARMOR             69
+#define T_CELL                  75
+#define T_BLUEKEYCARD           85
+#define T_REDKEYCARD            86
+#define T_YELLOWKEYCARD         87
+#define T_YELLOWSKULLKEY        88
+#define T_REDSKULLKEY           89
+#define T_BLUESKULLKEY          90
+#define T_TEMPLARGEFLAME        98
+#define T_STEALTHBARON          100
+#define T_STEALTHKNIGHT         101
+#define T_STEALTHZOMBIE         102
+#define T_STEALTHSHOTGUY        103
+
+#define T_LOSTSOUL              110
+#define T_VILE                  111
+#define T_MANCUBUS              112
+#define T_HELLKNIGHT            113
+#define T_CYBERDEMON            114
+#define T_PAINELEMENTAL         115
+#define T_WOLFSS                116
+#define T_STEALTHARACHNOTRON    117
+#define T_STEALTHVILE           118
+#define T_STEALTHCACODEMON      119
+#define T_STEALTHCHAINGUY       120
+#define T_STEALTHSERGEANT       121
+#define T_STEALTHIMP            122
+#define T_STEALTHMANCUBUS       123
+#define T_STEALTHREVENANT       124
+#define T_BARREL                125
+#define T_CACODEMONSHOT         126
+#define T_ROCKET                127
+#define T_BFGSHOT               128
+#define T_ARACHNOTRONPLASMA     129
+#define T_BLOOD                 130
+#define T_PUFF                  131
+#define T_MEGASPHERE            132
+#define T_INVULNERABILITY       133
+#define T_BERSERK               134
+#define T_INVISIBILITY          135
+#define T_IRONFEET              136
+#define T_COMPUTERMAP           137
+#define T_LIGHTAMP              138
+#define T_AMMOBOX               139
+#define T_ROCKETAMMO            140
+#define T_ROCKETBOX             141
+#define T_BATTERY               142
+#define T_SHELLBOX              143
+#define T_BACKPACK              144
+#define T_GUTS                  145
+#define T_BLOODPOOL             146
+#define T_BLOODPOOL1            147
+#define T_BLOODPOOL2            148
+#define T_FLAMINGBARREL         149
+#define T_BRAINS                150
+#define T_SCRIPTEDMARINE	151
+#define T_HEALTHBONUS           152
+#define T_MANCUBUSSHOT		153
+#define T_BARONBALL		154
+
+// Heretic Spawnable things (used for thingcount() and thing spawners) ------
+
+#define T_CLINK                 1
+#define T_MUMMYLEADER           2
+#define T_BEAST                 3
+#define T_MUMMY                 4
+//#define T_IMP                 5   // Defined above
+#define T_KNIGHT                6
+#define T_IMPLEADER             7
+#define T_MUMMYGHOST            8
+#define T_MUMMYLEADERGHOST      9
+//#define T_IMPFIREBALL         10
+#define T_WIMPYWANDAMMO         11
+#define T_HEFTYWANDAMMO         12
+#define T_ITEMEGG               14
+#define T_ITEMFLIGHT            15
+#define T_ITEMTELEPORT          18
+#define T_WIZARD                19
+#define T_IRONLICH              20
+#define T_ITEMHEALTHPOTION      23
+#define T_ITEMHEALTHFLASH       24	// incorrect name but keep it for compatibility
+#define T_ITEMHEALTHFLASK       24
+#define T_ITEMHEALTHFULL        25
+#define T_CROSSBOW              27
+#define T_BLASTER               28
+#define T_PHOENIXROD            29
+#define T_SKULLROD              30
+#define T_MACE                  31
+#define T_GAUNTLETS             32
+#define T_WIMPYCROSSBOWAMMO     33
+#define T_HEFTYCROSSBOWAMMO     34
+#define T_WIMPYMACEAMMO         35
+#define T_HEFTYMACEAMMO         36
+#define T_WIMPYBLASTERAMMO      37
+#define T_HEFTYBLASTERAMMO      38
+#define T_MORPHBLAST            40
+#define T_SHIELD1               68
+#define T_SHIELD2               69
+#define T_ITEMTIMEBOMB          72
+#define T_ITEMTORCH             73
+#define T_BLUEKEY               85
+#define T_GREENKEY              86
+#define T_YELLOWKEY             87
+
+#define T_SOUND_WIND            110
+#define T_SOUND_WATERFALL       111
+
+#define T_BEASTBALL             120
+#define T_FEATHER               121
+#define T_CHICKEN               122
+#define T_VOLCANOBALL           123
+#define T_TINYVOLCANOBALL       124
+#define T_POD                   125
+#define T_PODGENERATOR          126
+#define T_KNIGHTAXE             127
+#define T_KNIGHTBLOODAXE        128
+#define T_KNIGHTGHOST           129
+#define T_MUMMYHEAD             131
+#define T_SNAKE                 132
+#define T_ITEMINVULNERABILITY   133
+#define T_ITEMTOME              134
+#define T_ITEMINVISIBILITY      135
+#define T_ITEMBAGOFHOLDING      136
+#define T_ITEMALLMAP            137
+#define T_SNAKEPROJECTILE       138
+#define T_SNAKEPROJECTILEBIG    139
+#define T_WIZARDSHOT            140
+
+#define T_DSPARILTELEPORTDEST   141
+#define T_DSPARILONSERPENT      142
+#define T_DSPARILALONE          143
+#define T_SERPENTFIREBALL       144
+#define T_DSPARILBLUESHOT       145
+#define T_DSPARILWIZARDSPAWNER  146
+
+#define T_CROSSBOWMAINBLAST     147
+#define T_CROSSBOWMINIBLAST     148
+#define T_CROSSBOWPOWERBLAST    149
+#define T_VOLCANO               150
+#define T_POWERWANDMINIBLAST    151
+#define T_POWERWANDBIGGERBLAST  152
+#define T_DEATHBALL             153
+#define T_NOGRAVITYMACEBALL     154
+#define T_BOUNCYMACEBALL        155
+#define T_HEAVYMACEBALL         156
+#define T_RIPPER                157
+#define T_WIMPYSKULLRODAMMO     158
+#define T_HEFTYSKULLRODAMMO     159
+#define T_SKULLRODBLAST         160
+#define T_WIMPYPHOENIXRODAMMO   161
+#define T_HEFTYPHOENIXRODAMMO   162
+#define T_PHOENIXSHOT           163
+#define T_IRONLICHBLUESHOT      164
+#define T_WHIRLWIND             165
+#define T_REDTELEGLITTER        166
+#define T_BLUETELEGLITTER       167
+
+// Hexen Spawnable things (used for thingcount() and thing spawners) ------
+
+#define T_CENTAUR				1
+#define T_CENTAURLEADER			2
+#define T_DEMON1				3
+#define T_ETTIN					4
+#define T_FIREGARGOYLE			5
+#define T_WATERLURKER			6
+#define T_WATERLURKERLEADER		7
+#define T_WRAITH				8
+#define T_WRAITHBURIED			9
+#define T_FIREBALL1				10
+#define T_MANA1					11
+#define T_MANA2					12
+#define T_ITEMBOOTS				13
+#define T_ITEMPORK				14
+#define T_ITEMSUMMON			16
+#define T_ITEMTPORTOTHER		17
+#define T_BISHOP				19
+#define T_ICEGOLEM				20
+#define T_DRAGONSKINBRACERS		22
+#define T_ITEMBOOSTMANA			26
+#define T_FIGHTERAXE			27
+#define T_FIGHTERHAMMER			28
+#define T_FIGHTERSWORD1			29
+#define T_FIGHTERSWORD2			30
+#define T_FIGHTERSWORD3			31
+#define T_CLERICSTAFF			32
+#define T_CLERICHOLY1			33
+#define T_CLERICHOLY2			34
+#define T_CLERICHOLY3			35
+#define T_MAGESHARDS			36
+#define T_MAGESTAFF1			37
+#define T_MAGESTAFF2			38
+#define T_MAGESTAFF3			39
+#define T_ARROW					50
+#define T_DART					51
+#define T_POISONDART			52
+#define T_RIPPERBALL			53
+#define T_BLADE					64
+#define T_ICESHARD				65
+#define T_FLAME_SMALL			66
+#define T_FLAME_LARGE			67
+#define T_MESHARMOR				68
+#define T_FALCONSHIELD			69
+#define T_PLATINUMHELM			70
+#define T_AMULETOFWARDING		71
+#define T_ITEMFLECHETTE			72
+#define T_ITEMREPULSION			74
+#define T_MANA3					75
+#define T_PUZZSKULL				76
+#define T_PUZZGEMBIG			77
+#define T_PUZZGEMRED			78
+#define T_PUZZGEMGREEN1			79
+#define T_PUZZGEMGREEN2			80
+#define T_PUZZGEMBLUE1			81
+#define T_PUZZGEMBLUE2			82
+#define T_PUZZBOOK1				83
+#define T_PUZZBOOK2				84
+#define T_METALKEY				85
+#define T_SMALLMETALKEY			86
+#define T_AXEKEY				87
+#define T_FIREKEY				88
+#define T_EMERALDKEY			89
+#define T_MACEKEY				90
+#define T_SILVERKEY				91
+#define T_RUSTYKEY				92
+#define T_HORNKEY				93
+#define T_SERPENTKEY			94
+#define T_WATERDRIP				95
+#define T_TEMPSMALLFLAME		96
+#define T_PERMSMALLFLAME		97
+#define T_PERMLARGEFLAME		99
+#define T_DEMON_MASH			100
+#define T_DEMON2_MASH			101
+#define T_ETTIN_MASH			102
+#define T_CENTAUR_MASH			103
+#define T_THRUSTSPIKEUP			104
+#define T_THRUSTSPIKEDOWN		105
+#define T_FLESH_DRIP1			106
+#define T_FLESH_DRIP2			107
+#define T_SPARK_DRIP			108
+
+
+// Flags returned by ClassifyActor
+
+#define ACTOR_NONE				0
+#define ACTOR_WORLD				1
+#define ACTOR_PLAYER			2
+#define ACTOR_BOT				4
+#define ACTOR_VOODOODOLL		8
+#define ACTOR_MONSTER			16
+#define ACTOR_ALIVE				32
+#define ACTOR_DEAD				64
+#define ACTOR_MISSILE			128
+#define ACTOR_GENERIC			256
+
+
+// Physical volumes for SoundSequenceOnSector
+
+#define SECSEQ_FLOOR			1
+#define SECSEQ_CEILING			2
+#define SECSEQ_FULLHEIGHT		3
+#define SECSEQ_INTERIOR			4
+
+// Channels for PlaySound and StopSound
+
+#define CHAN_AUTO				0
+#define CHAN_WEAPON				1
+#define CHAN_VOICE				2
+#define CHAN_ITEM				3
+#define CHAN_BODY				4
+#define CHAN_5					5
+#define CHAN_6					6
+#define CHAN_7					7
+
+// Modifier flags for PlaySound
+
+#define CHAN_LISTENERZ			8
+#define CHAN_MAYBE_LOCAL		16
+#define CHAN_UI					32
+#define CHAN_NOPAUSE			64
+
+// Standard attenuation values for PlaySound
+
+#define ATTN_NONE				0		// full volume the entire level
+#define ATTN_NORM				1.0
+#define ATTN_IDLE				1.001
+#define ATTN_STATIC				3.0		// dimish very rapidly with distance
+
+// Identifiers for PlayActorSound
+
+#define SOUND_See				0
+#define SOUND_Attack			1
+#define SOUND_Pain				2
+#define SOUND_Death				3
+#define SOUND_Active			4
+#define SOUND_Use				5
+#define SOUND_Bounce			6
+#define SOUND_WallBounce		7
+#define SOUND_CrushPain			8
+#define SOUND_Howl				9
+
+// Flags for SpawnDecal
+
+#define SDF_ABSANGLE			1
+#define SDF_PERMANENT			2
+#define SDF_FIXED_ZOFF			4
+#define SDF_FIXED_DISTANCE		8
+
+// Actor pointer selectors
+
+#DEFINE	AAPTR_DEFAULT 0
+#DEFINE	AAPTR_NULL 0x1
+#DEFINE	AAPTR_TARGET 0x2
+#DEFINE	AAPTR_MASTER 0x4
+#DEFINE	AAPTR_TRACER 0x8
+
+#DEFINE	AAPTR_PLAYER_GETTARGET 0x10
+#DEFINE	AAPTR_PLAYER_GETCONVERSATION 0x20
+
+#DEFINE	AAPTR_PLAYER1 0x40
+#DEFINE	AAPTR_PLAYER2 0x80
+#DEFINE	AAPTR_PLAYER3 0x100
+#DEFINE	AAPTR_PLAYER4 0x200
+#DEFINE	AAPTR_PLAYER5 0x400
+#DEFINE	AAPTR_PLAYER6 0x800
+#DEFINE	AAPTR_PLAYER7 0x1000
+#DEFINE	AAPTR_PLAYER8 0x2000
+
+#DEFINE AAPTR_FRIENDPLAYER 0x4000
+#DEFINE AAPTR_GET_LINETARGET 0x8000
+
+// Actor pointer operation flags
+
+#DEFINE PTROP_UNSAFETARGET 1
+#DEFINE PTROP_UNSAFEMASTER 2
+#DEFINE PTROP_NOSAFEGUARDS PTROP_UNSAFETARGET |PTROP_UNSAFEMASTER
+
+// Line activation flags
+
+#define SPAC_Cross			1		// when player crosses line
+#define SPAC_Use			2		// when player uses line
+#define SPAC_MCross			4		// when monster crosses line
+#define SPAC_Impact			8		// when projectile hits line
+#define SPAC_Push			16		// when player pushes line
+#define SPAC_PCross			32		// when projectile crosses line
+#define SPAC_UseThrough		64		// when player uses line (doesn't block)
+#define SPAC_AnyCross		128		// when anything without the TELEPORT flag crosses the line
+#define SPAC_MUse			256		// monsters can use
+#define SPAC_MPush			512		// monsters can push
+#define SPAC_UseBack		1024	// can be used from the back side
+
+#define SPAC_None			0
+
+// GetArmorInfo
+
+#define ARMORINFO_CLASSNAME		0
+#define ARMORINFO_SAVEAMOUNT		1
+#define ARMORINFO_SAVEPERCENT		2
+#define ARMORINFO_MAXABSORB		3
+#define ARMORINFO_MAXFULLABSORB		4
+#define ARMORINFO_ACTUALSAVEAMOUNT	5
+
+// ==========================================================================
+// Skulltag Definitions
+// ==========================================================================
+
+// Skulltag Teams -----------------------------------------------------------
+#define TEAM_BLUE				0
+#define TEAM_RED				1
+#define NO_TEAM					2
+
+// Team properties ----------------------------------------------------------
+#define TPROP_Name				0
+#define TPROP_Score				1
+#define TPROP_IsValid			2
+#define TPROP_NumPlayers		3
+#define TPROP_NumLivePlayers	4
+#define TPROP_TextColor			5
+#define TPROP_PlayerStartNum	6
+#define TPROP_Spread			7
+#define TPROP_Carrier			8
+#define TPROP_Assister			9
+#define TPROP_FragCount			10
+#define TPROP_DeathCount		11
+#define TPROP_WinCount			12
+#define TPROP_PointCount		13
+#define TPROP_ReturnTics		14
+#define TPROP_TeamItem			15
+#define TPROP_WinnerTheme		16
+#define TPROP_LoserTheme		17
+
+// Skulltag Invasion --------------------------------------------------------
+#define IS_WAITINGFORPLAYERS	0
+#define IS_FIRSTCOUNTDOWN		1
+#define IS_INPROGRESS			2
+#define IS_BOSSFIGHT			3
+#define IS_WAVECOMPLETE			4
+#define IS_COUNTDOWN			5
+
+
+#define T_GRENADE				216
+#define T_BFG10KSHOT			217
+#define T_DARKIMPFIREBALL		218
+#define T_CACOLANTERNSHOT		219
+#define T_ABADDONSHOT			221
+
+// Skulltag Monsters --------------------------------------------------------
+#define T_DARKIMP				155
+#define T_BLOODDEMON			156
+#define T_SSGGUY				157
+#define T_HECTEBUS				158
+#define T_CACOLANTERN			159
+#define T_BELPHEGOR				215
+#define T_ABADDON				220
+
+// Skulltag Weapons ---------------------------------------------------------
+#define T_PISTOL				162
+#define T_GRENADELAUNCHER		163
+#define T_RAILGUN				164
+#define T_BFG10000				165
+#define T_MINIGUN				214
+
+// Skulltag Armor/Health Items ----------------------------------------------
+#define T_MAXHEALTHBONUS		166
+#define T_MAXARMORBONUS			167
+#define T_REDARMOR				168
+
+// Skulltag Powerups --------------------------------------------------------
+#define T_TURBOSPHERE			169
+#define T_ANTIGRAVBELT			170
+#define T_TIMEFREEZER			171
+#define T_INFRAGOGGLES			172
+#define T_INFRATRACKER			173
+#define T_TRANSLUCENCY			174
+#define T_DOOMSPHERE			175
+#define T_RANDOMPOWERUP			176
+
+// Skulltag Flags -----------------------------------------------------------
+#define T_BLUEFLAG				177
+#define T_REDFLAG				178
+#define T_WHITEFLAG				179
+
+// Skulltag Runes -----------------------------------------------------------
+#define T_STRENGTH				180
+#define T_RAGE					181
+#define T_DRAIN					182
+#define T_SPREAD				183
+#define T_RESISTANCE			184
+#define T_REGENERATION			185
+#define T_PROSPERITY			186
+#define T_REFLECTION			187
+#define T_HIGHJUMP				188
+#define T_HASTE					189
+
+// Zandronum database additions ---------------------------------------------
+#define DB_ORDER_ASC			0
+#define DB_ORDER_DESC			1
+
+// Events when you have input grabbed
+
+#define EV_KeyDown				1	// data1: unshifted ASCII, data2: shifted ASCII
+#define EV_KeyRepeat			2	// data1: unshifted ASCII, data2: shifted ASCII
+#define EV_KeyUp				3	// data1: unshifted ASCII, data2: shifted ASCII
+#define EV_Char					4	// data1: translated character for text input
+#define EV_MouseMove			5	// data1: x, data2: y
+#define EV_LButtonDown			6
+#define EV_LButtonUp			7
+#define EV_LButtonDblClick		8
+#define EV_MButtonDown			9
+#define EV_MButtonUp			10
+#define EV_MButtonDblClick		11
+#define EV_RButtonDown			12
+#define EV_RButtonUp			13
+#define EV_RButtonDblClick		14
+#define EV_WheelDown			15
+#define EV_WheelUp				16
+
+// Key modifiers (or'd with event type)
+
+#define GKM_SHIFT				256
+#define GKM_CTRL				512
+#define GKM_ALT					1024
+
+// Button modifiers are only valid for EV_MouseMove events
+
+#define GKM_LBUTTON				2048
+#define GKM_MBUTTON				4096
+#define GKM_RBUTTON				8192
+
+// Special codes for some GUI keys, including a few real ASCII codes.
+
+#define GK_PGDN			1
+#define GK_PGUP			2
+#define GK_HOME			3
+#define GK_END			4
+#define GK_LEFT			5
+#define GK_RIGHT		6
+#define GK_ALERT		7		// ASCII bell
+#define GK_BACKSPACE	8		// ASCII
+#define GK_TAB			9		// ASCII
+#define GK_LINEFEED		10		// ASCII
+#define GK_DOWN			10
+#define GK_VTAB			11		// ASCII
+#define GK_UP			11
+#define GK_FORMFEED		12		// ASCII
+#define GK_RETURN		13		// ASCII
+#define GK_F1			14
+#define GK_F2			15
+#define GK_F3			16
+#define GK_F4			17
+#define GK_F5			18
+#define GK_F6			19
+#define GK_F7			20
+#define GK_F8			21
+#define GK_F9			22
+#define GK_F10			23
+#define GK_F11			24
+#define GK_F12			25
+#define GK_DEL			26
+#define GK_ESCAPE		27		// ASCII
+#define GK_FREE1		28
+#define GK_FREE2		29
+#define GK_FREE3		30
+#define GK_CESCAPE		31		// color escape
+
+#define CHANGELEVEL_KEEPFACING 1
+#define CHANGELEVEL_RESETINVENTORY 2
+#define CHANGELEVEL_NOMONSTERS 4
+#define CHANGELEVEL_CHANGESKILL 8
+#define CHANGELEVEL_NOINTERMISSION 16
+#define CHANGELEVEL_RESETHEALTH	32
+#define CHANGELEVEL_PRERAISEWEAPON 64
+#define CHANGELEVEL_NOAUTOSAVE 128 // VKDoom
+
+#define NO_CHANGE 32767.0
+
+#define SECF_SILENT 1
+#define SECF_NOFALLINGDAMAGE 2
+#define SECF_FLOORDROP 4
+#define SECF_NORESPAWN 8
+#define SECF_FRICTION 16
+#define SECF_PUSH 32
+#define SECF_SILENTMOVE 64
+#define SECF_DMGTERRAINFX	128
+#define SECF_DMGENDGODMODE 256
+#define SECF_DMGENDLEVEL 512
+#define SECF_DMGHAZARD 1024
+
+#define BLOCKF_CREATURES 1
+#define BLOCKF_MONSTERS 2
+#define BLOCKF_PLAYERS 4
+#define BLOCKF_FLOATERS 8
+#define BLOCKF_PROJECTILES 16
+#define BLOCKF_EVERYTHING 32
+#define BLOCKF_RAILING 64
+#define BLOCKF_USE 128
+#define BLOCKF_SIGHT 256
+#define BLOCKF_HITSCAN 512
+#define BLOCKF_SOUND 1024
+#define BLOCKF_LANDMONSTERS 2048
+
+#define FOGP_DENSITY 0
+#define FOGP_OUTSIDEDENSITY 1
+#define FOGP_SKYFOG 2
+
+#define PRINTNAME_LEVELNAME -1
+#define PRINTNAME_LEVEL -2
+#define PRINTNAME_SKILL -3
+#define PRINTNAME_NEXTLEVEL -4
+#define PRINTNAME_NEXTSECRET -5
+
+#define CSF_NOFAKEFLOORS 1
+#define CSF_NOBLOCKALL 2
+
+#define FHF_NORANDOMPUFFZ	1
+#define FHF_NOIMPACTDECAL	2
+
+// PickActor flags
+
+#define	PICKAF_FORCETID			1
+#define	PICKAF_RETURNTID		2
+
+// magic value to set the ice translation through ACS
+#define TRANSLATION_ICE 0x100007
+
+// Actor flags
+#define MF_SPECIAL          0x00000001
+#define MF_SOLID            0x00000002
+#define MF_SHOOTABLE        0x00000004
+#define MF_NOSECTOR         0x00000008
+#define MF_NOBLOCKMAP       0x00000010
+#define MF_AMBUSH           0x00000020
+#define MF_JUSTHIT          0x00000040
+#define MF_JUSTATTACKED     0x00000080
+#define MF_SPAWNCEILING     0x00000100
+#define MF_NOGRAVITY        0x00000200
+#define MF_DROPOFF          0x00000400
+#define MF_PICKUP           0x00000800
+#define MF_NOCLIP           0x00001000
+#define MF_INCHASE          0x00002000
+#define MF_FLOAT            0x00004000
+#define MF_TELEPORT         0x00008000
+#define MF_MISSILE          0x00010000
+#define MF_DROPPED          0x00020000
+#define MF_SHADOW           0x00040000
+#define MF_NOBLOOD          0x00080000
+#define MF_CORPSE           0x00100000
+#define MF_INFLOAT          0x00200000
+#define MF_INBOUNCE         0x00200000
+#define MF_COUNTKILL        0x00400000
+#define MF_COUNTITEM        0x00800000
+#define MF_SKULLFLY         0x01000000
+#define MF_NOTDMATCH        0x02000000
+#define MF_SPAWNSOUNDSOURCE 0x04000000
+#define MF_FRIENDLY         0x08000000
+#define MF_UNMORPHED        0x10000000
+#define MF_NOLIFTDROP       0x20000000
+#define MF_STEALTH          0x40000000
+#define MF_ICECORPSE        0x80000000
+
+// Linedef flags
+#define ML_BLOCKING            0x00000001
+#define ML_BLOCKMONSTERS       0x00000002
+#define ML_TWOSIDED            0x00000004
+#define ML_DONTPEGTOP          0x00000008
+#define ML_DONTPEGBOTTOM       0x00000010
+#define ML_SECRET              0x00000020
+#define ML_SOUNDBLOCK          0x00000040
+#define ML_DONTDRAW            0x00000080
+#define ML_MAPPED              0x00000100
+#define ML_REPEAT_SPECIAL      0x00000200
+#define ML_ADDTRANS            0x00000400
+#define ML_MONSTERSCANACTIVATE 0x00002000
+#define ML_BLOCK_PLAYERS       0x00004000
+#define ML_BLOCKEVERYTHING     0x00008000
+#define ML_ZONEBOUNDARY        0x00010000
+#define ML_RAILING             0x00020000
+#define ML_BLOCK_FLOATERS      0x00040000
+#define ML_CLIP_MIDTEX         0x00080000
+#define ML_WRAP_MIDTEX         0x00100000
+#define ML_3DMIDTEX            0x00200000
+#define ML_CHECKSWITCHRANGE    0x00400000
+#define ML_FIRSTSIDEONLY       0x00800000
+#define ML_BLOCKPROJECTILE     0x01000000
+#define ML_BLOCKUSE            0x02000000
+#define ML_BLOCKSIGHT          0x04000000
+#define ML_BLOCKHITSCAN        0x08000000
+
+#define QF_RELATIVE		1
+#define QF_SCALEDOWN		1 << 1
+#define QF_SCALEUP		1 << 2
+#define QF_MAX			1 << 3
+#define QF_FULLINTENSITY	1 << 4
+#define QF_WAVE			1 << 5
+#define QF_3D			1 << 6
+#define QF_GROUNDONLY		1 << 7
+#define QF_AFFECTACTORS 	1 << 8
+#define QF_SHAKEONLY		1 << 9
+#define QF_DAMAGEFALLOFF	1 << 10
+
+#define WARPF_ABSOLUTEOFFSET 0x1
+#define WARPF_ABSOLUTEANGLE 0x2
+#define WARPF_USECALLERANGLE 0x4
+#define WARPF_NOCHECKPOSITION 0x8
+#define WARPF_INTERPOLATE 0x10
+#define WARPF_WARPINTERPOLATION 0x20
+#define WARPF_COPYINTERPOLATION 0x40
+#define WARPF_STOP 0x80
+#define WARPF_TOFLOOR 0x100
+#define WARPF_TESTONLY 0x200
+#define WARPF_ABSOLUTEPOSITION 0x400
+#define WARPF_BOB 0x800
+#define WARPF_MOVEPTR 0x1000
+#define WARPF_USEPTR 0x2000
+#define WARPF_COPYVELOCITY 0x4000
+#define WARPF_COPYPITCH 0x8000
+
+#define CPXF_ANCESTOR    (1 << 0)
+#define CPXF_LESSOREQUAL (1 << 1)
+#define CPXF_NOZ         (1 << 2)
+#define CPXF_COUNTDEAD   (1 << 3)
+#define CPXF_DEADONLY    (1 << 4)
+#define CPXF_EXACT       (1 << 5)
+#define CPXF_SETTARGET   (1 << 6)
+#define CPXF_SETMASTER   (1 << 7)
+#define CPXF_SETTRACER   (1 << 8)
+#define CPXF_FARTHEST    (1 << 9)
+#define CPXF_CLOSEST     (1 << 10)
+#define CPXF_SETONPTR    (1 << 11)
+#define CPXF_CHECKSIGHT  (1 << 12)
+
+#define SECPART_Floor 0
+#define SECPART_Ceiling 1
+#define SECPART_3D 2
+
+// For Line_SetAutomapFlags; These are or'd together
+#define AMLF_Secret		(1 << 0)
+#define AMLF_DontDraw		(1 << 1)
+#define AMLF_Mapped		(1 << 2)
+#define AMLF_Revealed		(1 << 3)
+
+// For Line_SetAutomapStyle
+#define AMLS_Default		0
+#define AMLS_OneSided		1
+#define AMLS_TwoSided		2
+#define AMLS_FloorDiff		3
+#define AMLS_CeilingDiff	4
+#define AMLS_ExtraFloor		5
+#define AMLS_Special		6
+#define AMLS_Secret		7
+#define AMLS_NotSeen		8
+#define AMLS_Locked		9
+#define AMLS_IntraTeleport	10
+#define AMLS_InterTeleport	11
+#define AMLS_UnexploredSecret	12
+#define AMLS_Portal		13
+
+// Lump reading stuff.
+#define LUMP_OPEN_FULLPATH 1
+
+#define LUMP_READ_BYTE 0
+#define LUMP_READ_UBYTE 1
+#define LUMP_READ_SHORT 2
+#define LUMP_READ_USHORT 3
+#define LUMP_READ_INT 4
+#define LUMP_READ_FLOAT 5
+
+#define LUMP_INFO_SIZE 0
+#define LUMP_INFO_NAME 1
