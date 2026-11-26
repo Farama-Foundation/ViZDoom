@@ -1,25 +1,23 @@
 #!/usr/bin/env python3
-"""Capture one synchronised multi-agent snapshot of a ViZDoom scenario.
+"""Capture one synchronised single- or multi-agent snapshot of a ViZDoom scenario.
 
-Generalised copy of the repository's ``scripts/capture_multiagent_scenario.py``:
-the scenario can be a ``.cfg`` path or a scenario name (looked up in
-``vizdoom.scenarios_path`` and ``./scenarios``), and the WAD for the top-down map
-is taken from the cfg's ``doom_scenario_path`` (or ``--wad``).
+Accepts a ``.cfg`` path or a scenario name (looked up in ``vizdoom.scenarios_path``
+and ``./scenarios``). The WAD for the top-down map comes from the cfg's
+``doom_scenario_path`` (or ``--wad``).
 
-Every player runs in its own process with the training game setup
-(``vizdoom.pettingzoo_wrapper.base_env_common.configure_doom_game``), plays a
-seeded scripted policy for T steps and saves its egocentric screen, pose,
-notifications and audio buffer; the map lines (plus pits and gates for UDMF maps)
-are read from the WAD.
+Every player runs in its own native ViZDoom process, plays a seeded scripted
+policy for ``--tics`` steps, and records its egocentric screen, pose,
+notifications and audio buffer; map lines (plus UDMF pits and gates) are read
+from the WAD.
 
 Output:
-* ``--out snapshot.pkl``: one pickle (same layout as the original script);
-* ``--out DIR``: ``DIR/snapshot.pkl`` plus files a multimodal agent can read:
+* ``--out snapshot.pkl``: raw snapshot pickle;
+* ``--out DIR``: ``DIR/snapshot.pkl`` plus agent-readable exports:
   ``summary.json`` (poses, notifications, objects, audio peaks), ``player<i>.png``,
-  ``player<i>_audio.wav`` (if the scenario has audio) and ``topdown.png``.
+  ``player<i>_audio.wav`` (if audio is enabled in the cfg) and ``topdown.png``.
 
 Usage:
-    python capture_multiagent_scenario.py scenarios/simple_tag.cfg --agents 4 --tics 40 --out /tmp/tag
+    python capture_multiagent_scenario.py scenarios/my_scenario.cfg --agents 4 --tics 40 --out /tmp/snapshot
 """
 
 from __future__ import annotations
@@ -95,26 +93,44 @@ def scripted_action(n_buttons, rng):
     return (rng.random(n_buttons) < 0.3).astype(float).tolist()
 
 
+def resolve_resolution(vzd, resolution: str):
+    key = resolution.upper()
+    if not key.startswith("RES_"):
+        key = f"RES_{key}"
+    if not hasattr(vzd.ScreenResolution, key):
+        raise ValueError(f"unsupported screen resolution {resolution!r}")
+    return getattr(vzd.ScreenResolution, key)
+
+
+def configure_doom_game(vzd, idx: int, args):
+    game = vzd.DoomGame()
+    game.load_config(str(args.cfg))
+    game.set_window_visible(False)
+    game.set_screen_resolution(resolve_resolution(vzd, args.resolution))
+    game.set_ticrate(vzd.DEFAULT_TICRATE)
+    game.set_mode(vzd.Mode.PLAYER)
+    game.set_seed(int(args.seed))
+    if args.agents > 1:
+        if idx == 0:
+            game.add_game_args(
+                f"-host {args.agents} -port {args.port} -netmode 0 "
+                "+timelimit 0 +sv_noautoaim 1 +sv_nocrouch 1 +sv_nofreelook 1 "
+                "+viz_connect_timeout 60"
+            )
+        else:
+            game.add_game_args(
+                f"-join 127.0.0.1:{args.port} -netmode 0 +viz_connect_timeout 60"
+            )
+        game.add_game_args(f"+name Player{idx}")
+    return game
+
+
 def player(idx, args, queue):
     # own process group, so the parent can stop the engine processes this player starts
     os.setpgrp()
     import vizdoom as vzd
-    from vizdoom.pettingzoo_wrapper.base_env_common import configure_doom_game
 
-    game = configure_doom_game(
-        config_path=str(args.cfg),
-        resolution=args.resolution,
-        ticrate=vzd.DEFAULT_TICRATE,
-        async_mode=False,
-        timeout=None,
-        seed=args.seed,
-        is_host=idx == 0,
-        num_agents=args.agents,
-        host_address="127.0.0.1",
-        port=args.port,
-        netmode=0,
-        agent_idx=idx,
-    )
+    game = configure_doom_game(vzd, idx, args)
     for var in (
         vzd.GameVariable.POSITION_X,
         vzd.GameVariable.POSITION_Y,
@@ -157,6 +173,8 @@ def player(idx, args, queue):
                 ],
             }
         )
+    if not frames:
+        raise RuntimeError(f"player {idx}: episode ended before any frame was captured")
     out = dict(frames[-1], idx=idx, frames=frames, audio_rate=rate)
     queue.put(out)
     # no game.close(): in a netgame it can block holding the GIL before the

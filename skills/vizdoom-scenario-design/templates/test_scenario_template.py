@@ -14,7 +14,7 @@ import pytest
 
 
 # --- edit for your scenario -------------------------------------------------
-CFG = "scenarios/simple_tag.cfg"  # relative to the repository root, or absolute
+CFG = "scenarios/my_scenario.cfg"  # relative to the repository root, or absolute
 PLAYERS = 4  # networked players (1 = single player)
 EPISODES = 3  # resets to probe
 EXPECT = ["USER50=0", "USER51=0", "USER52=0"]  # must hold right after every reset

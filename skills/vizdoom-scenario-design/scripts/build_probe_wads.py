@@ -4,18 +4,23 @@
 Each probe is a DoomGen arena (4 player starts) with marker globals exported as
 ``USER10``-``USER13``:
 
-* ``ok``          - correct scenario; must pass every validation level;
-* ``bad_parent``  - DECORATE ``ACTOR PowerTagInvisibility : PowerupNone`` (pitfall 4);
-* ``unsupported`` - ``m1 = 1; SetActivatorToPlayer(0); m2 = 1; IsNetworkGame(); m3 = 1;`` (pitfalls 1, 2);
-* ``noreset``     - a global set mid-episode and never reset (pitfall 10), coop and deathmatch;
-* ``nodm``        - ``-deathmatch`` on a map without deathmatch starts (pitfall 23);
-* ``missing_wad`` - cfg pointing to a WAD that does not exist.
+* ``ok``                 - correct scenario; must pass every validation level;
+* ``bad_parent``         - DECORATE ``ACTOR PowerTagInvisibility : PowerupNone`` (pitfall 4);
+* ``unsupported``        - ``m1 = 1; SetActivatorToPlayer(0); m2 = 1; IsNetworkGame(); m3 = 1;`` (pitfalls 1, 2);
+* ``noreset``            - a global set mid-episode and never reset (pitfall 10), coop and deathmatch;
+* ``nodm``               - ``-deathmatch`` on a map without deathmatch starts (pitfall 23);
+* ``int_reward``         - ``reward += 1;`` instead of ``1.0`` in ``global int 0`` (pitfall 9);
+* ``zscript``            - WAD with a ``ZSCRIPT`` lump (ignored by ZDoom 2.8.1);
+* ``bad_playsound``      - swapped ``PlaySound(tid, channel, "sound", ...)`` args (pitfall 5);
+* ``dynamic_spawn``      - runtime ``str`` variable passed to ``SpawnSpot`` (pitfall 6);
+* ``uncompiled_scripts`` - ``SCRIPTS`` lump present without a compiled ``BEHAVIOR`` lump;
+* ``missing_wad``        - cfg pointing to a WAD that does not exist.
 
 ``--check`` runs ``validate_scenario.py`` on every probe and compares the observed
 behaviour with the expectation; the exit code is non-zero on any mismatch.
 
-Usage (from a ViZDoom checkout with DoomGen and acc):
-    python build_probe_wads.py --out /tmp/vizdoom_probes --acc DoomGen/acc/acc --check
+Usage (uses the skill's vendored DoomGen2 and its acc):
+    python build_probe_wads.py --out /tmp/vizdoom_probes --check
 """
 
 from __future__ import annotations
@@ -26,6 +31,7 @@ from pathlib import Path
 
 
 SCRIPTS = Path(__file__).resolve().parent
+DOOMGEN = SCRIPTS.parent / "DoomGen2"
 CFG = """doom_scenario_path = {wad}
 episode_timeout = 700
 living_reward = 0
@@ -45,15 +51,16 @@ def build_wad(
     body: str,
     decorate: str | None = None,
     dm_starts: bool = False,
+    extra_lumps: dict[str, bytes] | None = None,
+    compile_acs: bool = True,
 ):
     from doomgen.builder import ProceduralMapBuilder
     from doomgen.logic.acs_builder import ACSBuilder, ScriptType
 
-    builder = ProceduralMapBuilder(
-        bounds=(-640, -640, 640, 640), num_seeds=2000, seed=42
-    )
-    builder.add_exact_room(
-        (0, 0, 960, 960),
+    builder = ProceduralMapBuilder(bounds=(-640, -640, 640, 640), seed=42)
+    builder.add_area(
+        "arena",
+        shape=(0, 0, 960, 960),
         ceiling_height=192,
         floor_texture="FLOOR0_3",
         ceiling_texture="F_SKY1",
@@ -70,11 +77,16 @@ def build_wad(
     for var, index in globals_:
         acs.add_global_var(var, index, "int")
     acs.add_script(ScriptType.OPEN, body)
-    builder.map_data.behavior = acs.compile(acc_path=acc)
-    builder.map_data.scripts = acs.to_code()
+    if compile_acs:
+        builder.map_data.behavior = acs.compile(acc_path=acc)
+        builder.map_data.scripts = acs.to_code()
+    else:
+        builder.wad_writer.add_lump("SCRIPTS", acs.to_code().encode())
     if decorate:
         builder.wad_writer.add_lump("DECORATE", decorate.encode())
-    builder.build(str(out / f"{name}.wad"))
+    for lump_name, payload in (extra_lumps or {}).items():
+        builder.wad_writer.add_lump(lump_name, payload)
+    builder.build(str(out / f"{name}.wad"), zdbsp_path=None if compile_acs else "")
 
 
 def write_cfg(out: Path, name: str, wad: str, game_args: str = "") -> Path:
@@ -105,7 +117,41 @@ def build_all(out: Path, acc: str) -> None:
         "m1 = 1;\nSetActivatorToPlayer(0);\nm2 = 1;\nIsNetworkGame();\nm3 = 1;",
     )
     build_wad(out, "noreset", acc, flag, "Delay(105);\nflag = 1;", dm_starts=True)
-    for name in ("ok", "bad_parent", "unsupported", "noreset"):
+    build_wad(out, "int_reward", acc, [("reward", 0)], "reward += 1;")
+    build_wad(
+        out,
+        "zscript",
+        acc,
+        flag,
+        "flag = 0;",
+        extra_lumps={"ZSCRIPT": b'version "4.0"\nclass Foo : Actor {}\n'},
+    )
+    build_wad(
+        out,
+        "bad_playsound",
+        acc,
+        flag,
+        'flag = 0;\nPlaySound(0, CHAN_BODY, "tag/prey", 1.0, FALSE, ATTN_NORM);',
+    )
+    build_wad(
+        out,
+        "dynamic_spawn",
+        acc,
+        flag,
+        'flag = 0;\nstr cls = "Medikit";\nSpawnSpot(cls, 1);',
+    )
+    build_wad(out, "uncompiled_scripts", acc, flag, "flag = 0;", compile_acs=False)
+    for name in (
+        "ok",
+        "bad_parent",
+        "unsupported",
+        "noreset",
+        "int_reward",
+        "zscript",
+        "bad_playsound",
+        "dynamic_spawn",
+        "uncompiled_scripts",
+    ):
         write_cfg(out, name, f"{name}.wad")
     write_cfg(out, "noreset_dm", "noreset.wad", "-deathmatch +sv_norespawn 1")
     write_cfg(out, "nodm", "ok.wad", "-deathmatch")
@@ -138,6 +184,11 @@ def check_all(out: Path) -> bool:
         ("bad_parent", "PowerupNone"),
         ("unsupported", "IsNetworkGame"),
         ("nodm", "deathmatch"),
+        ("int_reward", "integer literals"),
+        ("zscript", "ZSCRIPT"),
+        ("bad_playsound", "PlaySound"),
+        ("dynamic_spawn", "non-literal class name"),
+        ("uncompiled_scripts", "BEHAVIOR"),
     ):
         report = vs.Report(probe)
         vs.static_checks(out / f"{probe}.cfg", report, None, 2)
@@ -180,16 +231,17 @@ def check_all(out: Path) -> bool:
         report = vs.validate(
             out / f"{probe}.cfg",
             players=2,
-            episodes=3,
+            episodes=2,
             expect=["USER10=0"],
             idle_steps=40,
             port=port,
         )
+        observed = "; ".join(report.failures)
         record(
             probe,
-            "global set mid-episode is 0 again after each netgame reset",
-            "pass" if report.ok else "; ".join(report.failures)[:90],
-            report.ok,
+            "global set mid-episode persists across netgame changemap reset (fails USER10=0 on ep 1)",
+            observed[:110] or "pass",
+            (not report.ok) and ("USER10=1, expected 0" in observed),
         )
 
     width = max(len(r[0]) for r in results)
@@ -210,12 +262,14 @@ def main() -> None:
         required=True,
         help="output directory for the probe WADs and cfgs",
     )
-    parser.add_argument("--acc", default="DoomGen/acc/acc", help="ACC 1.60 binary")
+    parser.add_argument(
+        "--acc", default=str(DOOMGEN / "acc" / "acc"), help="ACC 1.60 binary"
+    )
     parser.add_argument(
         "--doomgen-src",
         type=Path,
-        default=Path("DoomGen/src"),
-        help="DoomGen source dir if not installed",
+        default=DOOMGEN / "src",
+        help="DoomGen source dir (default: the vendored DoomGen2)",
     )
     parser.add_argument(
         "--check",

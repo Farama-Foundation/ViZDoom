@@ -1,6 +1,6 @@
 #!/bin/bash
 # N human-controlled ViZDoom instances on one machine (1 host + N-1 joins), for playtesting a scenario.
-# Generalised from the repository's play4.sh (Simple Tag, 4 players). Works with macOS bash 3.2.
+# Works with macOS bash 3.2 and Linux bash.
 set -euo pipefail
 
 usage() {
@@ -25,9 +25,9 @@ Options:
 Environment: VIZDOOM_BIN (engine binary), VIZDOOM_IWAD (default: freedoom2.wad of the
 vizdoom package), VIZDOOM_PYTHON (Python used to locate the vizdoom package).
 
-Example (Simple Tag: three red hunters, one green prey, host plays sound):
+Example (4 players: three red, one green, host plays sound):
   play_netgame.sh --players 4 --mode deathmatch \
-      --colors "ff 00 00,ff 00 00,ff 00 00,00 ff 00" scenarios/simple_tag_audio.wad
+      --colors "ff 00 00,ff 00 00,ff 00 00,00 ff 00" scenarios/my_scenario.wad
 EOF
 }
 
