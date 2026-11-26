@@ -9,7 +9,7 @@ Classes defined by the engine's built-in DECORATE (`vizdoom.pk3`). Use these nam
 
 Provenance:
 
-- Engine: ViZDoom 1.3.2 (ZDoom 2.8.1+ fork)
+- Engine: ViZDoom 1.3.3 (ZDoom 2.8.1+ fork)
 - Compiler: ACC 1.60 (Oct 18 2023)
 - `src/vizdoom/wadsrc/static/decorate.txt` (sha256 `5487d6144c68`)
 - `src/vizdoom/wadsrc/static/mapinfo/doom2.txt` (sha256 `33be0b437235`)

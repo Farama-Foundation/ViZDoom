@@ -8,11 +8,11 @@ Script args are the arguments accepted from ACS (`min-max`); line args are the m
 
 Provenance:
 
-- Engine: ViZDoom 1.3.2 (ZDoom 2.8.1+ fork)
+- Engine: ViZDoom 1.3.3 (ZDoom 2.8.1+ fork)
 - Compiler: ACC 1.60 (Oct 18 2023)
 - `src/vizdoom/src/actionspecials.h` (sha256 `234a0278a870`)
 - `src/vizdoom/src/p_lnspec.cpp` (sha256 `f831027c2817`)
-- `acc/zspecial.acs (ACC 1.60, shipped in COMRAD DoomGen2/acc/)` (sha256 `aab961d738a7`)
+- `acc/zspecial.acs (ACC 1.60, vendored in DoomGen2/acc/)` (sha256 `aab961d738a7`)
 
 | # | Name | Script args | Line args | Works | In ACC | Note |
 |---|---|---|---|---|---|---|

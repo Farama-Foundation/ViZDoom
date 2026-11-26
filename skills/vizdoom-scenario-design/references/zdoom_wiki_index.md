@@ -23,9 +23,9 @@ Tags: **works** = name checked against the generated tables (all links checked o
 | [Built-in ACS functions](https://zdoom.org/wiki/Built-in_ACS_functions) | reference | full GZDoom list: filter through `acs_functions.md` |
 | [Action specials](https://zdoom.org/wiki/Action_specials) | reference | full list: filter through `line_specials.md` |
 | [Fixed point number](https://zdoom.org/wiki/Fixed_point_number) | reference | `1.0` vs `1`; the ViZDoom reward is fixed point |
-| [UDMF](https://zdoom.org/wiki/UDMF) | reference | the text map format DoomGen writes |
+| [UDMF](https://zdoom.org/wiki/UDMF) | reference | text map format supported by ViZDoom (and SLADE / UDB) |
 | [MAPINFO](https://zdoom.org/wiki/MAPINFO) | reference | map definitions, DoomEdNums and SpawnNums |
-| [SNDINFO](https://zdoom.org/wiki/SNDINFO) | reference | registering custom sounds (Simple Tag Audio's chirp) |
+| [SNDINFO](https://zdoom.org/wiki/SNDINFO) | reference | registering custom sounds (`DoomGen2/examples/simple_tag.py --audio`) |
 | [Editor number](https://zdoom.org/wiki/Editor_number) | reference | thing types in maps (use `actor_classes.md` numbers) |
 | [Spawn number](https://zdoom.org/wiki/Spawn_number) | reference | ids for `Thing_Spawn` (use `actor_classes.md` numbers) |
 
@@ -52,12 +52,12 @@ Tags: **works** = name checked against the generated tables (all links checked o
 | [Thing_SetTranslation](https://zdoom.org/wiki/Thing_SetTranslation) | works | recolour players/actors by role |
 | [CreateTranslation](https://zdoom.org/wiki/CreateTranslation) | works | define the colour translation |
 | [Thing_Damage](https://zdoom.org/wiki/Thing_Damage) | works | damage or kill tagged things |
-| [SpawnProjectile](https://zdoom.org/wiki/SpawnProjectile) | works | scripted projectiles fired by an actor (Hide and Seek's evaluation turret) |
+| [SpawnProjectile](https://zdoom.org/wiki/SpawnProjectile) | works | scripted projectiles fired by an actor |
 | [SetActorVelocity](https://zdoom.org/wiki/SetActorVelocity) | works | exact projectile velocity (`SpawnProjectile` only takes a byte angle) |
 | [SetActorProperty](https://zdoom.org/wiki/SetActorProperty) | works | speed, render style, alpha per role |
 | [GetActorProperty](https://zdoom.org/wiki/GetActorProperty) | works | read health, speed |
 | [GetActorX](https://zdoom.org/wiki/GetActorX) | works | positions (fixed point) for distance checks |
-| [CheckSight](https://zdoom.org/wiki/CheckSight) | works | line-of-sight conditions (Simple Tag capture) |
+| [CheckSight](https://zdoom.org/wiki/CheckSight) | works | line-of-sight conditions (`DoomGen2/examples/simple_tag.py`) |
 | [SetActivator](https://zdoom.org/wiki/SetActivator) | works | make a script act on a specific actor (use instead of `SetActivatorToPlayer`) |
 | [ActivatorTID](https://zdoom.org/wiki/ActivatorTID) | works | tag of the current activator |
 | [PlayerNumber](https://zdoom.org/wiki/PlayerNumber) | works | network slot of the activator |

@@ -13,9 +13,9 @@ Example: `SetActivatorToPlayer` (Zandronum) silently does nothing; use `SetActiv
 
 Provenance:
 
-- Engine: ViZDoom 1.3.2 (ZDoom 2.8.1+ fork)
+- Engine: ViZDoom 1.3.3 (ZDoom 2.8.1+ fork)
 - Compiler: ACC 1.60 (Oct 18 2023)
-- `acc/zspecial.acs (ACC 1.60, shipped in COMRAD DoomGen2/acc/)` (sha256 `aab961d738a7`)
+- `acc/zspecial.acs (ACC 1.60, vendored in DoomGen2/acc/)` (sha256 `aab961d738a7`)
 - `scripts/data/acc_builtins.tsv (Extracted by scripts/build_reference_pack.py --acc-src from rheit/acc version 1.60: symbol.c InternalFunctions[], token.c keywords, pcode.h opcode numbers.)` (sha256 `b6fce7912619`)
 - `src/vizdoom/src/p_acs.h` (sha256 `7b85ea36a498`)
 - `src/vizdoom/src/p_acs.cpp` (sha256 `ea45b6aa2ddf`)
