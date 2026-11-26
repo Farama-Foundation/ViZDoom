@@ -46,7 +46,7 @@ mode = PLAYER
 def build_wad(
     out: Path,
     name: str,
-    acc: str,
+    acc: str | None,
     globals_,
     body: str,
     decorate: str | None = None,
@@ -97,7 +97,7 @@ def write_cfg(out: Path, name: str, wad: str, game_args: str = "") -> Path:
     return path
 
 
-def build_all(out: Path, acc: str) -> None:
+def build_all(out: Path, acc: str | None = None) -> None:
     out.mkdir(parents=True, exist_ok=True)
     flag = [("flag", 10)]
     build_wad(out, "ok", acc, flag, "flag = 0;")
@@ -263,7 +263,9 @@ def main() -> None:
         help="output directory for the probe WADs and cfgs",
     )
     parser.add_argument(
-        "--acc", default=str(DOOMGEN / "acc" / "acc"), help="ACC 1.60 binary"
+        "--acc",
+        default=None,
+        help="ACC 1.60 binary (default: auto-detect bundled macOS/Windows acc or PATH)",
     )
     parser.add_argument(
         "--doomgen-src",

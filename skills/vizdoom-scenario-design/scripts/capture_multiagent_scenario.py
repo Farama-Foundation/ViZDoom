@@ -34,6 +34,7 @@ import queue as queue_module
 import re
 import signal
 import struct
+import subprocess
 import sys
 import time
 import wave
@@ -129,8 +130,9 @@ def configure_doom_game(vzd, idx: int, args):
 
 
 def player(idx, args, queue):
-    # own process group, so the parent can stop the engine processes this player starts
-    os.setpgrp()
+    # own process group on POSIX, so the parent can stop the engine processes this player starts
+    if hasattr(os, "setpgrp"):
+        os.setpgrp()
     import vizdoom as vzd
 
     game = configure_doom_game(vzd, idx, args)
@@ -431,9 +433,19 @@ def stop_players(procs):
     the parent's stdout open, so a shell pipe on this script would never close.
     """
     for p in procs:
-        try:
-            os.killpg(p.pid, signal.SIGKILL)
-        except (ProcessLookupError, PermissionError):
+        if p.pid is None:
+            continue
+        if sys.platform != "win32" and hasattr(os, "killpg"):
+            try:
+                os.killpg(p.pid, signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                p.kill()
+        else:
+            subprocess.run(
+                ["taskkill", "/F", "/T", "/PID", str(p.pid)],
+                capture_output=True,
+                check=False,
+            )
             p.kill()
     for p in procs:
         p.join(timeout=5)

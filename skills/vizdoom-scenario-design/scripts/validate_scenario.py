@@ -906,6 +906,19 @@ class NetgameEnv:
             }
         )
         try:
+            popen_kwargs: dict = {
+                "stdin": subprocess.PIPE,
+                "stdout": subprocess.PIPE,
+                "stderr": subprocess.PIPE,
+                "text": True,
+                "env": openal_env(),
+            }
+            if sys.platform != "win32":
+                popen_kwargs["start_new_session"] = True
+            else:
+                popen_kwargs["creationflags"] = getattr(
+                    subprocess, "CREATE_NEW_PROCESS_GROUP", 0
+                )
             self.proc = subprocess.Popen(
                 [
                     sys.executable,
@@ -913,12 +926,7 @@ class NetgameEnv:
                     "--_netgame-worker",
                     spec,
                 ],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                env=openal_env(),
-                start_new_session=True,
+                **popen_kwargs,
             )
             init_msg = self._readline()
             if "error" in init_msg:
@@ -978,6 +986,11 @@ class NetgameEnv:
             if sys.platform != "win32":
                 os.killpg(self.proc.pid, signal.SIGKILL)
             else:
+                subprocess.run(
+                    ["taskkill", "/F", "/T", "/PID", str(self.proc.pid)],
+                    capture_output=True,
+                    check=False,
+                )
                 self.proc.kill()
         except OSError:
             pass
