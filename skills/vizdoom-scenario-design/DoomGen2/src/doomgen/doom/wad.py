@@ -65,6 +65,10 @@ class WADWriter:
 
     def _build_map(self, name: str, map_data: 'DoomMapData') -> None:
         """Convert `DoomMapData` into omgifol structures."""
+        if map_data.scripts and not map_data.behavior:
+            raise ValueError(
+                "map_data.scripts is set without compiled map_data.behavior; call acs.compile() first"
+            )
         editor = OMGMapEditor()
         use_hexen_format = map_data.behavior is not None
 
@@ -201,6 +205,8 @@ def run_zdbsp(wad_path: str | Path, zdbsp_path: str = "zdbsp") -> bool:
         )
         tmp_path.replace(wad_path)
         return True
+    except OSError:
+        return False
     finally:
         if tmp_path.exists():
             tmp_path.unlink()

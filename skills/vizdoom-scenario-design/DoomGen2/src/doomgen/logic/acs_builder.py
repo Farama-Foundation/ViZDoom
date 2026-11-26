@@ -7,9 +7,10 @@ import tempfile
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from pathlib import Path
+import shutil
 from typing import Any
 
-from doomgen.utils.paths import get_bundled_compiler, validate_executable
+from doomgen.utils.paths import get_bundled_compiler, get_project_root, validate_executable
 
 
 class ScriptType(Enum):
@@ -319,9 +320,19 @@ while (true)
                     "Ensure ACC is installed or available via bundled ./acc directory."
                 )
 
+            acc_exec = str(Path(shutil.which(acc_path) or acc_path).resolve())
+            include_dir = Path(acc_exec).resolve().parent
+            if not (include_dir / "zcommon.acs").is_file():
+                include_dir = get_project_root() / "acc"
+            cmd = [acc_exec]
+            if include_dir.is_dir():
+                cmd.extend(["-i", str(include_dir)])
+            cmd.extend([str(source_file), str(obj_file)])
+
             try:
                 subprocess.run(
-                    [acc_path, str(source_file), str(obj_file)],
+                    cmd,
+                    cwd=tmpdir,
                     capture_output=True,
                     text=True,
                     check=True
@@ -331,6 +342,12 @@ while (true)
                     f"ACC compiler not found at '{acc_path}'. "
                     "Please install ACC and add it to your PATH."
                 )
+            except subprocess.CalledProcessError as exc:
+                err_file = Path(tmpdir) / "acs.err"
+                details = err_file.read_text(errors="replace").strip() if err_file.is_file() else ""
+                if not details:
+                    details = "\n".join(part.strip() for part in (exc.stderr, exc.stdout) if part and part.strip())
+                raise RuntimeError(f"ACC compilation failed:\n{details}") from exc
 
             if obj_file.exists():
                 return obj_file.read_bytes()

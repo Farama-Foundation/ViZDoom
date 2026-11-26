@@ -518,18 +518,21 @@ class ProceduralMapBuilder:
         translator.translate(self.layout.edges_for_translation(self.graph), self.graph)
 
         for thing in self.things_to_add:
-            t_type = 2001
             raw_type = thing["type"]
 
             if isinstance(raw_type, int):
-                t_type = raw_type
+                t_type = int(raw_type)
             elif isinstance(raw_type, str):
                 if hasattr(ThingType, raw_type):
                     t_type = getattr(ThingType, raw_type).value
                 elif raw_type.isdigit():
                     t_type = int(raw_type)
                 else:
-                    print(f"Warning: Unknown thing type '{raw_type}', defaulting to Imp (2001)")
+                    raise ValueError(
+                        f"Unknown thing type {raw_type!r}; pass an integer DoomEdNum or a ThingType name"
+                    )
+            else:
+                raise TypeError(f"Thing type must be int or str, got {type(raw_type).__name__}")
 
             x = thing["x"]
             y = thing["y"]
