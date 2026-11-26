@@ -338,12 +338,15 @@ class TestProceduralMapBuilderZDBSP:
         """A syntax error in ACS raises RuntimeError containing ACC's error text."""
         import subprocess
         from doomgen.logic.acs_builder import ACSBuilder, ScriptType
-        from doomgen.utils.paths import get_bundled_compiler
+        from doomgen.utils.paths import resolve_compiler
 
+        acc = resolve_compiler("acc")
+        if acc is None:
+            pytest.skip("no runnable acc compiler on this platform")
         try:
-            subprocess.run([get_bundled_compiler("acc")], capture_output=True, timeout=10)
+            subprocess.run([acc], capture_output=True, timeout=10)
         except OSError:
-            pytest.skip("bundled acc does not run on this platform")
+            pytest.skip("acc binary does not run on this platform")
 
         builder = ACSBuilder()
         builder.add_script(ScriptType.OPEN, "undeclared_ident syntax;")

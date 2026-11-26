@@ -6,8 +6,10 @@ from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 from doomgen.utils.paths import (
-    get_project_root,
+    binary_matches_platform,
     get_bundled_compiler,
+    get_project_root,
+    resolve_compiler,
     validate_executable,
 )
 
@@ -134,6 +136,30 @@ class TestValidateExecutable(unittest.TestCase):
             mock_which.assert_called_once()
             # Path.exists should not be called if shutil.which succeeds
             mock_exists.assert_not_called()
+
+
+class TestResolveCompiler(unittest.TestCase):
+    """Tests for cross-platform compiler resolution."""
+
+    def test_bundled_acc_rejected_on_linux_falls_back_to_path(self):
+        with patch("doomgen.utils.paths.sys.platform", "linux"), patch(
+            "doomgen.utils.paths.shutil.which", return_value="/usr/local/bin/acc"
+        ):
+            self.assertFalse(binary_matches_platform(get_bundled_compiler("acc")))
+            self.assertEqual(resolve_compiler("acc"), "/usr/local/bin/acc")
+
+    def test_bundled_acc_exe_accepted_on_windows(self):
+        with patch("doomgen.utils.paths.sys.platform", "win32"):
+            resolved = resolve_compiler("acc")
+            self.assertIsNotNone(resolved)
+            self.assertTrue(resolved.endswith("acc.exe"))
+
+    def test_bundled_zdbsp_rejected_on_intel_macos(self):
+        with patch("doomgen.utils.paths.sys.platform", "darwin"), patch(
+            "doomgen.utils.paths.platform.machine", return_value="x86_64"
+        ), patch("doomgen.utils.paths.shutil.which", return_value=None):
+            self.assertFalse(binary_matches_platform(get_bundled_compiler("zdbsp")))
+            self.assertIsNone(resolve_compiler("zdbsp"))
 
 
 if __name__ == "__main__":

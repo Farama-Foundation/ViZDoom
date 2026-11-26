@@ -8,7 +8,13 @@ from pathlib import Path
 import pytest
 
 from doomgen.utils.constants import MAP_MAX_COORD, MAP_MIN_COORD
+from doomgen.utils.paths import resolve_compiler
 from doomgen.utils.validation import validate_wad
+
+requires_acc = pytest.mark.skipif(
+    resolve_compiler("acc") is None,
+    reason="no runnable acc compiler found (install acc on PATH on Linux)",
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
@@ -50,6 +56,7 @@ def test_geometry_and_placement_example(tmp_path: Path) -> None:
     check_wad_structure(out)
 
 
+@requires_acc
 @pytest.mark.parametrize(
     "module_name,class_name,config",
     [
@@ -74,6 +81,7 @@ def test_example_scenario_generates_valid_wad(
     check_wad_structure(out)
 
 
+@requires_acc
 def test_deathmatch_arena_batch_generation(tmp_path: Path) -> None:
     from examples.deathmatch_arena import generate_batch
 

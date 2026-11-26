@@ -6,6 +6,7 @@ import importlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -17,7 +18,14 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SKILL = REPO_ROOT / "skills" / "vizdoom-scenario-design"
 DOOMGEN = SKILL / "DoomGen2"
-ACC = DOOMGEN / "acc" / "acc"
+
+
+def _resolve_acc() -> str | None:
+    if str(DOOMGEN / "src") not in sys.path:
+        sys.path.insert(0, str(DOOMGEN / "src"))
+    from doomgen.utils.paths import resolve_compiler
+
+    return resolve_compiler("acc")
 
 
 def _has_doomgen_deps() -> bool:
@@ -28,8 +36,11 @@ def _has_doomgen_deps() -> bool:
 
 
 def _acc_runs() -> bool:
+    acc = _resolve_acc()
+    if acc is None:
+        return False
     try:
-        subprocess.run([str(ACC)], capture_output=True, timeout=10)
+        subprocess.run([acc], capture_output=True, timeout=10)
     except OSError:
         return False
     return True
@@ -40,7 +51,7 @@ requires_doomgen = pytest.mark.skipif(
     reason="DoomGen2 dependencies (omgifol, shapely, scipy, networkx) not installed",
 )
 requires_acc = pytest.mark.skipif(
-    not _acc_runs(), reason="bundled acc does not run on this platform"
+    not _acc_runs(), reason="no runnable acc compiler found on this platform"
 )
 
 
@@ -74,7 +85,7 @@ def probes(skill_modules, tmp_path_factory):
         pytest.skip("DoomGen2 deps and runnable acc are required for probe WADs")
     _, probe = skill_modules
     out = tmp_path_factory.mktemp("probes")
-    probe.build_all(out, str(ACC))
+    probe.build_all(out, _resolve_acc())
     return out
 
 
@@ -245,6 +256,7 @@ def test_capture_multiagent_scenario_runs(probes, tmp_path):
 
 @requires_doomgen
 @requires_acc
+@pytest.mark.skipif(shutil.which("bash") is None, reason="bash not available")
 def test_play_netgame_dry_run(probes):
     result = subprocess.run(
         [
@@ -449,3 +461,15 @@ def test_skill_markdown_paths_exist():
             if not any((base / candidate).exists() for base in base_dirs):
                 missing.append(f"{doc.relative_to(REPO_ROOT)}: {candidate}")
     assert not missing, "Broken relative paths in skill docs:\n" + "\n".join(missing)
+
+
+def test_vendored_licenses_and_attribution():
+    for rel in ("LICENSE", "acc/LICENSE", "zdbsp/LICENSE"):
+        path = DOOMGEN / rel
+        assert path.is_file() and path.stat().st_size > 100, f"missing {path}"
+    for doc in (
+        SKILL / "SKILL.md",
+        DOOMGEN / "README.md",
+        SKILL / "references" / "tooling.md",
+    ):
+        assert "https://github.com/TTomilin/COMRAD" in doc.read_text(), doc
