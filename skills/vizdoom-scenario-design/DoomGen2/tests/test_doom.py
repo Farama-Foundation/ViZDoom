@@ -311,3 +311,53 @@ class TestProceduralMapBuilderZDBSP:
             # Verify the custom path was used
             call_kwargs = mock_zdbsp.call_args[1]
             assert call_kwargs["zdbsp_path"] == custom_zdbsp_path
+
+    def test_build_rejects_unknown_thing_type(self, tmp_path):
+        """Unknown string thing names raise ValueError instead of silently spawning another thing."""
+        from doomgen.builder import ProceduralMapBuilder
+
+        builder = ProceduralMapBuilder(bounds=(-512, -512, 512, 512), seed=42)
+        builder.add_area("room1", (0, 0, 256, 256))
+        builder.add_thing("NOT_A_REAL_THING", 0, 0)
+
+        with pytest.raises(ValueError, match="Unknown thing type"):
+            builder.build(str(tmp_path / "bad.wad"), zdbsp_path=None)
+
+    def test_run_zdbsp_returns_false_on_exec_format_error(self, tmp_path):
+        """A foreign-platform zdbsp binary degrades cleanly instead of crashing the build."""
+        from unittest.mock import patch
+        from doomgen.doom.wad import run_zdbsp
+
+        wad = tmp_path / "map.wad"
+        wad.write_bytes(b"PWAD")
+        with patch("doomgen.doom.wad.shutil.which", return_value="/fake/zdbsp"), \
+             patch("doomgen.doom.wad.subprocess.run", side_effect=OSError(8, "Exec format error")):
+            assert run_zdbsp(wad, zdbsp_path="/fake/zdbsp") is False
+
+    def test_acs_compile_surfaces_compiler_error(self):
+        """A syntax error in ACS raises RuntimeError containing ACC's error text."""
+        import subprocess
+        from doomgen.logic.acs_builder import ACSBuilder, ScriptType
+        from doomgen.utils.paths import get_bundled_compiler
+
+        try:
+            subprocess.run([get_bundled_compiler("acc")], capture_output=True, timeout=10)
+        except OSError:
+            pytest.skip("bundled acc does not run on this platform")
+
+        builder = ACSBuilder()
+        builder.add_script(ScriptType.OPEN, "undeclared_ident syntax;")
+        with pytest.raises(RuntimeError, match="undeclared_ident"):
+            builder.compile()
+
+    def test_wad_writer_rejects_scripts_without_behavior(self, tmp_path):
+        """Setting map_data.scripts without compiled behavior raises ValueError."""
+        from doomgen.builder import ProceduralMapBuilder
+
+        builder = ProceduralMapBuilder(bounds=(-512, -512, 512, 512), seed=42)
+        builder.add_area("room1", (0, 0, 256, 256))
+        builder.map_data.scripts = 'script 1 OPEN { }'
+
+        with pytest.raises(ValueError, match="map_data.behavior"):
+            builder.build(str(tmp_path / "uncompiled.wad"), zdbsp_path="")
+

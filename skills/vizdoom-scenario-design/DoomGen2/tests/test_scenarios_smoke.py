@@ -1,8 +1,7 @@
-"""End-to-end smoke test: every benchmark scenario generates a structurally valid WAD."""
+"""End-to-end smoke test: every example generates a structurally valid WAD."""
 
 from __future__ import annotations
 
-import importlib
 import sys
 from pathlib import Path
 
@@ -14,35 +13,6 @@ from doomgen.utils.validation import validate_wad
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
-
-# (module path, scenario class name)
-SCENARIOS = [
-    ("examples.benchmark.deathmatch_duel", "DeathmatchDuelScenario"),
-    ("examples.benchmark.deathmatch_duel_1000", "DeathmatchDuelScenario"),
-    ("examples.benchmark.hide_and_seek_1000", "HideAndSeekScenario"),
-    ("examples.benchmark.stag_hunt_arena", "StagHuntArenaScenario"),
-    ("examples.benchmark.coop_health_gathering", "CoopHealthGatheringScenario"),
-    ("examples.benchmark.dumb_enemies", "DumbEnemiesScenario"),
-    ("examples.benchmark.smart_enemies", "SmartEnemiesScenario"),
-    ("examples.benchmark.simple_tag", "SimpleTagScenario"),
-    ("examples.benchmark.simple_tag_audio", "SimpleTagAudioScenario"),
-    ("examples.misc.resource_greed", "ResourceGreedScenario"),
-    ("examples.benchmark.ammo_carrier", "AmmoCarrierScenario"),
-    ("examples.benchmark.armory_siege", "ArmorySiegeScenario"),
-    ("examples.benchmark.foraging_commons", "ForagingCommonsScenario"),
-    ("examples.benchmark.coop_puzzle", "CoopPuzzleScenario"),
-    ("examples.benchmark.coop_relay", "CoopRelayScenario"),
-    ("examples.benchmark.rhythm_sync", "RhythmSyncScenario"),
-    ("examples.rhythm_sync_fadeto", "RhythmSyncScenario"),
-    ("examples.benchmark.lavapit", "LavaPitScenario"),
-    ("examples.benchmark.platform_chain", "PlatformChainScenario"),
-    ("examples.benchmark.platform_chain_easy", "PlatformChainScenario"),
-    ("examples.benchmark.lava_maze", "LavaMazeScenario"),
-    ("examples.benchmark.lava_maze_simple", "LavaMazeSimpleScenario"),
-    ("examples.benchmark.stealth_labyrinth", "StealthLabyrinthScenario"),
-    ("examples.benchmark.text_maze", "TextMazeScenario"),
-    ("examples.benchmark.simple_communication", "SimpleCommunicationScenario"),
-]
 
 
 def check_wad_structure(path: Path) -> None:
@@ -72,12 +42,42 @@ def check_wad_structure(path: Path) -> None:
     assert referenced == set(range(len(editor.sectors))), "unreferenced sector"
 
 
-@pytest.mark.parametrize("module_name,class_name", SCENARIOS,
-                         ids=[f"{m.rsplit('.', 1)[-1]}" for m, _ in SCENARIOS])
-def test_scenario_generates_valid_wad(module_name: str, class_name: str, tmp_path: Path) -> None:
+def test_geometry_and_placement_example(tmp_path: Path) -> None:
+    from examples.geometry_and_placement import build_geometry_and_placement
+
+    out = tmp_path / "geometry_and_placement.wad"
+    build_geometry_and_placement(out)
+    check_wad_structure(out)
+
+
+@pytest.mark.parametrize(
+    "module_name,class_name,config",
+    [
+        ("examples.key_maze", "KeyMazeScenario", {}),
+        ("examples.coop_relay", "CoopRelayScenario", {}),
+        ("examples.simple_tag", "SimpleTagScenario", {"audio": False}),
+        ("examples.simple_tag", "SimpleTagScenario", {"audio": True}),
+        ("examples.deathmatch_arena", "DeathmatchArenaScenario", {}),
+    ],
+    ids=["key_maze", "coop_relay", "simple_tag", "simple_tag_audio", "deathmatch_arena"],
+)
+def test_example_scenario_generates_valid_wad(
+    module_name: str, class_name: str, config: dict, tmp_path: Path
+) -> None:
+    import importlib
+
     module = importlib.import_module(module_name)
-    scenario = getattr(module, class_name)()
+    scenario = getattr(module, class_name)(config)
     out = tmp_path / f"{module_name.rsplit('.', 1)[-1]}.wad"
     scenario.generate(str(out))
     assert out.exists()
     check_wad_structure(out)
+
+
+def test_deathmatch_arena_batch_generation(tmp_path: Path) -> None:
+    from examples.deathmatch_arena import generate_batch
+
+    wads = generate_batch(tmp_path / "batch")
+    assert len(wads) == 4
+    for wad in wads:
+        check_wad_structure(wad)
