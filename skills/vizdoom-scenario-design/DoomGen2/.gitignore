@@ -1,7 +1,7 @@
-# Generated scenario outputs
-examples/benchmark/output/
+# Generated example outputs
+examples/output/
 
-# Build/OS artifacts
+# Build and OS artifacts
 *.egg-info/
 __pycache__/
 .DS_Store
