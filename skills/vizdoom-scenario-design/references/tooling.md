@@ -5,8 +5,9 @@
 | ViZDoom engine + Python package | runs and tests the scenario | `pip install vizdoom` / editable install | yes |
 | `freedoom2.wad` | IWAD: textures, flats, sprites, monsters, sounds | `vizdoom` package dir | yes |
 | `vizdoom.pk3` | engine resources and built-in DECORATE actors | `vizdoom` package dir | yes |
-| ACC 1.60 (`acc`, `zcommon.acs`, `zspecial.acs`, ...) | compiles ACS to the `BEHAVIOR` lump | `DoomGen2/acc/` in this skill (macOS universal `acc`, Windows `acc.exe`); upstream <https://github.com/rheit/acc> (build from source on Linux) | no (ships with the skill) |
-| DoomGen | procedural map generator + Pythonic ACS builder | `DoomGen2/` in this skill, vendored from <https://github.com/TTomilin/COMRAD/tree/main/DoomGen2> | no (ships with the skill) |
+| ACC 1.60 (`acc`, `zcommon.acs`, `zspecial.acs`, ...) | compiles ACS to the `BEHAVIOR` lump | `DoomGen2/acc/` in this skill (macOS universal `acc`, Windows `acc.exe`, see `acc/LICENSE`); upstream <https://github.com/ZDoom/acc> (on Linux, install a prebuilt Linux release or build from source onto `PATH` or pass `--acc`) | no (ships with the skill) |
+| ZDBSP (`zdbsp`, `zdbsp.exe`) | optional WAD node builder (ZDoom rebuilds nodes at load time if skipped) | `DoomGen2/zdbsp/` in this skill (Apple Silicon macOS `zdbsp`, Windows `zdbsp.exe`, GPLv2 in `zdbsp/LICENSE`); upstream <https://github.com/ZDoom/zdbsp> | no (ships with the skill) |
+| DoomGen | procedural map generator + Pythonic ACS builder | `DoomGen2/` in this skill, vendored from COMRAD (<https://github.com/TTomilin/COMRAD>, MIT in `DoomGen2/LICENSE`) | no (ships with the skill) |
 | omgifol | read/write WAD lumps and maps from Python | `pip install omgifol` (DoomGen dependency) | no |
 | SLADE / Ultimate Doom Builder | GUI inspection and hand editing (UDMF) | <https://slade.mancubus.net>, <https://ultimatedoombuilder.github.io> | no (optional) |
 

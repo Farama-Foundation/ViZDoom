@@ -36,11 +36,13 @@ python -c "import vizdoom; print(vizdoom.__version__)"
 export PYTHONPATH=$SKILL/DoomGen2/src                      # or: pip install -e $SKILL/DoomGen2
 ```
 
-`$SKILL/DoomGen2` is a vendored map generator with a Python ACS builder, ACC 1.60 in `acc/`
-and ZDBSP in `zdbsp/`, both found automatically. Bundled `acc` and `zdbsp` are macOS/Windows
-binaries; on Linux build `acc` from <https://github.com/rheit/acc> and pass `--acc` (ZDBSP
-is optional — DoomGen2 skips it automatically if unavailable and the engine builds nodes at
-load time). Details: `references/tooling.md`.
+`$SKILL/DoomGen2` is a vendored copy of DoomGen from COMRAD
+(<https://github.com/TTomilin/COMRAD>): a procedural map generator with a Python ACS
+builder, ACC 1.60 in `acc/` (`acc/LICENSE`), and ZDBSP in `zdbsp/` (`zdbsp/LICENSE`).
+Bundled binaries cover macOS and Windows; on Linux, DoomGen2 automatically picks up `acc`
+(and optional `zdbsp`) from `PATH`, or you can pass `--acc` (get prebuilt Linux binaries or
+source from <https://github.com/ZDoom/acc>). ZDBSP is optional — DoomGen2 skips it cleanly
+when unavailable and ViZDoom builds nodes at load time. Details: `references/tooling.md`.
 
 ## Workflow
 
@@ -153,10 +155,10 @@ what still needs this playtest.
 | `templates/` | spec and `USER` contract template; pytest wrapper around `validate_scenario.py` |
 | `scripts/validate_scenario.py` | static lint + engine load + native 1-16 player contract probe |
 | `scripts/capture_multiagent_scenario.py` | native 1-16 player snapshot (`overview.png`, frames, top-down map, audio, notifications) |
-| `scripts/play_netgame.sh` | N-player human playtest launcher |
+| `scripts/play_netgame.sh` | N-player human playtest launcher (macOS/Linux bash; Git Bash or WSL on Windows) |
 | `scripts/build_probe_wads.py` | probe WADs reproducing engine pitfalls; `--check` tests the validator against them |
 | `scripts/build_reference_pack.py` | regenerates `references/` deterministically from engine sources |
-| `DoomGen2/` | vendored map generator, ACS builder, `acc`, `zdbsp`, and 5 worked examples in `examples/` |
+| `DoomGen2/` | vendored DoomGen from COMRAD (<https://github.com/TTomilin/COMRAD>), ACS builder, `acc`, `zdbsp`, and 5 worked examples in `examples/` |
 
 The skill's own regression tests are `tests/test_scenario_skill.py` (automated) and
 `tests/manual_test_scenario_skill.py` (full netgame probe check) in the repository.

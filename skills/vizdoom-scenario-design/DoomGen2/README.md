@@ -11,8 +11,10 @@ navigable.
 
 ## Installation
 
-Vendored inside the `vizdoom-scenario-design` skill (upstream:
-<https://github.com/TTomilin/COMRAD/tree/main/DoomGen2>). Use it in place:
+Vendored inside the `vizdoom-scenario-design` skill from **COMRAD**
+(<https://github.com/TTomilin/COMRAD>, specifically
+<https://github.com/TTomilin/COMRAD/tree/main/DoomGen2>; MIT licensed, see `LICENSE`). Use
+it in place:
 
 ```bash
 pip install -e ".[dev]"      # from this folder, or: export PYTHONPATH=<this folder>/src
@@ -20,9 +22,11 @@ pytest                       # runs tests/ with src/ and examples/ on the path
 ```
 
 Example scripts write to `examples/output/` next to themselves (git-ignored) unless
-`--output` is passed. `acc` (`acc/`) and `zdbsp` (`zdbsp/`) ship as macOS/Windows binaries;
-on Linux build `acc` from <https://github.com/rheit/acc> and pass `--acc` (ZDBSP is skipped
-automatically if unavailable and ViZDoom builds nodes at load time).
+`--output` is passed. `acc` (`acc/`, see `acc/LICENSE`) and `zdbsp` (`zdbsp/`, see
+`zdbsp/LICENSE`) ship as macOS and Windows binaries; on Linux DoomGen2 falls back
+automatically to `acc`/`zdbsp` on `PATH` (get prebuilt Linux binaries or source for ACC from
+<https://github.com/ZDoom/acc/releases>, or pass `--acc`). ZDBSP is optional and skipped
+automatically when unavailable — ViZDoom builds nodes at load time.
 
 ## Quick Start
 
@@ -73,7 +77,7 @@ textures so flush sectors can be raised later by ACS.
 - Python 3.10+
 - `omgifol`, `shapely`, `numpy`, `scipy`, `networkx`
 - Optional: `matplotlib` (for `visualize_layout`)
-- `acc` (ACS Compiler) — bundled in `acc/` for macOS/Windows; see Installation for Linux.
+- `acc` (ACS Compiler) — bundled in `acc/` (`acc/LICENSE`) for macOS/Windows; on Linux put `acc` on `PATH` or pass `--acc`.
 
 ## Examples
 
