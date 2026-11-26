@@ -233,7 +233,14 @@ def test_capture_multiagent_scenario_runs(probes, tmp_path):
     assert result.returncode == 0, result.stdout[-2000:] + result.stderr[-2000:]
     summary = json.loads((snap_dir / "summary.json").read_text())
     assert len(summary["players"]) == 2
+    for player in summary["players"]:
+        assert "health" in player and player["health"] > 0
+        assert player["dead"] is False
+        assert player["dead_steps"] == 0
     assert (snap_dir / "snapshot.pkl").is_file()
+    if importlib.util.find_spec("matplotlib") is not None:
+        assert (snap_dir / "topdown.png").is_file()
+        assert (snap_dir / "overview.png").is_file()
 
 
 @requires_doomgen
@@ -292,6 +299,28 @@ def test_integer_reward_lint(skill_modules):
             "src", f"{source}\nscript 2 OPEN {{ {bad_stmt} }}", report
         )
         assert not report.ok, bad_stmt
+
+
+def test_deathmatch_spawn_telefrag_note(skill_modules):
+    vs, _ = skill_modules
+    spawns = [11, 11, 11, 11]
+    report = vs.Report("dm_raw")
+    vs.check_spawns({"gameargs": "-deathmatch +sv_norespawn 1"}, spawns, 4, report)
+    assert report.ok
+    assert any("NODAMAGE" in note for note in report.notes), report.render()
+
+    report_protected = vs.Report("dm_nodamage")
+    vs.check_spawns(
+        {"gameargs": "-deathmatch +sv_norespawn 1"},
+        spawns,
+        4,
+        report_protected,
+        lumps=[("DECORATE", b"actor DMPlayer : DoomPlayer { +NODAMAGE }\n")],
+    )
+    assert report_protected.ok
+    assert not any(
+        "NODAMAGE" in note for note in report_protected.notes
+    ), report_protected.render()
 
 
 def test_parse_cfg_append(skill_modules, tmp_path):

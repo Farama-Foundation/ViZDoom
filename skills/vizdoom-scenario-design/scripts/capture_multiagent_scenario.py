@@ -13,8 +13,10 @@ from the WAD.
 Output:
 * ``--out snapshot.pkl``: raw snapshot pickle;
 * ``--out DIR``: ``DIR/snapshot.pkl`` plus agent-readable exports:
-  ``summary.json`` (poses, notifications, objects, audio peaks), ``player<i>.png``,
-  ``player<i>_audio.wav`` (if audio is enabled in the cfg) and ``topdown.png``.
+  ``overview.png`` (top-down map + all player POVs in one figure),
+  ``summary.json`` (poses, health, dead status, notifications, objects, audio peaks),
+  ``player<i>.png``, ``player<i>_audio.wav`` (if audio is enabled in the cfg) and
+  ``topdown.png``.
 
 Usage:
     python capture_multiagent_scenario.py scenarios/my_scenario.cfg --agents 4 --tics 40 --out /tmp/snapshot
@@ -24,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import multiprocessing as mp
 import os
 import pickle
@@ -135,6 +138,7 @@ def player(idx, args, queue):
         vzd.GameVariable.POSITION_X,
         vzd.GameVariable.POSITION_Y,
         vzd.GameVariable.ANGLE,
+        vzd.GameVariable.HEALTH,
     ):
         game.add_available_game_variable(var)
     game.set_objects_info_enabled(True)
@@ -164,6 +168,8 @@ def player(idx, args, queue):
                     game.get_game_variable(vzd.GameVariable.POSITION_Y),
                 ),
                 "angle": game.get_game_variable(vzd.GameVariable.ANGLE),
+                "health": float(game.get_game_variable(vzd.GameVariable.HEALTH)),
+                "dead": bool(game.is_player_dead()),
                 "notifications": state.notifications_buffer,
                 "audio": (
                     None if state.audio_buffer is None else state.audio_buffer.copy()
@@ -277,16 +283,45 @@ def map_geometry(wad: Path):
     return {"lines": []}
 
 
+def _draw_topdown(ax, snapshot: dict) -> None:
+    for x1, y1, x2, y2, blocking in snapshot["lines"]:
+        ax.plot([x1, x2], [y1, y2], color="black" if blocking else "0.7", lw=1)
+    for pit in snapshot.get("pits", []):
+        ax.fill(*zip(*pit), color="tab:red", alpha=0.3)
+    for x1, y1, x2, y2 in snapshot.get("gates", []):
+        ax.plot([x1, x2], [y1, y2], color="tab:orange", ls="--")
+    for snap in snapshot["players"]:
+        (x, y), angle = snap["pos"], np.deg2rad(snap["angle"])
+        dead = bool(snap.get("dead"))
+        ax.plot(x, y, "x" if dead else "o", ms=8, color="crimson" if dead else None)
+        ax.arrow(x, y, 48 * np.cos(angle), 48 * np.sin(angle), width=4)
+        label = f"P{snap['idx']} (DEAD)" if dead else f"P{snap['idx']}"
+        ax.annotate(
+            label,
+            (x, y),
+            textcoords="offset points",
+            xytext=(6, 6),
+            color="crimson" if dead else "black",
+        )
+    ax.set_aspect("equal")
+    steps = len(snapshot["players"][0]["frames"])
+    ax.set_title(f"{snapshot['scenario']}: player poses after {steps} steps")
+
+
 def write_exports(out_dir: Path, snapshot: dict) -> list[str]:
     """Agent-readable files next to the pickle; returns notes about skipped outputs."""
     notes = []
     summary = {"scenario": snapshot["scenario"], "wad": snapshot["wad"], "players": []}
     for snap in snapshot["players"]:
         idx = snap["idx"]
+        dead_steps = sum(1 for f in snap["frames"] if f.get("dead"))
         entry = {
             "idx": idx,
             "pos": [round(float(v), 1) for v in snap["pos"]],
             "angle": round(float(snap["angle"]), 1),
+            "health": round(float(snap.get("health", 0.0)), 1),
+            "dead": bool(snap.get("dead", False)),
+            "dead_steps": dead_steps,
             "notifications": snap["notifications"],
             "objects": [
                 (name, round(float(x)), round(float(y)))
@@ -330,26 +365,43 @@ def write_exports(out_dir: Path, snapshot: dict) -> list[str]:
         import matplotlib.pyplot as plt
 
         fig, ax = plt.subplots(figsize=(6, 6))
-        for x1, y1, x2, y2, blocking in snapshot["lines"]:
-            ax.plot([x1, x2], [y1, y2], color="black" if blocking else "0.7", lw=1)
-        for pit in snapshot.get("pits", []):
-            ax.fill(*zip(*pit), color="tab:red", alpha=0.3)
-        for x1, y1, x2, y2 in snapshot.get("gates", []):
-            ax.plot([x1, x2], [y1, y2], color="tab:orange", ls="--")
-        for snap in snapshot["players"]:
-            (x, y), angle = snap["pos"], np.deg2rad(snap["angle"])
-            ax.plot(x, y, "o", ms=8)
-            ax.arrow(x, y, 48 * np.cos(angle), 48 * np.sin(angle), width=4)
-            ax.annotate(
-                f"P{snap['idx']}", (x, y), textcoords="offset points", xytext=(6, 6)
-            )
-        ax.set_aspect("equal")
-        steps = len(snapshot["players"][0]["frames"])
-        ax.set_title(f"{snapshot['scenario']}: player poses after {steps} steps")
+        _draw_topdown(ax, snapshot)
         fig.savefig(out_dir / "topdown.png", dpi=120, bbox_inches="tight")
         plt.close(fig)
+
+        players = snapshot["players"]
+        n_players = len(players)
+        cols = (
+            1
+            if n_players == 1
+            else (2 if n_players <= 4 else math.ceil(math.sqrt(n_players)))
+        )
+        rows = math.ceil(n_players / cols)
+        fig = plt.figure(figsize=(6 + 2.6 * cols, max(5.5, 2.3 * rows)), dpi=120)
+        gs = fig.add_gridspec(
+            rows,
+            cols + 2,
+            width_ratios=[1.3, 1.3] + [1.0] * cols,
+            wspace=0.14,
+            hspace=0.28,
+        )
+        ax_map = fig.add_subplot(gs[:, :2])
+        _draw_topdown(ax_map, snapshot)
+        for slot in range(rows * cols):
+            ax_pov = fig.add_subplot(gs[slot // cols, 2 + (slot % cols)])
+            ax_pov.axis("off")
+            if slot >= n_players:
+                continue
+            snap = players[slot]
+            ax_pov.imshow(np.asarray(snap["screen"], dtype=np.uint8))
+            dead = bool(snap.get("dead"))
+            hp = round(float(snap.get("health", 0.0)))
+            title = f"P{snap['idx']} DEAD" if dead else f"P{snap['idx']} (HP {hp})"
+            ax_pov.set_title(title, fontsize=9, color="crimson" if dead else "black")
+        fig.savefig(out_dir / "overview.png", bbox_inches="tight")
+        plt.close(fig)
     except ImportError:
-        notes.append("matplotlib not installed: topdown.png skipped")
+        notes.append("matplotlib not installed: topdown.png and overview.png skipped")
     return notes
 
 
@@ -465,7 +517,10 @@ def main():
         (args.out / "snapshot.pkl").write_bytes(pickle.dumps(snapshot))
         for note in write_exports(args.out, snapshot):
             print(f"note: {note}")
-        written = f"{args.out}/ (snapshot.pkl, summary.json, player*.png, topdown.png)"
+        written = (
+            f"{args.out}/ (overview.png, snapshot.pkl, summary.json, "
+            "player*.png, topdown.png)"
+        )
     poses = ", ".join(
         f"P{s['idx']}@({s['pos'][0]:.0f},{s['pos'][1]:.0f})" for s in snaps
     )

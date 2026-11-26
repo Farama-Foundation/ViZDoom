@@ -117,10 +117,12 @@ python $SKILL/scripts/capture_multiagent_scenario.py scenarios/my_scenario.cfg \
     --agents 4 --tics 40 --out /tmp/my_scenario_snapshot
 ```
 
-Writes `summary.json` (poses, notifications, visible objects, audio peaks), `player<i>.png`,
-`player<i>_audio.wav` (when audio is enabled in the `.cfg`) and `topdown.png`. Inspect them
-for spawns, visibility, colours, HUD text, and non-silent directional audio. On macOS the
-script re-execs itself with OpenAL Soft on `DYLD_LIBRARY_PATH`.
+Writes `overview.png` (top-down map + every player's POV in one figure), `summary.json`
+(poses, health, `dead`/`dead_steps`, notifications, visible objects, audio peaks),
+`player<i>.png`, `player<i>_audio.wav` (when audio is enabled in the `.cfg`) and
+`topdown.png`. **Inspect `overview.png` and `summary.json` first** to verify spawns (no
+`DEAD` players), geometry, visibility, colours, HUD text, and non-silent directional audio.
+On macOS the script re-execs itself with OpenAL Soft on `DYLD_LIBRARY_PATH`.
 
 ### 7. Human playtest
 
@@ -139,7 +141,7 @@ what still needs this playtest.
 - [ ] spec written, `USER` contract table complete
 - [ ] `acc` compiles cleanly, `make -j` run (if under `scenarios/`)
 - [ ] `validate_scenario.py` passes for the intended player count
-- [ ] snapshot inspected
+- [ ] `overview.png` and `summary.json` inspected (all players alive, geometry and POVs match spec)
 - [ ] playtest requested, with what to look for
 
 ## Files
@@ -150,7 +152,7 @@ what still needs this playtest.
 | `references/` | engine-generated ACS, line special and actor tables; scenario API; tooling; wiki index |
 | `templates/` | spec and `USER` contract template; pytest wrapper around `validate_scenario.py` |
 | `scripts/validate_scenario.py` | static lint + engine load + native 1-16 player contract probe |
-| `scripts/capture_multiagent_scenario.py` | native 1-16 player snapshot (frames, top-down map, audio, notifications) |
+| `scripts/capture_multiagent_scenario.py` | native 1-16 player snapshot (`overview.png`, frames, top-down map, audio, notifications) |
 | `scripts/play_netgame.sh` | N-player human playtest launcher |
 | `scripts/build_probe_wads.py` | probe WADs reproducing engine pitfalls; `--check` tests the validator against them |
 | `scripts/build_reference_pack.py` | regenerates `references/` deterministically from engine sources |

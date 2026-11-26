@@ -266,10 +266,25 @@ def table_names(path: Path) -> dict[str, str]:
     return rows
 
 
+def _has_decorate_nodamage(lumps: list[tuple[str, bytes]] | None) -> bool:
+    for name, payload in lumps or ():
+        if name.upper() != "DECORATE":
+            continue
+        text = strip_comments(payload.decode("latin-1", errors="replace"))
+        if re.search(r"\+\s*NODAMAGE\b", text, re.I):
+            return True
+    return False
+
+
 def check_spawns(
-    values: dict[str, str], types: list[int], players: int, report: Report
+    values: dict[str, str],
+    types: list[int],
+    players: int,
+    report: Report,
+    lumps: list[tuple[str, bytes]] | None = None,
 ) -> None:
-    if "-deathmatch" in values.get("gameargs", "").lower():
+    game_args = values.get("gameargs", "").lower()
+    if "-deathmatch" in game_args:
         count = types.count(DEATHMATCH_START)
         report.check(
             count > 0,
@@ -277,10 +292,20 @@ def check_spawns(
             "game_args has -deathmatch but the map has no deathmatch starts (editor number 11); "
             "the engine crashes while loading (pitfall 23)",
         )
-        if players > 1 and "sv_norespawn" not in values.get("gameargs", "").lower():
+        if players > 1 and "sv_norespawn" not in game_args:
             report.notes.append(
                 "deathmatch without +sv_norespawn 1: dead players respawn; if a latched "
                 "outcome ends the round, add it to game_args (pitfall 13)"
+            )
+        if players > 1 and not _has_decorate_nodamage(lumps):
+            report.notes.append(
+                "multi-player -deathmatch without DECORATE +NODAMAGE spawn protection: "
+                "ZDoom 2.8.1 picks deathmatch starts randomly with replacement at level "
+                "load (G_CheckSpot rejects type=0 starts and ignores +sv_spawnfarthest 1 "
+                "on initial spawn), so players telefrag on tic 0 even with N+ starts; "
+                "subclass DoomPlayer with +NODAMAGE in DECORATE, relocate in ENTER to "
+                "MapSpots via SetActorPosition, and clear NODAMAGE after settling (or "
+                "omit -deathmatch and use Player 1..N starts; pitfall 23)"
             )
         if 0 < count < players:
             report.notes.append(
@@ -525,7 +550,7 @@ def static_checks(
         report.notes.append("no BEHAVIOR lump: the map has no compiled ACS")
 
     check_map_specials(map_data, report)
-    check_spawns(values, map_thing_types(map_data), players, report)
+    check_spawns(values, map_thing_types(map_data), players, report, lumps)
 
     known_lower = {k.lower() for k in table_names(REFERENCES / "actor_classes.md")}
     check_decorate(lumps, known_lower, report)

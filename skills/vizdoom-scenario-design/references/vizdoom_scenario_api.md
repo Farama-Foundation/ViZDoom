@@ -73,7 +73,10 @@ Enum values must use enum names (e.g. `audio_sampling_rate = SR_22050`, not `220
 - Up to 16 players. One instance hosts (`-host N -port P`), the others join
   (`-join 127.0.0.1:P`); names and colours via `+name Player0 +color "ff 00 00"`.
   `-deathmatch` uses deathmatch starts (editor number 11) and frag rules; without it the
-  game is cooperative and uses player starts 1-4 (more in `actor_classes.md`).
+  game is cooperative and uses deterministic player starts 1-4 (more in `actor_classes.md`).
+  In ZDoom 2.8.1 `-deathmatch` level loads pick starts randomly with replacement (even with
+  `+sv_spawnfarthest 1`), so use a `DECORATE` `+NODAMAGE` player class + `ENTER` `MapSpot`
+  relocation when you need telefrag-free `-deathmatch` spawns (pitfall 23).
 - Bind roles to **player names**, not network slots, if join order can vary. See
   `DoomGen2/examples/simple_tag.py` (`StrCmp(StrParam(n:0), StrParam(s:"Player", d:role)) == 0`).
 - Respawn: `+sv_norespawn 1` prevents respawning (it overrides `sv_forcerespawn`).
