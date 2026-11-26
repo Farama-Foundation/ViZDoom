@@ -10,7 +10,12 @@ from pathlib import Path
 import shutil
 from typing import Any
 
-from doomgen.utils.paths import get_bundled_compiler, get_project_root, validate_executable
+from doomgen.utils.paths import (
+    get_bundled_compiler,
+    get_project_root,
+    resolve_compiler,
+    validate_executable,
+)
 
 
 class ScriptType(Enum):
@@ -301,7 +306,7 @@ while (true)
     ) -> bytes | None:
         """Compile the scripts with ACC and return the bytecode."""
         if acc_path is None:
-            acc_path = get_bundled_compiler("acc")
+            acc_path = resolve_compiler("acc") or get_bundled_compiler("acc")
 
         source_code = self.to_code()
 
@@ -317,7 +322,7 @@ while (true)
             if not validate_executable(acc_path):
                 raise FileNotFoundError(
                     f"ACC compiler not found at '{acc_path}'. "
-                    "Ensure ACC is installed or available via bundled ./acc directory."
+                    "Ensure ACC is installed on PATH, pass acc_path/--acc, or use a bundled macOS/Windows binary."
                 )
 
             acc_exec = str(Path(shutil.which(acc_path) or acc_path).resolve())
@@ -340,8 +345,14 @@ while (true)
             except FileNotFoundError:
                 raise FileNotFoundError(
                     f"ACC compiler not found at '{acc_path}'. "
-                    "Please install ACC and add it to your PATH."
+                    "Please install ACC (https://github.com/ZDoom/acc/releases) and add it to your PATH."
                 )
+            except OSError as exc:
+                raise RuntimeError(
+                    f"ACC compiler at '{acc_exec}' cannot run on this platform ({exc}). "
+                    "On Linux, install acc from https://github.com/ZDoom/acc/releases (or build from source) "
+                    "and put it on PATH or pass acc_path/--acc."
+                ) from exc
             except subprocess.CalledProcessError as exc:
                 err_file = Path(tmpdir) / "acs.err"
                 details = err_file.read_text(errors="replace").strip() if err_file.is_file() else ""

@@ -27,7 +27,7 @@ from doomgen.placement.nav_graph import NavGraph, build_nav_graph, pick_start_go
 from doomgen.placement.obstacles import ObstacleSpec, scatter_obstacles
 from doomgen.placement.spots import SpotPool, relaxed_spots, stable_rng
 from doomgen.utils.constants import PLAYER_RADIUS
-from doomgen.utils.paths import get_bundled_compiler, validate_executable
+from doomgen.utils.paths import resolve_compiler, validate_executable
 
 
 class ProceduralMapBuilder:
@@ -554,7 +554,7 @@ class ProceduralMapBuilder:
         print(f"WAD written to {output_path}")
 
         if zdbsp_path is None:
-            zdbsp_path = get_bundled_compiler("zdbsp")
+            zdbsp_path = resolve_compiler("zdbsp")
 
         if zdbsp_path is not None and validate_executable(zdbsp_path):
             found = run_zdbsp(output_path, zdbsp_path=zdbsp_path)
